@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html ng-app="cAntenna">
 <head>
-  <title>Topgate, Inc. GAE development standards</title>
+  <title>カテゴリアンテナ</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
 
   <!-- bower:css -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
   <!-- endbower -->
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/print.css" media="print" rel="stylesheet" type="text/css">
@@ -19,28 +20,14 @@
   <script src="bower_components/es5-shim/es5-shim.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
   <!-- endbower -->
   <script type="text/javascript" src="/scripts/Ignite.js" charset="utf-8"></script>
 </head>
 <body>
 
-<div ng-view>
-</div>
-
-<script type="text/ng-template" id="/template/sample.html">
-  <div ng-controller="SampleTestController">
-    <input type="text" ng-model="name">
-    {{name}}
-  </div>
-</script>
-
-<script type="text/ng-template" id="/template/main.html">
-  <p>
-    メインです。<br>
-    <a ng-href="/sample">サンプル</a>
-  </p>
-</script>
-
+<div ui-view></div>
 
 </body>
 </html>

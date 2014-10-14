@@ -114,7 +114,7 @@ module.exports = function (grunt) {
     },
     wiredep: {
       main: {
-        src: ['index.html'], // point to your HTML file.
+        src: ['ui/index.html'], // point to your HTML file.
         exclude: []
       }
     },

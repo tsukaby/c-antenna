@@ -1,5 +1,5 @@
 ///<reference path='../typings/angularjs/angular.d.ts' />
-///<reference path='../typings/angularjs/angular-route.d.ts' />
+///<reference path='../typings/angular-ui/angular-ui-router.d.ts' />
 
 ///<reference path='Model.ts' />
 ///<reference path='Service.ts' />
@@ -18,21 +18,31 @@ module App {
   // モジュールの定義
   angular.module(
     appName,
-    ["ngRoute", appName + ".controller", appName + ".service", appName + ".filter", appName + ".directive"],
-    ($routeProvider:ng.route.IRouteProvider, $locationProvider:ng.ILocationProvider)=> {
-      $routeProvider
-        .when("/sample", {
-          templateUrl: "/template/sample.html"
+    ["ui.router", appName + ".controller", appName + ".service", appName + ".filter", appName + ".directive"],
+    ($stateProvider:ng.ui.IStateProvider, $locationProvider:ng.ILocationProvider)=> {
+      $stateProvider
+        .state('/', {
+          url: "/",
+          templateUrl: "partials/top.html"
         })
-        .otherwise({
-          templateUrl: "/template/main.html"
+        .state('index', {
+          url: "/index",
+          templateUrl: "partials/top.html"
+        })
+        .state('top', {
+          url: "/",
+          templateUrl: "partials/top.html"
+        })
+        .state('sample', {
+          url: "/sample",
+          templateUrl: "partials/sample.html"
         });
       // hashの書き換えの代わりにHTML5のHistory API関係を使うモードを設定する。
       $locationProvider.html5Mode(true);
     }
   )
     // モジュールとして登録する。angular.module() -> .config() -> .run() で1セット。
-    .run(($rootScope:ng.IRootScopeService, $routeParams:ng.route.IRouteParamsService)=> {
+    .run(()=> {
       false;
     })
   ;
