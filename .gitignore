@@ -1,3 +1,4 @@
+# Server
 logs
 project/project
 project/target
@@ -13,5 +14,14 @@ dist
 /.project
 /RUNNING_PID
 /.settings
+/public
 
-    
+# Front
+bower_components
+node_modules
+typings
+.sass-cache
+.tscache
+/ui/**/*.css
+/ui/**/*.js
+/ui/**/*.map

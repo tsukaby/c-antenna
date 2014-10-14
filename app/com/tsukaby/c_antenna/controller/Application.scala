@@ -1,4 +1,4 @@
-package controllers
+package com.tsukaby.c_antenna.controller
 
 import java.nio.file.{Files, Paths}
 
@@ -6,16 +6,12 @@ import com.tsukaby.c_antenna.Redis
 import de.nava.informa.core.{ChannelIF, ItemIF}
 import de.nava.informa.impl.basic.ChannelBuilder
 import de.nava.informa.parsers.FeedParser
-import org.openqa.selenium.{Dimension, OutputType}
 import org.openqa.selenium.phantomjs.PhantomJSDriver
-import play.api.mvc._
+import org.openqa.selenium.{Dimension, OutputType}
+import play.api.mvc.{Action, Controller}
 import scala.collection.JavaConverters._
 
 object Application extends Controller {
-
-  def index = Action {
-    Ok(views.html.index("Your new application is ready."))
-  }
 
   def sample = Action {
 
