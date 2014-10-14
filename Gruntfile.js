@@ -192,15 +192,38 @@ module.exports = function (grunt) {
     open: {
       "test-browser": {
         path: 'ui/test/SpecRunner.html'
+      },
+      server: {
+        url: 'http://localhost:9000'
       }
     },
     connect: {
       dev: {
         options: {
           port: 9000,
-          base: "./",
-          keepalive: true
+          base: "./ui",
+          keepalive: false,
+          livereload: true
         }
+      }
+    },
+    esteWatch: {
+      options: {
+        dirs: ['ui/**/'],
+        livereload: {
+          enabled: true,
+          extensions: ['ts', 'scss', 'html'],
+          port: 35729
+        }
+      },
+      'ts': function (filepath) {
+        return 'ts:clientMain';
+      },
+      'scss': function (filepath) {
+        return 'compass:dev';
+      },
+      'html': function (filepath) {
+        return '';
       }
     }
   });
@@ -209,7 +232,7 @@ module.exports = function (grunt) {
   grunt.registerTask('default', ['clean:clientCss', 'clean:clientScript', 'clean:play', 'ts:clientMain', 'tslint', 'compass:dev', 'copy:main']);
   grunt.registerTask('test', ['clean:clientScript', 'ts:clientTest', 'tslint', 'espower', 'karma']);
   grunt.registerTask('docs', ['typedoc']);
-  grunt.registerTask('serve', ['connect:dev']);
+  grunt.registerTask('serve', ['connect:dev', 'open:server', 'esteWatch']);
 
   require('load-grunt-tasks')(grunt);
 };

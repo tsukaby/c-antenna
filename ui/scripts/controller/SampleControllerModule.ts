@@ -4,22 +4,22 @@
 ///<reference path='../service/SampleServiceModule.ts' />
 
 module Sample {
-	"use strict";
+  "use strict";
 
-	export interface IScope extends ng.IScope {
-		name: string;
-		temp: string;
-	}
+  export interface IScope extends ng.IScope {
+    name: string;
+    temp: string;
+  }
 
-	export class TestController {
+  export class TestController {
 
-		constructor(public $scope:IScope, public sampleService:Service.SampleService) {
-			$scope.name = "サーバと通信中";
-			$scope.temp = "仮";
-		}
+    constructor(public $scope:IScope, public sampleService:Service.SampleService) {
+      $scope.name = "サーバと通信中";
+      $scope.temp = "仮";
+    }
 
-		update() {
-			this.sampleService.test();
-		}
-	}
+    update() {
+      this.sampleService.test();
+    }
+  }
 }

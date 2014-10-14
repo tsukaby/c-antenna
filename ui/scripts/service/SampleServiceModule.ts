@@ -3,15 +3,15 @@
 ///<reference path='../Model.ts' />
 
 module Service {
-	"use strict";
+  "use strict";
 
-	export class SampleService {
+  export class SampleService {
 
-		constructor(public $http:ng.IHttpService) {
-		}
+    constructor(public $http:ng.IHttpService) {
+    }
 
-		test():ng.IHttpPromise<any> {
-			return this.$http.get("");
-		}
-	}
+    test():ng.IHttpPromise<any> {
+      return this.$http.get("");
+    }
+  }
 }
