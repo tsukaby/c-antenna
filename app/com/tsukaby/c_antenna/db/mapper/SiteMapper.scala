@@ -4,9 +4,9 @@ import scalikejdbc._
 
 case class SiteMapper(
   id: Long, 
+  name: String, 
   url: String, 
-  rssUrl: String, 
-  image: Option[Array[Byte]] = None) {
+  thumbnail: Option[Array[Byte]] = None) {
 
   def save()(implicit session: DBSession = SiteMapper.autoSession): SiteMapper = SiteMapper.save(this)(session)
 
@@ -19,14 +19,14 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
 
   override val tableName = "SITE"
 
-  override val columns = Seq("ID", "URL", "RSS_URL", "IMAGE")
+  override val columns = Seq("ID", "NAME", "URL", "THUMBNAIL")
 
   def apply(sm: SyntaxProvider[SiteMapper])(rs: WrappedResultSet): SiteMapper = apply(sm.resultName)(rs)
   def apply(sm: ResultName[SiteMapper])(rs: WrappedResultSet): SiteMapper = new SiteMapper(
     id = rs.get(sm.id),
+    name = rs.get(sm.name),
     url = rs.get(sm.url),
-    rssUrl = rs.get(sm.rssUrl),
-    image = rs.get(sm.image)
+    thumbnail = rs.get(sm.thumbnail)
   )
       
   val sm = SiteMapper.syntax("sm")
@@ -60,35 +60,35 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
   }
       
   def create(
+    name: String,
     url: String,
-    rssUrl: String,
-    image: Option[Array[Byte]] = None)(implicit session: DBSession = autoSession): SiteMapper = {
+    thumbnail: Option[Array[Byte]] = None)(implicit session: DBSession = autoSession): SiteMapper = {
     val generatedKey = withSQL {
       insert.into(SiteMapper).columns(
+        column.name,
         column.url,
-        column.rssUrl,
-        column.image
+        column.thumbnail
       ).values(
+        name,
         url,
-        rssUrl,
-        image
+        thumbnail
       )
     }.updateAndReturnGeneratedKey.apply()
 
     SiteMapper(
       id = generatedKey, 
+      name = name,
       url = url,
-      rssUrl = rssUrl,
-      image = image)
+      thumbnail = thumbnail)
   }
 
   def save(entity: SiteMapper)(implicit session: DBSession = autoSession): SiteMapper = {
     withSQL {
       update(SiteMapper).set(
         column.id -> entity.id,
+        column.name -> entity.name,
         column.url -> entity.url,
-        column.rssUrl -> entity.rssUrl,
-        column.image -> entity.image
+        column.thumbnail -> entity.thumbnail
       ).where.eq(column.id, entity.id)
     }.update.apply()
     entity

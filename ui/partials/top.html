@@ -3,10 +3,10 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-sm-4">
-      <div class="panel panel-primary">
+    <div class="col-sm-4" ng-repeat="site in sites">
+      <div class="panel panel-default">
         <div class="panel-heading">
-          head
+          <a ng-href="{{site.url}}">{{site.name}}</a>
         </div>
         <div class="panel-body">
           body

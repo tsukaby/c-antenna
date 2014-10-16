@@ -23,15 +23,18 @@ module App {
       $stateProvider
         .state('/', {
           url: "/",
-          templateUrl: "partials/top.html"
+          templateUrl: "partials/top.html",
+          controller: "TopController"
         })
         .state('index', {
           url: "/index",
-          templateUrl: "partials/top.html"
+          templateUrl: "partials/top.html",
+          controller: "TopController"
         })
         .state('top', {
           url: "/",
-          templateUrl: "partials/top.html"
+          templateUrl: "partials/top.html",
+          controller: "TopController"
         })
         .state('sample', {
           url: "/sample",
@@ -69,8 +72,8 @@ module App {
     ()=> {
       false;
     }
-  )
-    .controller("SampleTestController", Sample.TestController)
+  ).controller("SampleTestController", Sample.TestController)
+    .controller("TopController", Sample.TopController)
   ;
 
   // モジュールの定義。directiveに関するモジュール。

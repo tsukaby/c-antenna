@@ -18,4 +18,12 @@ module Model {
       this.test = data.test;
     }
   }
+
+  export class Site {
+    id:number;
+    name:string;
+    url:string;
+    thumbnail:string;
+
+  }
 }

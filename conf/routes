@@ -6,6 +6,9 @@
 GET        /sample            com.tsukaby.c_antenna.controller.Application.sample
 GET        /image/:url        com.tsukaby.c_antenna.controller.Application.image(url: String)
 
+# Site
+GET        /api/sites         com.tsukaby.c_antenna.controller.RssController.showAll
+
 # Map static resources from the /public folder to the /assets URL path
 GET        /                  controllers.Assets.at(path="/public", file="index.html")
 GET        /*file             controllers.Assets.at(path="/public", file)
