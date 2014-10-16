@@ -1,3 +1,5 @@
+import play.PlayImport.PlayKeys.playRunHooks
+
 scalaVersion := "2.11.2"
 
 name := "c-antenna"
@@ -23,4 +25,9 @@ libraryDependencies ++= Seq(
 
 scalikejdbcSettings
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+playRunHooks <+= baseDirectory.map(base => Grunt(base))
+
+lazy val root = (project in file(".")).settings(
+  unmanagedResourceDirectories in Assets += baseDirectory.value / "ui",
+  excludeFilter in Assets := "*.ts" || "scss" || "*.map" || "test" || "typings"
+).enablePlugins(PlayScala)

@@ -169,14 +169,6 @@ module.exports = function (grunt) {
         ]
       }
     },
-    copy: {
-      main: {
-        expand: true,
-        cwd: 'ui',
-        src: '**',
-        dest: 'public/'
-      }
-    },
     karma: {
       unit: {
         options: {
@@ -217,10 +209,10 @@ module.exports = function (grunt) {
         }
       },
       'ts': function (filepath) {
-        return 'ts:clientMain';
+        return ['ts:clientMain'];
       },
       'scss': function (filepath) {
-        return 'compass:dev';
+        return ['compass:dev'];
       },
       'html': function (filepath) {
         return '';
@@ -229,10 +221,11 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('setup', ['clean', 'bower', 'tsd', 'wiredep']);
-  grunt.registerTask('default', ['clean:clientCss', 'clean:clientScript', 'clean:play', 'ts:clientMain', 'tslint', 'compass:dev', 'copy:main']);
+  grunt.registerTask('default', ['clean:clientCss', 'clean:clientScript', 'clean:play', 'ts:clientMain', 'tslint', 'compass:dev']);
   grunt.registerTask('test', ['clean:clientScript', 'ts:clientTest', 'tslint', 'espower', 'karma']);
   grunt.registerTask('docs', ['typedoc']);
   grunt.registerTask('serve', ['connect:dev', 'open:server', 'esteWatch']);
+  grunt.registerTask('serve-play', ['open:server', 'esteWatch']);
 
   require('load-grunt-tasks')(grunt);
 };
