@@ -17,7 +17,7 @@ object SiteService extends BaseService {
   def getAll: Seq[Site] = {
     val targets = SiteMapper.findAll()
 
-    targets map (x => dbSitesToSites(x, ArticleMapper.findAllBy(sqls.eq(ArticleMapper.am.siteId, x.id).limit(5))))
+    targets map (x => dbSitesToSites(x, ArticleMapper.findAllBy(sqls.eq(ArticleMapper.am.siteId, x.id).orderBy(ArticleMapper.am.createdAt).desc.limit(5))))
   }
 
 }
