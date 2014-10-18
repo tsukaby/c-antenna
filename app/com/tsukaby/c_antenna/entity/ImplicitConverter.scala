@@ -1,20 +1,23 @@
 package com.tsukaby.c_antenna.entity
 
-import com.tsukaby.c_antenna.db.mapper.SiteMapper
+import com.tsukaby.c_antenna.db.mapper.{ArticleMapper, SiteMapper}
 
 object ImplicitConverter {
-  implicit def dbSiteToSite(siteMapper: SiteMapper): Site = {
-    Site(siteMapper.id, siteMapper.name, siteMapper.url)
+
+  implicit def dbSitesToSites(siteMapper: SiteMapper, articleMappers: Seq[ArticleMapper]): Site = {
+    Site(siteMapper.id, siteMapper.name, siteMapper.url, null, dbArticlesToArticles(articleMappers))
   }
 
-  implicit def dbSiteToSite(siteMapper: Option[SiteMapper]): Option[Site] = {
-    siteMapper match {
-      case Some(x) => Option(dbSiteToSite(x))
-      case None => None
+  implicit def dbArticleToArticle(articleMapper: ArticleMapper): Article = {
+    val tags = articleMapper.tag match {
+      case Some(x) => x.split(" ").toSeq
+      case None => Seq()
     }
+    Article(articleMapper.url, articleMapper.title, null, tags)
   }
 
-  implicit def dbSitesToSites(siteMappers: Seq[SiteMapper]): Seq[Site] = {
-    siteMappers map (x => dbSiteToSite(x))
+  implicit def dbArticlesToArticles(articleMappers: Seq[ArticleMapper]): Seq[Article] = {
+    articleMappers map (x => dbArticleToArticle(x))
   }
+
 }

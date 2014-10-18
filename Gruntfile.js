@@ -225,7 +225,7 @@ module.exports = function (grunt) {
   grunt.registerTask('test', ['clean:clientScript', 'ts:clientTest', 'tslint', 'espower', 'karma']);
   grunt.registerTask('docs', ['typedoc']);
   grunt.registerTask('serve', ['connect:dev', 'open:server', 'esteWatch']);
-  grunt.registerTask('serve-play', ['open:server', 'esteWatch']);
+  grunt.registerTask('serve-play', ['esteWatch']);
 
   require('load-grunt-tasks')(grunt);
 };

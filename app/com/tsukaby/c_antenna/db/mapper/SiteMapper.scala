@@ -6,7 +6,9 @@ case class SiteMapper(
   id: Long, 
   name: String, 
   url: String, 
-  thumbnail: Option[Array[Byte]] = None) {
+  rssUrl: String, 
+  thumbnail: Option[Array[Byte]] = None, 
+  scrapingCssSelector: String) {
 
   def save()(implicit session: DBSession = SiteMapper.autoSession): SiteMapper = SiteMapper.save(this)(session)
 
@@ -19,14 +21,16 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
 
   override val tableName = "SITE"
 
-  override val columns = Seq("ID", "NAME", "URL", "THUMBNAIL")
+  override val columns = Seq("ID", "NAME", "URL", "RSS_URL", "THUMBNAIL", "SCRAPING_CSS_SELECTOR")
 
   def apply(sm: SyntaxProvider[SiteMapper])(rs: WrappedResultSet): SiteMapper = apply(sm.resultName)(rs)
   def apply(sm: ResultName[SiteMapper])(rs: WrappedResultSet): SiteMapper = new SiteMapper(
     id = rs.get(sm.id),
     name = rs.get(sm.name),
     url = rs.get(sm.url),
-    thumbnail = rs.get(sm.thumbnail)
+    rssUrl = rs.get(sm.rssUrl),
+    thumbnail = rs.get(sm.thumbnail),
+    scrapingCssSelector = rs.get(sm.scrapingCssSelector)
   )
       
   val sm = SiteMapper.syntax("sm")
@@ -62,16 +66,22 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
   def create(
     name: String,
     url: String,
-    thumbnail: Option[Array[Byte]] = None)(implicit session: DBSession = autoSession): SiteMapper = {
+    rssUrl: String,
+    thumbnail: Option[Array[Byte]] = None,
+    scrapingCssSelector: String)(implicit session: DBSession = autoSession): SiteMapper = {
     val generatedKey = withSQL {
       insert.into(SiteMapper).columns(
         column.name,
         column.url,
-        column.thumbnail
+        column.rssUrl,
+        column.thumbnail,
+        column.scrapingCssSelector
       ).values(
         name,
         url,
-        thumbnail
+        rssUrl,
+        thumbnail,
+        scrapingCssSelector
       )
     }.updateAndReturnGeneratedKey.apply()
 
@@ -79,7 +89,9 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
       id = generatedKey, 
       name = name,
       url = url,
-      thumbnail = thumbnail)
+      rssUrl = rssUrl,
+      thumbnail = thumbnail,
+      scrapingCssSelector = scrapingCssSelector)
   }
 
   def save(entity: SiteMapper)(implicit session: DBSession = autoSession): SiteMapper = {
@@ -88,7 +100,9 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         column.id -> entity.id,
         column.name -> entity.name,
         column.url -> entity.url,
-        column.thumbnail -> entity.thumbnail
+        column.rssUrl -> entity.rssUrl,
+        column.thumbnail -> entity.thumbnail,
+        column.scrapingCssSelector -> entity.scrapingCssSelector
       ).where.eq(column.id, entity.id)
     }.update.apply()
     entity

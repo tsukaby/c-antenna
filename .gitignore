@@ -25,3 +25,4 @@ typings
 /ui/**/*.css
 /ui/**/*.js
 /ui/**/*.map
+tscommand-*.tmp.txt
