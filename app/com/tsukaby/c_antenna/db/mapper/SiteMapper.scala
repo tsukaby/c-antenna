@@ -1,6 +1,7 @@
 package com.tsukaby.c_antenna.db.mapper
 
 import scalikejdbc._
+import org.joda.time.{DateTime}
 
 case class SiteMapper(
   id: Long, 
@@ -8,7 +9,8 @@ case class SiteMapper(
   url: String, 
   rssUrl: String, 
   thumbnail: Option[Array[Byte]] = None, 
-  scrapingCssSelector: String) {
+  scrapingCssSelector: String, 
+  crawledAt: DateTime) {
 
   def save()(implicit session: DBSession = SiteMapper.autoSession): SiteMapper = SiteMapper.save(this)(session)
 
@@ -21,7 +23,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
 
   override val tableName = "SITE"
 
-  override val columns = Seq("ID", "NAME", "URL", "RSS_URL", "THUMBNAIL", "SCRAPING_CSS_SELECTOR")
+  override val columns = Seq("ID", "NAME", "URL", "RSS_URL", "THUMBNAIL", "SCRAPING_CSS_SELECTOR", "CRAWLED_AT")
 
   def apply(sm: SyntaxProvider[SiteMapper])(rs: WrappedResultSet): SiteMapper = apply(sm.resultName)(rs)
   def apply(sm: ResultName[SiteMapper])(rs: WrappedResultSet): SiteMapper = new SiteMapper(
@@ -30,7 +32,8 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     url = rs.get(sm.url),
     rssUrl = rs.get(sm.rssUrl),
     thumbnail = rs.get(sm.thumbnail),
-    scrapingCssSelector = rs.get(sm.scrapingCssSelector)
+    scrapingCssSelector = rs.get(sm.scrapingCssSelector),
+    crawledAt = rs.get(sm.crawledAt)
   )
       
   val sm = SiteMapper.syntax("sm")
@@ -68,20 +71,23 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     url: String,
     rssUrl: String,
     thumbnail: Option[Array[Byte]] = None,
-    scrapingCssSelector: String)(implicit session: DBSession = autoSession): SiteMapper = {
+    scrapingCssSelector: String,
+    crawledAt: DateTime)(implicit session: DBSession = autoSession): SiteMapper = {
     val generatedKey = withSQL {
       insert.into(SiteMapper).columns(
         column.name,
         column.url,
         column.rssUrl,
         column.thumbnail,
-        column.scrapingCssSelector
+        column.scrapingCssSelector,
+        column.crawledAt
       ).values(
         name,
         url,
         rssUrl,
         thumbnail,
-        scrapingCssSelector
+        scrapingCssSelector,
+        crawledAt
       )
     }.updateAndReturnGeneratedKey.apply()
 
@@ -91,7 +97,8 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
       url = url,
       rssUrl = rssUrl,
       thumbnail = thumbnail,
-      scrapingCssSelector = scrapingCssSelector)
+      scrapingCssSelector = scrapingCssSelector,
+      crawledAt = crawledAt)
   }
 
   def save(entity: SiteMapper)(implicit session: DBSession = autoSession): SiteMapper = {
@@ -102,7 +109,8 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         column.url -> entity.url,
         column.rssUrl -> entity.rssUrl,
         column.thumbnail -> entity.thumbnail,
-        column.scrapingCssSelector -> entity.scrapingCssSelector
+        column.scrapingCssSelector -> entity.scrapingCssSelector,
+        column.crawledAt -> entity.crawledAt
       ).where.eq(column.id, entity.id)
     }.update.apply()
     entity

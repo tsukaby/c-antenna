@@ -4,7 +4,6 @@
 
 # Home page
 GET        /sample              com.tsukaby.c_antenna.controller.Application.sample
-GET        /store               com.tsukaby.c_antenna.controller.Application.store
 
 # Site
 GET        /api/sites           com.tsukaby.c_antenna.controller.RssController.showAll

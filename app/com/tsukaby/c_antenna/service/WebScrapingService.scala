@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.service
 
-import org.openqa.selenium.phantomjs.PhantomJSDriver
+import org.openqa.selenium.phantomjs.{PhantomJSDriverService, PhantomJSDriver}
 import org.openqa.selenium.remote.DesiredCapabilities
 import scala.collection.JavaConverters._
 
@@ -9,7 +9,12 @@ import scala.collection.JavaConverters._
  */
 object WebScrapingService extends BaseService {
 
-  private val driver: PhantomJSDriver = new PhantomJSDriver(new DesiredCapabilities())
+  private val driver: PhantomJSDriver = new PhantomJSDriver({
+    val dcap = new DesiredCapabilities()
+    // PhantomJSのログ出力を停止。細かいエラーが沢山出るため。
+    dcap.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, Array("--webdriver-loglevel=NONE"))
+    dcap
+  })
 
   /**
    * 引数で指定したページのテキストを取得します。
