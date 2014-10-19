@@ -12,7 +12,7 @@
           <ul>
             <li ng-repeat="article in site.recentArticles">
               <a ng-href="{{article.url}}" target="_blank">
-                <span class="article-title">
+                <span>
                   {{article.title}}<span class="badge" ng-repeat="tag in article.tags">{{tag}}</span>
                 </span>
               </a>
