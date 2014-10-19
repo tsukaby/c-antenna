@@ -18,7 +18,7 @@ module App {
   // モジュールの定義
   angular.module(
     appName,
-    ["ui.router", appName + ".controller", appName + ".service", appName + ".filter", appName + ".directive"],
+    ["ui.router", "ngTable", appName + ".controller", appName + ".service", appName + ".filter", appName + ".directive"],
     ($stateProvider:ng.ui.IStateProvider, $locationProvider:ng.ILocationProvider)=> {
       $stateProvider
         .state('/', {
@@ -35,6 +35,11 @@ module App {
           url: "/",
           templateUrl: "partials/top.html",
           controller: "TopController"
+        })
+        .state('latest', {
+          url: "/latest",
+          templateUrl: "partials/latest.html",
+          controller: "LatestController"
         })
         .state('sample', {
           url: "/sample",
@@ -74,6 +79,7 @@ module App {
     }
   ).controller("SampleTestController", Sample.TestController)
     .controller("TopController", Sample.TopController)
+    .controller("LatestController", Sample.LatestController)
   ;
 
   // モジュールの定義。directiveに関するモジュール。

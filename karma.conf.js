@@ -5,49 +5,51 @@ module.exports = function (config) {
   config.set({
 
     // base path, that will be used to resolve files and exclude
-    basePath: './',
+    basePath: "./ui",
 
 
     // frameworks to use
-    frameworks: ['mocha'],
+    frameworks: ["mocha"],
 
     preprocessors: {
-      '**/*.js': ['sourcemap'],
-      'scripts/**/*.js': ['coverage']
+      "**/*.js": ["sourcemap"],
+      "scripts/**/*.js": ["coverage"]
     },
 
     // list of files / patterns to load in the browser
     files: [
-      'bower_components/es5-shim/es5-shim.js',
-      'bower_components/jquery/dist/jquery.js',
-      'bower_components/angular/angular.js',
-      'bower_components/angular-route/angular-route.js',
-      'scripts/**/*.js',
-      'bower_components/power-assert/build/power-assert.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'testEspowered/**/*.js'
+      "bower_components/jquery/dist/jquery.js",
+      "bower_components/es5-shim/es5-shim.js",
+      "bower_components/angular/angular.js",
+      "bower_components/bootstrap/dist/js/bootstrap.js",
+      "bower_components/angular-ui-router/release/angular-ui-router.js",
+      "bower_components/ng-table/ng-table.js",
+      "scripts/**/*.js",
+      "bower_components/power-assert/build/power-assert.js",
+      "bower_components/angular-mocks/angular-mocks.js",
+      "testEspowered/**/*.js"
     ],
 
 
     // list of files to exclude
     exclude: [
-      'src/main/webapp/scripts/main.min.js'
+      "src/main/webapp/scripts/main.min.js"
     ],
 
 
     // test results reporter to use
-    // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress', 'junit', 'coverage'],
+    // possible values: "dots", "progress", "junit", "growl", "coverage"
+    reporters: ["progress", "junit", "coverage"],
 
     // optionally, configure the reporter
     coverageReporter: {
-      dir: 'coverage/',
+      dir: "coverage/",
       reporters: [
         {
-          type: 'html'
+          type: "html"
         },
         {
-          type: 'cobertura', file: 'clover.xml'
+          type: "cobertura", file: "clover.xml"
         }
       ]
     },
@@ -77,7 +79,7 @@ module.exports = function (config) {
     // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
     // - PhantomJS
     // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-    browsers: ['Chrome', 'PhantomJS'],
+    browsers: ["Chrome", "PhantomJS"],
 
 
     // If browser does not capture in given timeout [ms], kill it

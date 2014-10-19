@@ -1,5 +1,6 @@
 package com.tsukaby.c_antenna.entity
 
+import org.joda.time.DateTime
 import play.api.libs.json.Json
 
 /**
@@ -10,7 +11,9 @@ case class Article(
                     url: String,
                     title: String,
                     thumbnail: String,
-                    tags: Seq[String])
+                    tags: Seq[String],
+                    siteName: String,
+                    createdAt: DateTime)
 
 object Article {
   implicit val format = Json.format[Article]

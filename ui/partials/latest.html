@@ -1,0 +1,15 @@
+<div ng-include="'partials/header.html'"></div>
+<div ng-include="'partials/category_nav.html'"></div>
+
+<div class="container">
+  <table ng-table="tableParams" class="table">
+    <tr ng-repeat="article in $data">
+      <td data-title="'日時'" width="150">{{article.createdAt | date : 'MM/dd HH:mm'}}</td>
+      <td data-title="'タイトル'">
+        <a href="{{article.url}}" target="_blank">{{article.title}}</a>
+      </td>
+      <td data-title="'サイト'"><a href="{{article.url}}" target="_blank">{{article.siteName}}</a></td>
+    </tr>
+  </table>
+
+</div>

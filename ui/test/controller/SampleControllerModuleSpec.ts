@@ -2,7 +2,6 @@
 ///<reference path='../../typings/assert/assert.d.ts' />
 
 ///<reference path='../../typings/angularjs/angular.d.ts' />
-///<reference path='../../typings/angularjs/angular-route.d.ts' />
 
 ///<reference path='../../scripts/Ignite.ts' />
 

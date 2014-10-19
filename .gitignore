@@ -26,3 +26,4 @@ typings
 /ui/**/*.js
 /ui/**/*.map
 tscommand-*.tmp.txt
+test-results.xml

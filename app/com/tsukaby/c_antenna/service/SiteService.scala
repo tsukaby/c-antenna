@@ -20,4 +20,10 @@ object SiteService extends BaseService {
     targets map (x => dbSitesToSites(x, ArticleMapper.findAllBy(sqls.eq(ArticleMapper.am.siteId, x.id).orderBy(ArticleMapper.am.createdAt).desc.limit(5))))
   }
 
+  def getById(id: Long) : Option[Site] = {
+    SiteMapper.find(id) match {
+      case Some(x) => x
+      case None => None
+    }
+  }
 }

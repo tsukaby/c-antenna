@@ -1,6 +1,7 @@
 package com.tsukaby.c_antenna.entity
 
 import com.tsukaby.c_antenna.db.mapper.{ArticleMapper, SiteMapper}
+import com.tsukaby.c_antenna.service.SiteService
 
 object ImplicitConverter {
 
@@ -8,12 +9,21 @@ object ImplicitConverter {
     Site(siteMapper.id, siteMapper.name, siteMapper.url, null, dbArticlesToArticles(articleMappers))
   }
 
+  implicit def dbSiteToOptionSite(siteMapper: SiteMapper): Option[Site] = {
+    Option(Site(siteMapper.id, siteMapper.name, siteMapper.url, null, Seq()))
+  }
+
   implicit def dbArticleToArticle(articleMapper: ArticleMapper): Article = {
     val tags = articleMapper.tag match {
       case Some(x) => x.split(" ").toSeq
       case None => Seq()
     }
-    Article(articleMapper.url, articleMapper.title, null, tags)
+
+    val siteName = SiteService.getById(articleMapper.siteId) match {
+      case Some(x) => x.name
+      case None => ""
+    }
+    Article(articleMapper.url, articleMapper.title, null, tags, siteName, articleMapper.createdAt)
   }
 
   implicit def dbArticlesToArticles(articleMappers: Seq[ArticleMapper]): Seq[Article] = {
