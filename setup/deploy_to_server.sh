@@ -2,7 +2,11 @@
 
 # SCPとSSHを使ってリモートサーバにアプリをデプロイします。
 
+# ビルド
 sbt clean stage
-ssh sakura2 "sudo rm -rf ~/c-antenna"
+# リセット
+ssh -t sakura2 "sudo kill `cat c-antenna/RUNNING_PID`; sudo rm -rf ~/c-antenna"
+# 転送
 scp -r target/universal/stage sakura2:~/c-antenna
-ssh sakura2 "sudo ./c-antenna/bin/c-antenna -Dhttp.port=80 >/dev/null 2>&1 &"
+# 実行
+ssh -t sakura2 "cd c-antenna ; nohup sudo ./bin/c-antenna -Dhttp.port=80 >/dev/null 2>&1 &"
