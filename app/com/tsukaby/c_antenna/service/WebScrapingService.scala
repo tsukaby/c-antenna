@@ -13,6 +13,7 @@ object WebScrapingService extends BaseService {
     val dcap = new DesiredCapabilities()
     // PhantomJSのログ出力を停止。細かいエラーが沢山出るため。
     dcap.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, Array("--webdriver-loglevel=NONE"))
+    dcap.setCapability("phantomjs.binary.path", "/usr/local/bin/phantomjs")
     dcap
   })
 
