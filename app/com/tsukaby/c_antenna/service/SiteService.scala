@@ -14,6 +14,10 @@ import scala.collection.JavaConverters._
 
 object SiteService extends BaseService {
 
+  def getWithPaging(page: Int, count: Int): Seq[Site] = {
+    SiteDao.getWithPaging(page, count) map (x => dbSitesToSites(x, ArticleDao.getLatelyBySiteId(x.id)))
+  }
+
   /**
    * 全てのサイトの情報を取得します。
    * RSS記事情報は最新の5件のみ取得します。

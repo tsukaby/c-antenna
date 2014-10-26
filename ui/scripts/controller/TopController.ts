@@ -12,7 +12,9 @@ module Sample {
   export class TopController {
 
     constructor(public $scope:IScope, private $http:ng.IHttpService) {
-      $http.get("/api/sites").success((data:Array<Model.Site>) => {
+      var page:number = 1;
+      var count:number = 9;
+      $http.get("/api/sites?page=" + page + "&count=" + count).success((data:Array<Model.Site>) => {
         $scope.sites = data;
       });
     }

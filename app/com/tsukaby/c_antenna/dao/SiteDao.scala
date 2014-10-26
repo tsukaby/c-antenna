@@ -3,11 +3,13 @@ package com.tsukaby.c_antenna.dao
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import play.api.cache.Cache
 import play.api.Play.current
+import scalikejdbc._
 
 /**
  * サイトに関する操作を行います。
  */
 object SiteDao {
+
   private val sm = SiteMapper.sm
 
   /**
@@ -41,6 +43,16 @@ object SiteDao {
    */
   def getOldCrawledSite(amount: Int) = {
     SiteMapper.findAll().sortWith(_.crawledAt.getMillis < _.crawledAt.getMillis).take(amount)
+  }
+
+  /**
+   * ページを指定してサイトを取得します。
+   * @param page ページ番号 (1 origin)
+   * @param count 取得件数
+   * @return ページ一覧
+   */
+  def getWithPaging(page: Int, count: Int): Seq[SiteMapper] = {
+    SiteMapper.findAllBy(sqls.eq(sqls"1", 1).limit(count).offset((page - 1) * count))
   }
 
   def update(site: SiteMapper) = {

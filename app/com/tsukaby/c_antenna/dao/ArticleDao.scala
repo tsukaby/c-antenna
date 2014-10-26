@@ -60,6 +60,8 @@ object ArticleDao {
    * @return 最新記事の一覧
    */
   def getLatelyBySiteId(siteId: Long): Seq[ArticleMapper] = {
-    ArticleMapper.findAllBy(sqls.eq(am.siteId, siteId).orderBy(ArticleMapper.am.createdAt).desc.limit(5))
+    Cache.getOrElse[Seq[ArticleMapper]](s"latelyBySiteId:$siteId", 300) {
+      ArticleMapper.findAllBy(sqls.eq(am.siteId, siteId).orderBy(ArticleMapper.am.createdAt).desc.limit(5))
+    }
   }
 }
