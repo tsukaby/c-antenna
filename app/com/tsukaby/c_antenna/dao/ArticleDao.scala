@@ -48,7 +48,7 @@ object ArticleDao {
    */
   def getLately: Seq[ArticleMapper] = {
     // whereで絞って最新のもののみ取得 whereは検索高速化のため。
-    Cache.getOrElse[Seq[ArticleMapper]]("lately", 300) {
+    Cache.getOrElse[Seq[ArticleMapper]]("lately", 60) {
       ArticleMapper.findAllBy(sqls.gt(am.createdAt, new DateTime().minusDays(2)).orderBy(ArticleMapper.am.createdAt).desc.limit(50)).toSeq
     }
   }
