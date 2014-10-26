@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.service
 
-import _root_.play.api.Logger
+import play.api.Logger
 import com.tsukaby.c_antenna.Redis
 import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
 import com.tsukaby.c_antenna.entity.ImplicitConverter._

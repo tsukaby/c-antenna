@@ -27,8 +27,7 @@ libraryDependencies ++= Seq(
   "redis.clients" % "jedis" % "2.6.0", //Redis
   "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
   "com.github.detro.ghostdriver" % "phantomjsdriver" % "1.1.0", // 画面キャプチャ用
-  "org.atilika.kuromoji" % "kuromoji" % "0.7.7", //形態素解析用
-  "com.typesafe.play.plugins" % "play-plugins-redis_2.10" % "2.3.1" // Redis用
+  "org.atilika.kuromoji" % "kuromoji" % "0.7.7" //形態素解析用
 )
 
 scalikejdbcSettings

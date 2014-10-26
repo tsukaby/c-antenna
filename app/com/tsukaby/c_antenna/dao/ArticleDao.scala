@@ -1,7 +1,6 @@
 package com.tsukaby.c_antenna.dao
 
-import play.api.cache.Cache
-import play.api.Play.current
+import com.tsukaby.c_antenna.Redis
 import com.tsukaby.c_antenna.db.mapper.ArticleMapper
 import org.joda.time.DateTime
 import scalikejdbc._
@@ -25,7 +24,7 @@ object ArticleDao {
    */
   def create(id: String, siteId: Long, title: String, tags: Option[String], createdAt: DateTime): ArticleMapper = {
     val createdArticle = ArticleMapper.create(id, siteId, title, tags, createdAt)
-    Cache.set(s"article:$id", Some(createdArticle), 300)
+    Redis.set(s"article:$id", Some(createdArticle), 300)
 
     createdArticle
   }
@@ -36,7 +35,7 @@ object ArticleDao {
    * @param id 取得する記事のID
    */
   def getById(id: String): Option[ArticleMapper] = {
-    Cache.getOrElse[Option[ArticleMapper]](s"article:$id", 300) {
+    Redis.getOrElse[Option[ArticleMapper]](s"article:$id", 300){
       ArticleMapper.find(id)
     }
   }
@@ -48,7 +47,7 @@ object ArticleDao {
    */
   def getLately: Seq[ArticleMapper] = {
     // whereで絞って最新のもののみ取得 whereは検索高速化のため。
-    Cache.getOrElse[Seq[ArticleMapper]]("lately", 60) {
+    Redis.getOrElse[Seq[ArticleMapper]]("lately", 60) {
       ArticleMapper.findAllBy(sqls.gt(am.createdAt, new DateTime().minusDays(2)).orderBy(ArticleMapper.am.createdAt).desc.limit(50)).toSeq
     }
   }
@@ -60,7 +59,7 @@ object ArticleDao {
    * @return 最新記事の一覧
    */
   def getLatelyBySiteId(siteId: Long): Seq[ArticleMapper] = {
-    Cache.getOrElse[Seq[ArticleMapper]](s"latelyBySiteId:$siteId", 300) {
+    Redis.getOrElse[Seq[ArticleMapper]](s"latelyBySiteId:$siteId", 300) {
       ArticleMapper.findAllBy(sqls.eq(am.siteId, siteId).orderBy(ArticleMapper.am.createdAt).desc.limit(5))
     }
   }

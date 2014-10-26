@@ -1,8 +1,7 @@
 package com.tsukaby.c_antenna.dao
 
+import com.tsukaby.c_antenna.Redis
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
-import play.api.cache.Cache
-import play.api.Play.current
 import scalikejdbc._
 
 /**
@@ -18,7 +17,7 @@ object SiteDao {
    * @param id 取得するサイトのID
    */
   def getById(id: Long): Option[SiteMapper] = {
-    Cache.getOrElse[Option[SiteMapper]](s"site:$id", 300) {
+    Redis.getOrElse[Option[SiteMapper]](s"site:$id", 300) {
       SiteMapper.find(id)
     }
   }
@@ -29,7 +28,7 @@ object SiteDao {
    * @return サイトの一覧
    */
   def getAll: Seq[SiteMapper] = {
-    Cache.getOrElse[Seq[SiteMapper]](s"siteAll", 300) {
+    Redis.getOrElse[Seq[SiteMapper]](s"siteAll", 300) {
       SiteMapper.findAll()
     }
   }
@@ -61,8 +60,8 @@ object SiteDao {
   }
 
   private def refreshCache(site: SiteMapper) = {
-    Cache.set(s"site:${site.id}", Some(site), 300)
-    Cache.remove(s"siteAll")
+    Redis.set(s"site:${site.id}", Some(site), 300)
+    Redis.remove(s"siteAll")
   }
 
 }
