@@ -45,22 +45,22 @@ object SiteService extends BaseService {
 
     sites foreach (site => {
 
-      SiteDao.update(site.copy(crawledAt = new DateTime()))
+      val updatedSite = SiteDao.update(site.copy(crawledAt = new DateTime()))
 
       // index.rdfか?xmlを対象 TODO できればどんなサイトでも対応できるように
       var h: Option[ChannelIF] = None
       try {
-        h = getRss(site.url + "index.rdf")
+        h = getRss(updatedSite.url + "index.rdf")
       } catch {
         case e: ParseException =>
-          h = getRss(site.url + "?xml")
+          h = getRss(updatedSite.url + "?xml")
       }
 
       h match {
         case Some(channel) =>
           // サイト情報更新
-          Logger.info(s"サイト情報を更新します。${site.name}")
-          SiteDao.update(site.copy(name = channel.getTitle))
+          Logger.info(s"サイト情報を更新します。${updatedSite.name}")
+          SiteDao.update(updatedSite.copy(name = channel.getTitle))
 
           channel.getItems.asScala foreach {
             // RSS記事URL更新
@@ -79,7 +79,7 @@ object SiteService extends BaseService {
                     Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
                   }
                   // DB登録
-                  ArticleDao.create(item.getLink.toString, site.id, item.getTitle, tags, new DateTime(item.getDate))
+                  ArticleDao.create(item.getLink.toString, updatedSite.id, item.getTitle, tags, new DateTime(item.getDate))
               }
           }
         case None =>

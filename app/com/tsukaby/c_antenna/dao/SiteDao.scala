@@ -54,9 +54,11 @@ object SiteDao {
     SiteMapper.findAllBy(sqls.eq(sqls"1", 1).limit(count).offset((page - 1) * count))
   }
 
-  def update(site: SiteMapper) = {
-    site.save()
+  def update(site: SiteMapper): SiteMapper = {
+    val updated = site.save()
     refreshCache(site)
+
+    updated
   }
 
   private def refreshCache(site: SiteMapper) = {
