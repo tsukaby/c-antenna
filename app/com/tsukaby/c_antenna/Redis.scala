@@ -3,7 +3,9 @@ package com.tsukaby.c_antenna
 import java.io._
 
 import biz.source_code.base64Coder.Base64Coder
+import play.api.Play
 import redis.clients.jedis.Jedis
+import play.api.Play.current
 
 object Redis {
   val jedis: Jedis = new Jedis("localhost")
@@ -18,7 +20,7 @@ object Redis {
     if (obj == null) {
       None
     } else {
-      Option(deserialize(Base64Coder.decode(obj)).asInstanceOf[T])
+      Option(deserialize[T](Base64Coder.decode(obj)))
     }
   }
 
@@ -35,15 +37,40 @@ object Redis {
   }
 
   private def serialize(obj: Any): Array[Byte] = {
-    val b: ByteArrayOutputStream = new ByteArrayOutputStream()
-    val o: ObjectOutputStream = new ObjectOutputStream(b)
-    o.writeObject(obj)
-    b.toByteArray
+    var b: ByteArrayOutputStream = null
+    var o: ObjectOutputStream = null
+    try {
+      b = new ByteArrayOutputStream()
+      o = new ObjectOutputStream(b)
+
+      o.writeObject(obj)
+      o.flush()
+      b.toByteArray
+    } finally {
+      if (b != null) {
+        b.close()
+      }
+      if (o != null) {
+        o.close()
+      }
+    }
+
   }
 
-  private def deserialize(bytes: Array[Byte]): Any = {
-    val b: ByteArrayInputStream = new ByteArrayInputStream(bytes)
-    val o: ObjectInputStream = new ObjectInputStream(b)
-    o.readObject()
+  private def deserialize[T](bytes: Array[Byte]): T = {
+    val b = new ByteArrayInputStream(bytes)
+    val o = new ClassLoaderObjectInputStream(b)
+    try {
+      o.readObject().asInstanceOf[T]
+    } finally {
+      o.close()
+    }
+
+  }
+
+  class ClassLoaderObjectInputStream(stream:InputStream) extends ObjectInputStream(stream) {
+    override protected def resolveClass(desc: ObjectStreamClass) = {
+      Class.forName(desc.getName, false, Play.application.classloader)
+    }
   }
 }

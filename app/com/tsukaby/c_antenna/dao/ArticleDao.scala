@@ -35,7 +35,7 @@ object ArticleDao {
    * @param id 取得する記事のID
    */
   def getById(id: String): Option[ArticleMapper] = {
-    Redis.getOrElse[Option[ArticleMapper]](s"article:$id", 300){
+    Redis.getOrElse[Option[ArticleMapper]](s"article:$id", 300) {
       ArticleMapper.find(id)
     }
   }
@@ -60,7 +60,7 @@ object ArticleDao {
    */
   def getLatelyBySiteId(siteId: Long): Seq[ArticleMapper] = {
     Redis.getOrElse[Seq[ArticleMapper]](s"latelyBySiteId:$siteId", 300) {
-      ArticleMapper.findAllBy(sqls.eq(am.siteId, siteId).orderBy(ArticleMapper.am.createdAt).desc.limit(5))
+      ArticleMapper.findAllBy(sqls.eq(am.siteId, siteId).orderBy(ArticleMapper.am.createdAt).desc.limit(5)).toSeq
     }
   }
 }

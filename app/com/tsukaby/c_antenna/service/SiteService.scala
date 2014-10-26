@@ -17,7 +17,8 @@ import scala.collection.JavaConverters._
 object SiteService extends BaseService {
 
   def getWithPaging(page: Int, count: Int): Seq[Site] = {
-    SiteDao.getWithPaging(page, count) map (x => dbSitesToSites(x, ArticleDao.getLatelyBySiteId(x.id)))
+    val sites = SiteDao.getWithPaging(page, count)
+    sites map (x => dbSitesToSites(x, ArticleDao.getLatelyBySiteId(x.id)))
   }
 
   /**
