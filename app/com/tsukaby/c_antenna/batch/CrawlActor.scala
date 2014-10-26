@@ -15,7 +15,7 @@ class CrawlActor extends Actor {
   def receive: Actor.Receive = {
     case e: String =>
       SiteService.crawl
-      Logger.info("実行に成功しました！")
+      Logger.info(s"クロールに成功しました！ $e")
   }
 
 }
@@ -23,8 +23,11 @@ class CrawlActor extends Actor {
 object CrawlActor {
 
   def runCrawler = {
-    // 1分毎にBatchActorにメッセージ"はい"を送る
-    Akka.system.scheduler.schedule(10 seconds, 1 minutes, Akka.system.actorOf(Props[CrawlActor]), "")
+    // 一定時間毎にBatchActorにメッセージを送る
+    val firstDelay = 10.seconds
+    val interval = 10.seconds
+
+    Akka.system.scheduler.schedule(firstDelay, interval, Akka.system.actorOf(Props[CrawlActor]), "")
   }
 
 }

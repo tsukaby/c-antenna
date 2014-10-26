@@ -5,7 +5,7 @@ import com.tsukaby.c_antenna.Redis
 import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.Site
-import de.nava.informa.core.{ChannelIF, ItemIF}
+import de.nava.informa.core.{ParseException, ChannelIF, ItemIF}
 import de.nava.informa.impl.basic.ChannelBuilder
 import de.nava.informa.parsers.FeedParser
 import org.joda.time.DateTime
@@ -41,14 +41,26 @@ object SiteService extends BaseService {
   }
 
   def crawl: Unit = {
-    val sites = SiteDao.getOldCrawledSite(1)
+    val sites = SiteDao.getOldCrawledSite(10)
 
     sites foreach (site => {
-      getRss(site.rssUrl) match {
+
+      SiteDao.update(site.copy(crawledAt = new DateTime()))
+
+      // index.rdfか?xmlを対象 TODO できればどんなサイトでも対応できるように
+      var h: Option[ChannelIF] = None
+      try {
+        h = getRss(site.url + "index.rdf")
+      } catch {
+        case e: ParseException =>
+          h = getRss(site.url + "?xml")
+      }
+
+      h match {
         case Some(channel) =>
           // サイト情報更新
           Logger.info(s"サイト情報を更新します。${site.name}")
-          SiteDao.update(site.copy(name = channel.getTitle, crawledAt = new DateTime()))
+          SiteDao.update(site.copy(name = channel.getTitle))
 
           channel.getItems.asScala foreach {
             // RSS記事URL更新
@@ -59,7 +71,8 @@ object SiteService extends BaseService {
                   //まだ記事が無い場合
 
                   // 記事を解析してタグを取得
-                  val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
+                  //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
+                  val tmp = Seq[(String, Int)]()
                   val tags = if (tmp.length == 0) {
                     None
                   } else {
