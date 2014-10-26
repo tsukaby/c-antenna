@@ -2,20 +2,17 @@ package com.tsukaby.c_antenna.service
 
 import _root_.play.api.Logger
 import com.tsukaby.c_antenna.Redis
-import com.tsukaby.c_antenna.db.mapper.{ArticleMapper, SiteMapper}
-import com.tsukaby.c_antenna.entity.Site
+import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
+import com.tsukaby.c_antenna.entity.Site
 import de.nava.informa.core.{ChannelIF, ItemIF}
 import de.nava.informa.impl.basic.ChannelBuilder
 import de.nava.informa.parsers.FeedParser
 import org.joda.time.DateTime
+
 import scala.collection.JavaConverters._
 
-import scalikejdbc._
-
 object SiteService extends BaseService {
-
-  private val sm = SiteMapper.sm
 
   /**
    * 全てのサイトの情報を取得します。
@@ -24,32 +21,35 @@ object SiteService extends BaseService {
    * @return
    */
   def getAll: Seq[Site] = {
-    val targets = SiteMapper.findAll()
-
-    targets map (x => dbSitesToSites(x, ArticleMapper.findAllBy(sqls.eq(ArticleMapper.am.siteId, x.id).orderBy(ArticleMapper.am.createdAt).desc.limit(5))))
+    SiteDao.getAll map (x => dbSitesToSites(x, ArticleDao.getLatelyBySiteId(x.id)))
   }
 
+  /**
+   * 引数で指定したサイトを取得します。
+   * @param id サイトID
+   * @return サイト
+   */
   def getById(id: Long): Option[Site] = {
-    SiteMapper.find(id) match {
+    SiteDao.getById(id) match {
       case Some(x) => x
       case None => None
     }
   }
 
   def crawl: Unit = {
-    val sites = SiteMapper.findAll().sortWith(_.crawledAt.getMillis < _.crawledAt.getMillis).take(1)
+    val sites = SiteDao.getOldCrawledSite(1)
 
     sites foreach (site => {
       getRss(site.rssUrl) match {
         case Some(channel) =>
           // サイト情報更新
           Logger.info(s"サイト情報を更新します。${site.name}")
-          site.copy(name = channel.getTitle, crawledAt = new DateTime()).save()
+          SiteDao.update(site.copy(name = channel.getTitle, crawledAt = new DateTime()))
 
           channel.getItems.asScala foreach {
             // RSS記事URL更新
             case (item: ItemIF) =>
-              ArticleMapper.find(item.getLink.toString) match {
+              ArticleDao.getById(item.getLink.toString) match {
                 case Some(x) => //対象記事が見つかった場合は既に登録されているので無視
                 case None =>
                   //まだ記事が無い場合
@@ -62,7 +62,7 @@ object SiteService extends BaseService {
                     Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
                   }
                   // DB登録
-                  ArticleMapper.create(item.getLink.toString, site.id, item.getTitle, tags, new DateTime(item.getDate))
+                  ArticleDao.create(item.getLink.toString, site.id, item.getTitle, tags, new DateTime(item.getDate))
               }
           }
         case None =>

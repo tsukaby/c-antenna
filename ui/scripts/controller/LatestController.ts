@@ -13,7 +13,7 @@ module Sample {
 
     constructor(public $scope:IScope, private $http:ng.IHttpService, private ngTableParams:any) {
 
-      $http.get("/api/articles").success((data:Array<Model.Article>) => {
+      $http.get("/api/lately_articles").success((data:Array<Model.Article>) => {
         $scope.tableParams = new ngTableParams({
           page: 1,            // show first page
           count: 10           // count per page

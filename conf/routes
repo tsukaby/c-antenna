@@ -3,17 +3,16 @@
 # ~~~~
 
 # Home page
-GET        /sample              com.tsukaby.c_antenna.controller.Application.sample
+GET        /sample                     com.tsukaby.c_antenna.controller.Application.sample
 
 # Site
-GET        /api/sites           com.tsukaby.c_antenna.controller.RssController.showAll
+GET        /api/sites                  com.tsukaby.c_antenna.controller.RssController.showAll
 
 # Article
-GET        /api/articles        com.tsukaby.c_antenna.controller.ArticleController.showAll
+GET        /api/lately_articles        com.tsukaby.c_antenna.controller.ArticleController.lately
 
-GET        /latest              controllers.Assets.at(path="/public", file="index.html")
+GET        /latest                     controllers.Assets.at(path="/public", file="index.html")
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /                    controllers.Assets.at(path="/public", file="index.html")
-GET        /*file               controllers.Assets.at(path="/public", file)
-
+GET        /                           controllers.Assets.at(path="/public", file="index.html")
+GET        /*file                      controllers.Assets.at(path="/public", file)

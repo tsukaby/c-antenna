@@ -40,10 +40,6 @@ module App {
           url: "/latest",
           templateUrl: "partials/latest.html",
           controller: "LatestController"
-        })
-        .state('sample', {
-          url: "/sample",
-          templateUrl: "partials/sample.html"
         });
       // hashの書き換えの代わりにHTML5のHistory API関係を使うモードを設定する。
       $locationProvider.html5Mode(true);
@@ -77,8 +73,7 @@ module App {
     ()=> {
       false;
     }
-  ).controller("SampleTestController", Sample.TestController)
-    .controller("TopController", Sample.TopController)
+  ).controller("TopController", Sample.TopController)
     .controller("LatestController", Sample.LatestController)
   ;
 

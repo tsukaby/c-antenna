@@ -10,9 +10,8 @@ object ArticleController extends Controller {
    * 最新の記事一覧を投稿日時の新しい順に返却します。
    * @return
    */
-  def showAll = Action {
-
-    val articles = ArticleService.getAll
+  def lately = Action {
+    val articles = ArticleService.getLately
 
     Ok(Json.toJson(articles))
   }
