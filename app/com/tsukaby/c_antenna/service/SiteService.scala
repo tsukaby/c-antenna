@@ -1,5 +1,7 @@
 package com.tsukaby.c_antenna.service
 
+import java.net.URL
+
 import play.api.Logger
 import com.tsukaby.c_antenna.Redis
 import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
@@ -65,21 +67,28 @@ object SiteService extends BaseService {
           channel.getItems.asScala foreach {
             // RSS記事URL更新
             case (item: ItemIF) =>
-              ArticleDao.getById(item.getLink.toString) match {
-                case Some(x) => //対象記事が見つかった場合は既に登録されているので無視
-                case None =>
-                  //まだ記事が無い場合
 
-                  // 記事を解析してタグを取得
-                  //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
-                  val tmp = Seq[(String, Int)]()
-                  val tags = if (tmp.length == 0) {
-                    None
-                  } else {
-                    Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
-                  }
-                  // DB登録
-                  ArticleDao.create(item.getLink.toString, updatedSite.id, item.getTitle, tags, new DateTime(item.getDate))
+              if (new DateTime(item.getDate).isBefore(new DateTime().plusHours(1))) {
+                // RSS記事の日付が現在日時+1時間より前に作成されたものであればDB格納
+                // +1は多少未来の投稿時間でも許容する為。
+                // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
+
+                ArticleDao.getById(item.getLink.toString) match {
+                  case Some(x) => //対象記事が見つかった場合は既に登録されているので無視
+                  case None =>
+                    //まだ記事が無い場合
+
+                    // 記事を解析してタグを取得
+                    //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
+                    val tmp = Seq[(String, Int)]()
+                    val tags = if (tmp.length == 0) {
+                      None
+                    } else {
+                      Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
+                    }
+                    // DB登録
+                    ArticleDao.create(item.getLink.toString, updatedSite.id, item.getTitle, tags, new DateTime(item.getDate))
+                }
               }
           }
         case None =>
@@ -92,13 +101,24 @@ object SiteService extends BaseService {
       case Some(x) =>
         Option(x)
       case None =>
-        val result = FeedParser.parse(new ChannelBuilder(), rssUrl)
-        if (result == null) {
-          None
-        } else {
-          Redis.set(rssUrl, result, 60)
-          Option(result)
+        // 403で弾かれることが多い為、User-agentを指定して極力回避
+        val feedUrl = new URL(rssUrl)
+        val conn = feedUrl.openConnection
+        conn.setRequestProperty("User-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36")
+        try {
+          val result = FeedParser.parse(new ChannelBuilder(), conn.getInputStream)
+          if (result == null) {
+            None
+          } else {
+            Redis.set(rssUrl, result, 60)
+            Option(result)
+          }
+        } catch {
+          case e: Exception =>
+            Logger.warn(e.getMessage)
+            None
         }
+
     }
   }
 
