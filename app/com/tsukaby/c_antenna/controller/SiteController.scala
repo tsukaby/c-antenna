@@ -5,7 +5,7 @@ import com.tsukaby.c_antenna.service.SiteService
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 
-object SiteController extends Controller {
+trait SiteController extends Controller {
   def showAll(condition: SimpleSearchCondition) = Action { implicit request =>
 
     val page = SiteService.getByCondition(condition)
@@ -13,3 +13,5 @@ object SiteController extends Controller {
     Ok(Json.toJson(page)).as("application/json")
   }
 }
+
+object SiteController extends SiteController

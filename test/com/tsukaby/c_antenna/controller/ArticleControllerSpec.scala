@@ -1,0 +1,48 @@
+package com.tsukaby.c_antenna.controller
+
+import com.tsukaby.c_antenna.entity.{ArticlePage, SimpleSearchCondition}
+import org.specs2.mutable.Specification
+import play.api.libs.json.{JsError, JsSuccess}
+import play.api.mvc.Result
+import play.api.test.{FakeRequest, PlaySpecification, WithApplication}
+
+import scala.concurrent.Future
+import scalaz.Scalaz._
+
+object ArticleControllerSpec extends Specification with PlaySpecification {
+
+  val TargetClass = ArticleController
+
+  s"$TargetClass#lately" should {
+
+    "記事一覧が取得できること" in new WithApplication {
+      val res = TargetClass.lately(getBaseCondition)(FakeRequest())
+
+      val page: ArticlePage = res
+
+      status(res) must be equalTo OK
+      contentType(res) must beSome("application/json")
+      page.items.size must be greaterThan 0
+    }
+
+    "取得件数を1件にした場合、１件だけ取得できること" in new WithApplication {
+      val res = TargetClass.lately(getBaseCondition.copy(count = 1.some))(FakeRequest())
+
+      val page: ArticlePage = res
+
+      status(res) must be equalTo OK
+      page.items.size must be equalTo 1
+    }
+  }
+
+  private def getBaseCondition: SimpleSearchCondition = {
+    SimpleSearchCondition(1.some, 10.some)
+  }
+
+  implicit def responseToPage(res: Future[Result]): ArticlePage = {
+    contentAsJson(res).validate[ArticlePage] match {
+      case JsSuccess(value, path) => value
+      case JsError(errors) => throw new IllegalStateException(errors.toString())
+    }
+  }
+}

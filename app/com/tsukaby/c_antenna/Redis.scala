@@ -36,6 +36,13 @@ object Redis {
     jedis.del(key)
   }
 
+  /**
+   * Redis上のデータを削除します。
+   */
+  def flushAll(): Unit = {
+    jedis.flushAll()
+  }
+
   private def serialize(obj: Any): Array[Byte] = {
     var b: ByteArrayOutputStream = null
     var o: ObjectOutputStream = null
@@ -68,9 +75,10 @@ object Redis {
 
   }
 
-  class ClassLoaderObjectInputStream(stream:InputStream) extends ObjectInputStream(stream) {
+  class ClassLoaderObjectInputStream(stream: InputStream) extends ObjectInputStream(stream) {
     override protected def resolveClass(desc: ObjectStreamClass) = {
       Class.forName(desc.getName, false, Play.application.classloader)
     }
   }
+
 }

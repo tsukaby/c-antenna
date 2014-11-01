@@ -1,4 +1,5 @@
 import play.PlayImport.PlayKeys.playRunHooks
+import play.PlayScala
 
 scalaVersion := "2.11.2"
 
@@ -32,7 +33,7 @@ libraryDependencies ++= Seq(
   "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
   "com.typesafe.akka" %% "akka-actor" % "2.3.2", // batch用
   "io.spray" %% "spray-client" % "1.3.1", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
-  "org.scalaz" %% "scalaz-core" % "7.1.0", // より良い構文のため
+  "org.scalaz" %% "scalaz-core" % "7.0.6", // より良い構文のため
   "us.theatr" %% "akka-quartz" % "0.3.0" // cron形式でジョブ登録・実行するためのもの
 )
 
