@@ -55,7 +55,7 @@ object SiteDao {
   def getByCondition(condition: SimpleSearchCondition): Seq[SiteMapper] = {
     val sql = createSql(condition)
 
-    SiteMapper.findAllBy(sql)
+    SiteMapper.findAllBy(sql).toSeq
   }
 
   /**

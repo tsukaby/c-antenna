@@ -7,7 +7,7 @@ import com.tsukaby.c_antenna.service.SiteService
 object ImplicitConverter {
 
   implicit def dbSitesToSites(siteMapper: SiteMapper, articleMappers: Seq[ArticleMapper]): Site = {
-    Site(siteMapper.id, siteMapper.name, siteMapper.url, null, dbArticlesToArticles(articleMappers))
+    Site(siteMapper.id, siteMapper.name, siteMapper.url, "", dbArticlesToArticles(articleMappers))
   }
 
   implicit def dbSitesToSites(sites: Seq[SiteMapper]): Seq[Site] = {
@@ -15,7 +15,7 @@ object ImplicitConverter {
   }
 
   implicit def dbSiteToOptionSite(siteMapper: SiteMapper): Option[Site] = {
-    Option(Site(siteMapper.id, siteMapper.name, siteMapper.url, null, Seq()))
+    Option(Site(siteMapper.id, siteMapper.name, siteMapper.url, "", Seq()))
   }
 
   implicit def dbArticleToArticle(articleMapper: ArticleMapper): Article = {
@@ -28,7 +28,7 @@ object ImplicitConverter {
       case Some(x) => x.name
       case None => ""
     }
-    Article(articleMapper.url, articleMapper.title, null, tags, siteName, articleMapper.createdAt)
+    Article(articleMapper.url, articleMapper.title, "", tags, siteName, articleMapper.createdAt)
   }
 
   implicit def dbArticlesToArticles(articleMappers: Seq[ArticleMapper]): Seq[Article] = {
