@@ -1,12 +1,10 @@
 package com.tsukaby.c_antenna.batch
 
-import akka.actor.{Props, Actor}
+import akka.actor.Actor
 import com.tsukaby.c_antenna.service.SiteService
 import play.api.Logger
-import play.api.libs.concurrent.Akka
+
 import scala.concurrent.duration._
-import play.api.Play.current
-import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  *
@@ -27,7 +25,7 @@ object CrawlActor {
     val firstDelay = 10.seconds
     val interval = 10.seconds
 
-    Akka.system.scheduler.schedule(firstDelay, interval, Akka.system.actorOf(Props[CrawlActor]), "")
+    //Akka.system.scheduler.schedule(firstDelay, interval, Akka.system.actorOf(Props[CrawlActor]), "")
   }
 
 }

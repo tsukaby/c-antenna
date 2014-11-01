@@ -7,7 +7,8 @@
     "angular": "1.2.23",
     "bootstrap": "~3.2.0",
     "angular-ui-router": "~0.2.11",
-    "ng-table": "~0.3.3"
+    "ng-table": "~0.3.3",
+    "angular-bootstrap": "~0.11.2"
   },
   "devDependencies": {
     "mocha": "1.21.4",

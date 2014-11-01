@@ -2,6 +2,7 @@ package com.tsukaby.c_antenna.dao
 
 import com.tsukaby.c_antenna.Redis
 import com.tsukaby.c_antenna.db.mapper.ArticleMapper
+import com.tsukaby.c_antenna.entity.SimpleSearchCondition
 import org.joda.time.DateTime
 import scalikejdbc._
 
@@ -41,15 +42,27 @@ object ArticleDao {
   }
 
   /**
-   * 最新記事を取得します。
+   * 検索条件に従って記事を取得します。
    *
+   * @param condition 検索条件
    * @return 最新記事の一覧
    */
-  def getLately: Seq[ArticleMapper] = {
-    // whereで絞って最新のもののみ取得 whereは検索高速化のため。
+  def getByCondition(condition: SimpleSearchCondition): Seq[ArticleMapper] = {
+
+    val sql = createSql(condition)
+
+    // 最新一覧はすぐにかわるため、キャッシュは短めに設定
     Redis.getOrElse[Seq[ArticleMapper]]("lately", 60) {
-      ArticleMapper.findAllBy(sqls.gt(am.createdAt, new DateTime().minusDays(2)).orderBy(ArticleMapper.am.createdAt).desc.limit(50)).toSeq
+      ArticleMapper.findAllBy(sql).toSeq
     }
+  }
+
+  /**
+   * 全体の件数を取得します。
+   * @return 件数
+   */
+  def countAll: Long = {
+    ArticleMapper.countAll
   }
 
   /**
@@ -60,7 +73,13 @@ object ArticleDao {
    */
   def getLatelyBySiteId(siteId: Long): Seq[ArticleMapper] = {
     Redis.getOrElse[Seq[ArticleMapper]](s"latelyBySiteId:$siteId", 300) {
-      ArticleMapper.findAllBy(sqls.eq(am.siteId, siteId).orderBy(ArticleMapper.am.createdAt).desc.limit(5)).toSeq
+      ArticleMapper.findAllBy(sqls.eq(am.siteId, siteId).orderBy(am.createdAt).desc.limit(5)).toSeq
     }
+  }
+
+  private def createSql(condition: SimpleSearchCondition): SQLSyntax = {
+    val page = condition.page.getOrElse(1)
+    val count = condition.count.getOrElse(10)
+    sqls.eq(sqls"1", 1).orderBy(am.createdAt).desc.limit(count).offset((page - 1) * count)
   }
 }

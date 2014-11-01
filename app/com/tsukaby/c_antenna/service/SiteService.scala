@@ -1,24 +1,26 @@
 package com.tsukaby.c_antenna.service
 
-import java.net.URL
-
-import play.api.Logger
-import com.tsukaby.c_antenna.Redis
-import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
+import akka.actor.ActorSystem
+import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao}
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
-import com.tsukaby.c_antenna.entity.Site
-import de.nava.informa.core.{ParseException, ChannelIF, ItemIF}
-import de.nava.informa.impl.basic.ChannelBuilder
-import de.nava.informa.parsers.FeedParser
+import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, Site, SitePage}
+import de.nava.informa.core.{ChannelIF, ItemIF, ParseException}
 import org.joda.time.DateTime
+import play.api.Logger
+import spray.client.pipelining.{Get, sendReceive}
+import spray.http.{HttpRequest, HttpResponse}
 
 import scala.collection.JavaConverters._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object SiteService extends BaseService {
 
-  def getWithPaging(page: Int, count: Int): Seq[Site] = {
-    val sites = SiteDao.getWithPaging(page, count)
-    sites map (x => dbSitesToSites(x, ArticleDao.getLatelyBySiteId(x.id)))
+  def getByCondition(condition: SimpleSearchCondition): SitePage = {
+    val sites = SiteDao.getByCondition(condition: SimpleSearchCondition)
+    val count = SiteDao.countAll
+
+    SitePage(sites, count)
   }
 
   /**
@@ -53,10 +55,10 @@ object SiteService extends BaseService {
       // index.rdfか?xmlを対象 TODO できればどんなサイトでも対応できるように
       var h: Option[ChannelIF] = None
       try {
-        h = getRss(updatedSite.url + "index.rdf")
+        h = RssDao.getByUrl(updatedSite.url + "index.rdf")
       } catch {
         case e: ParseException =>
-          h = getRss(updatedSite.url + "?xml")
+          h = RssDao.getByUrl(updatedSite.url + "?xml")
       }
 
       h match {
@@ -97,29 +99,72 @@ object SiteService extends BaseService {
     })
   }
 
-  private def getRss(rssUrl: String): Option[ChannelIF] = {
-    Redis.get[ChannelIF](rssUrl) match {
-      case Some(x) =>
-        Option(x)
-      case None =>
-        // 403で弾かれることが多い為、User-agentを指定して極力回避
-        val feedUrl = new URL(rssUrl)
-        val conn = feedUrl.openConnection
-        conn.setRequestProperty("User-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36")
-        try {
-          val result = FeedParser.parse(new ChannelBuilder(), conn.getInputStream)
-          if (result == null) {
-            None
-          } else {
-            Redis.set(rssUrl, result, 60)
-            Option(result)
-          }
-        } catch {
-          case e: Exception =>
-            Logger.warn(e.getMessage)
-            None
+  trait WebClient {
+    def get(url: String): Future[HttpResponse]
+  }
+
+  // implementation of WebClient trait
+  class SprayWebClient(implicit system: ActorSystem) extends WebClient {
+
+    // create a function from HttpRequest to a Future of HttpResponse
+    val pipeline: HttpRequest => Future[HttpResponse] = sendReceive
+
+    // create a function to send a GET request and receive a string response
+    def get(url: String): Future[HttpResponse] = {
+      pipeline(Get(url))
+    }
+  }
+
+  def check = {
+    // bring the actor system in scope
+    implicit val system = ActorSystem()
+
+    // create the client
+    val webClient = new SprayWebClient()(system)
+
+
+    SiteDao.getAll foreach { x =>
+      // send GET request with absolute URI
+      // val futureResponse = webClient.get(x.url)
+
+      // wait for Future to complete
+
+      /*
+      futureResponse onComplete {
+        case Success(response) =>
+          x.copy(rssUrl = response.status.toString()).save()
+        case Failure(error) =>
+      }*/
+
+      if (x.rssUrl == "") {
+        println("START!!! " + x.url)
+        val rssSaffix = if (x.url.contains("yahoo.co.jp")) {
+          "rss.xml"
+        } else if (x.url.contains("seesaa.net")) {
+          "index20.rdf"
+        } else if (x.url.contains("ameba.jp")) {
+          "rss.html"
+        } else if (x.url.contains("fc2.")) {
+          "?xml"
+        } else if (x.url.contains("blogspot.com")) {
+          "feeds/posts/default?alt=rss"
+        } else if (x.url.contains("livedoor") || x.url.contains("ldblog") || x.url.contains("doorblog")) {
+          "index.rdf"
+        } else {
+          "rss.xml"
+          // "feed/atom"
         }
 
+        if (rssSaffix != "") {
+          val rssUrl = x.url + rssSaffix
+
+          RssDao.getByUrl(rssUrl) match {
+            case Some(rss) =>
+              x.copy(name = rss.getTitle, rssUrl = rssUrl).save()
+            case None =>
+          }
+        }
+      }
     }
   }
 

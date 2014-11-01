@@ -1,7 +1,10 @@
 package com.tsukaby.c_antenna.service
 
-import org.openqa.selenium.phantomjs.{PhantomJSDriverService, PhantomJSDriver}
+import com.tsukaby.c_antenna.dao.RssDao
+import de.nava.informa.core.ChannelIF
+import org.openqa.selenium.phantomjs.{PhantomJSDriver, PhantomJSDriverService}
 import org.openqa.selenium.remote.DesiredCapabilities
+
 import scala.collection.JavaConverters._
 
 /**
@@ -45,4 +48,23 @@ object WebScrapingService extends BaseService {
       Option(str)
     }
   }
+
+  def getTitle(url: String): String = {
+    driver.get(url)
+
+    val element = driver.findElementByTagName("title")
+
+    element.getText
+  }
+
+  /**
+   * informaライブラリを利用してRSSを取得します。
+   * @param rssUrl RSSのURL
+   * @return RSSオブジェクト
+   */
+  def getRss(rssUrl: String): Option[ChannelIF] = {
+    RssDao.getByUrl(rssUrl)
+  }
+
+
 }

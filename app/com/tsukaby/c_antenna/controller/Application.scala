@@ -1,6 +1,7 @@
 package com.tsukaby.c_antenna.controller
 
 import com.tsukaby.c_antenna.Redis
+import com.tsukaby.c_antenna.service.SiteService
 import de.nava.informa.core.{ChannelIF, ItemIF}
 import de.nava.informa.impl.basic.ChannelBuilder
 import de.nava.informa.parsers.FeedParser
@@ -51,6 +52,13 @@ object Application extends Controller {
     } else {
       Option(bytes)
     }
+  }
+
+  def check = Action{
+
+    SiteService.check
+
+    Ok("done")
   }
 
 }
