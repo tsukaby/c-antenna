@@ -76,7 +76,11 @@ object SiteDao {
     updated
   }
 
-  private def refreshCache(site: SiteMapper) = {
+  /**
+   * キャッシュを削除します。参照処理以外が発生したときに呼び出します。
+   * @param site 更新や削除によって作られたオブジェクト
+   */
+  private def refreshCache(site: SiteMapper): Unit = {
     Redis.set(s"site:${site.id}", Some(site), 300)
     Redis.remove(s"siteAll")
   }

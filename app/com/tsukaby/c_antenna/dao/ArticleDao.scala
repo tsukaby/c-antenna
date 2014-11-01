@@ -77,6 +77,11 @@ object ArticleDao {
     }
   }
 
+  /**
+   * 引数の条件に従ってSQLを作成します。
+   * @param condition 検索条件・ソート条件・ページング条件
+   * @return SQLの一部
+   */
   private def createSql(condition: SimpleSearchCondition): SQLSyntax = {
     val page = condition.page.getOrElse(1)
     val count = condition.count.getOrElse(10)
