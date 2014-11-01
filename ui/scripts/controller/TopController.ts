@@ -15,10 +15,14 @@ module Sample {
     bigTotalItems:number;
     bigCurrentPage:number;
 
+    // ページ変更時の処理 再検索
     pageChanged: Function;
 
     // 検索条件 ページング条件
     condition:Model.SimpleSearchCondition;
+
+    // 検索処理
+    loadData: () => void;
 
   }
 
@@ -28,23 +32,27 @@ module Sample {
       $scope.condition = new Model.SimpleSearchCondition();
       $scope.condition.page = 1;
       $scope.condition.count = 9;
-
-      $http.get("/api/sites?" + $.param($scope.condition)).success((data:Model.Page<Model.Site>) => {
-        $scope.sites = data.items;
-        $scope.totalItems = data.total;
-      });
-
       $scope.totalItems = 0;
       $scope.currentPage = 1;
 
       $scope.pageChanged = function () {
-        console.log('Page changed to: ' + $scope.currentPage);
+        $scope.condition.page = $scope.currentPage;
+        this.loadData();
       };
 
-      $scope.maxSize = 5;
-      $scope.bigTotalItems = 175;
-      $scope.bigCurrentPage = 1;
+      $scope.maxSize = 10;
+
+      $scope.loadData = () => {
+        this.$http.get("/api/sites?" + $.param(this.$scope.condition)).success((data:Model.Page<Model.Site>) => {
+          this.$scope.sites = data.items;
+          this.$scope.totalItems = data.total;
+        });
+      };
+
+      // 初期データロード
+      $scope.loadData();
     }
+
 
   }
 }

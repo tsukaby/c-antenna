@@ -48,13 +48,9 @@ object ArticleDao {
    * @return 最新記事の一覧
    */
   def getByCondition(condition: SimpleSearchCondition): Seq[ArticleMapper] = {
-
     val sql = createSql(condition)
-
-    // 最新一覧はすぐにかわるため、キャッシュは短めに設定
-    Redis.getOrElse[Seq[ArticleMapper]]("lately", 60) {
-      ArticleMapper.findAllBy(sql).toSeq
-    }
+    // cache keyが難しいので一旦キャッシュは保留
+    ArticleMapper.findAllBy(sql).toSeq
   }
 
   /**

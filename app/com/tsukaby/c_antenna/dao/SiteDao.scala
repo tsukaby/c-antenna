@@ -29,9 +29,11 @@ object SiteDao {
    * @return サイトの一覧
    */
   def getAll: Seq[SiteMapper] = {
+    SiteMapper.findAll()
+    /*
     Redis.getOrElse[Seq[SiteMapper]](s"siteAll", 300) {
       SiteMapper.findAll()
-    }
+    }*/
   }
 
   /**
@@ -80,7 +82,7 @@ object SiteDao {
    * キャッシュを削除します。参照処理以外が発生したときに呼び出します。
    * @param site 更新や削除によって作られたオブジェクト
    */
-  private def refreshCache(site: SiteMapper): Unit = {
+  def refreshCache(site: SiteMapper): Unit = {
     Redis.set(s"site:${site.id}", Some(site), 300)
     Redis.remove(s"siteAll")
   }

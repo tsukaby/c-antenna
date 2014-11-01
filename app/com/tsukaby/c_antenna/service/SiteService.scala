@@ -7,6 +7,7 @@ import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, Site, SitePage}
 import de.nava.informa.core.{ChannelIF, ItemIF, ParseException}
 import org.joda.time.DateTime
 import play.api.Logger
+import scalikejdbc.DB
 import spray.client.pipelining.{Get, sendReceive}
 import spray.http.{HttpRequest, HttpResponse}
 
@@ -16,6 +17,11 @@ import scala.concurrent.Future
 
 object SiteService extends BaseService {
 
+  /**
+   * 引数で指定した検索条件に従ってサイトを取得します。
+   * @param condition 条件
+   * @return サイトの一覧
+   */
   def getByCondition(condition: SimpleSearchCondition): SitePage = {
     val sites = SiteDao.getByCondition(condition: SimpleSearchCondition)
     val count = SiteDao.countAll
@@ -115,6 +121,7 @@ object SiteService extends BaseService {
     }
   }
 
+  //TODO ここどうにかする 消す？
   def check = {
     // bring the actor system in scope
     implicit val system = ActorSystem()
@@ -179,4 +186,21 @@ object SiteService extends BaseService {
         Seq()
     }
   }
+
+  /**
+   * 全てのサイトのRSSを取得し、サイト名を最新の状態にします。
+   */
+  def refreshSiteName(): Unit = {
+    DB localTx { implicit session =>
+      SiteDao.getAll foreach { x =>
+
+        RssDao.getByUrl(x.rssUrl) match {
+          case Some(rss) =>
+            x.copy(name = rss.getTitle).save()
+          case None =>
+        }
+      }
+    }
+  }
+
 }

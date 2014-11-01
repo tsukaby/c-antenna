@@ -14,6 +14,8 @@ resolvers += "ATILIKA dependencies" at "http://www.atilika.org/nexus/content/rep
 
 resolvers += "Sedis Repo" at "http://pk11-scratch.googlecode.com/svn/trunk"
 
+resolvers += "Akka-Quartz Repo" at "http://repo.theatr.us"
+
 libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.33",
   "org.scalikejdbc" %% "scalikejdbc" % "2.1.2",
@@ -27,10 +29,11 @@ libraryDependencies ++= Seq(
   "redis.clients" % "jedis" % "2.6.0", //Redis
   "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
   "com.github.detro.ghostdriver" % "phantomjsdriver" % "1.1.0", // 画面キャプチャ用
-  "org.atilika.kuromoji" % "kuromoji" % "0.7.7", //形態素解析用
-  "com.typesafe.akka" %% "akka-actor" % "2.3.2",
-  "io.spray" %% "spray-client" % "1.3.1",
-  "org.scalaz" %% "scalaz-core" % "7.1.0"
+  "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
+  "com.typesafe.akka" %% "akka-actor" % "2.3.2", // batch用
+  "io.spray" %% "spray-client" % "1.3.1", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
+  "org.scalaz" %% "scalaz-core" % "7.1.0", // より良い構文のため
+  "us.theatr" %% "akka-quartz" % "0.3.0" // cron形式でジョブ登録・実行するためのもの
 )
 
 scalikejdbcSettings
