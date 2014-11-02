@@ -2,16 +2,11 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-
-
-# Home page
-GET        /sample                     com.tsukaby.c_antenna.controller.Application.sample
+# Debug
+GET        /refreshSiteName            com.tsukaby.c_antenna.controller.DebugController.refreshSiteName
 
 # Site
 GET        /api/sites                  com.tsukaby.c_antenna.controller.SiteController.showAll(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
-
-# TEST!!!!!!!
-GET        /check                      com.tsukaby.c_antenna.controller.Application.check
 
 # Article
 GET        /api/lately_articles        com.tsukaby.c_antenna.controller.ArticleController.lately(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)

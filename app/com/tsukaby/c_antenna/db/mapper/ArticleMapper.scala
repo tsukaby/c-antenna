@@ -4,8 +4,9 @@ import scalikejdbc._
 import org.joda.time.{DateTime}
 
 case class ArticleMapper(
-  url: String, 
+  id: Long, 
   siteId: Long, 
+  url: String, 
   title: String, 
   tag: Option[String] = None, 
   createdAt: DateTime) {
@@ -21,12 +22,13 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
 
   override val tableName = "ARTICLE"
 
-  override val columns = Seq("URL", "SITE_ID", "TITLE", "TAG", "CREATED_AT")
+  override val columns = Seq("ID", "SITE_ID", "URL", "TITLE", "TAG", "CREATED_AT")
 
   def apply(am: SyntaxProvider[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = apply(am.resultName)(rs)
   def apply(am: ResultName[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = new ArticleMapper(
-    url = rs.get(am.url),
+    id = rs.get(am.id),
     siteId = rs.get(am.siteId),
+    url = rs.get(am.url),
     title = rs.get(am.title),
     tag = rs.get(am.tag),
     createdAt = rs.get(am.createdAt)
@@ -36,9 +38,9 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
 
   override val autoSession = AutoSession
 
-  def find(url: String)(implicit session: DBSession = autoSession): Option[ArticleMapper] = {
+  def find(id: Long)(implicit session: DBSession = autoSession): Option[ArticleMapper] = {
     withSQL {
-      select.from(ArticleMapper as am).where.eq(am.url, url)
+      select.from(ArticleMapper as am).where.eq(am.id, id)
     }.map(ArticleMapper(am.resultName)).single.apply()
   }
           
@@ -63,30 +65,31 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
   }
       
   def create(
-    url: String,
     siteId: Long,
+    url: String,
     title: String,
     tag: Option[String] = None,
     createdAt: DateTime)(implicit session: DBSession = autoSession): ArticleMapper = {
-    withSQL {
+    val generatedKey = withSQL {
       insert.into(ArticleMapper).columns(
-        column.url,
         column.siteId,
+        column.url,
         column.title,
         column.tag,
         column.createdAt
       ).values(
-        url,
         siteId,
+        url,
         title,
         tag,
         createdAt
       )
-    }.update.apply()
+    }.updateAndReturnGeneratedKey.apply()
 
     ArticleMapper(
-      url = url,
+      id = generatedKey, 
       siteId = siteId,
+      url = url,
       title = title,
       tag = tag,
       createdAt = createdAt)
@@ -95,18 +98,19 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
   def save(entity: ArticleMapper)(implicit session: DBSession = autoSession): ArticleMapper = {
     withSQL {
       update(ArticleMapper).set(
-        column.url -> entity.url,
+        column.id -> entity.id,
         column.siteId -> entity.siteId,
+        column.url -> entity.url,
         column.title -> entity.title,
         column.tag -> entity.tag,
         column.createdAt -> entity.createdAt
-      ).where.eq(column.url, entity.url)
+      ).where.eq(column.id, entity.id)
     }.update.apply()
     entity
   }
         
   def destroy(entity: ArticleMapper)(implicit session: DBSession = autoSession): Unit = {
-    withSQL { delete.from(ArticleMapper).where.eq(column.url, entity.url) }.update.apply()
+    withSQL { delete.from(ArticleMapper).where.eq(column.id, entity.id) }.update.apply()
   }
         
 }

@@ -16,16 +16,16 @@ object ArticleDao {
   /**
    * 記事を作成します。
    *
-   * @param id URL
    * @param siteId サイトID
+   * @param url 記事URL
    * @param title タイトル
    * @param tags タグ
    * @param createdAt 記事作成日時
    * @return 作成された記事
    */
-  def create(id: String, siteId: Long, title: String, tags: Option[String], createdAt: DateTime): ArticleMapper = {
-    val createdArticle = ArticleMapper.create(id, siteId, title, tags, createdAt)
-    Redis.set(s"article:$id", Some(createdArticle), 300)
+  def create(siteId: Long, url: String, title: String, tags: Option[String], createdAt: DateTime): ArticleMapper = {
+    val createdArticle = ArticleMapper.create(siteId, url, title, tags, createdAt)
+    Redis.set(s"article:${createdArticle.id}", Some(createdArticle), 300)
 
     createdArticle
   }
@@ -33,11 +33,11 @@ object ArticleDao {
   /**
    * 記事を取得します。
    *
-   * @param id 取得する記事のID
+   * @param url 取得する記事のID
    */
-  def getById(id: String): Option[ArticleMapper] = {
-    Redis.getOrElse[Option[ArticleMapper]](s"article:$id", 300) {
-      ArticleMapper.find(id)
+  def getByUrl(url: String): Option[ArticleMapper] = {
+    Redis.getOrElse[Option[ArticleMapper]](s"article:$url", 300) {
+      ArticleMapper.findAllBy(sqls.eq(am.url, url)).headOption
     }
   }
 

@@ -2,10 +2,12 @@ package com.tsukaby.c_antenna.service
 
 import com.tsukaby.c_antenna.dao.RssDao
 import de.nava.informa.core.ChannelIF
+import org.openqa.selenium.By
 import org.openqa.selenium.phantomjs.{PhantomJSDriver, PhantomJSDriverService}
 import org.openqa.selenium.remote.DesiredCapabilities
 
 import scala.collection.JavaConverters._
+import scalaz.Scalaz._
 
 /**
  * Webスクレイピング処理を行うクラスです。
@@ -56,6 +58,40 @@ object WebScrapingService extends BaseService {
 
     element.getText
   }
+
+  /**
+   * 引数で指定したサイトのRSS URLを取得します。
+   * @param url RSS URLを取得するサイトのトップページURL
+   * @return RSS URL
+   */
+  def getRssUrl(url: String): Option[String] = {
+
+    // URLに特定の文字列が入っている場合はRSS URLが分かる為、HTTPリクエスト無しで返す。
+    // その他のURLの場合はHTMLをパースして返す
+
+    if (url.contains("yahoo.co.jp")) {
+      (url + "rss.xml").some
+    } else if (url.contains("seesaa.net")) {
+      (url + "index20.rdf").some
+    } else if (url.contains("ameba.jp")) {
+      (url + "rss.html").some
+    } else if (url.contains("fc2.")) {
+      (url + "?xml").some
+    } else if (url.contains("blogspot.com")) {
+      (url + "feeds/posts/default?alt=rss").some
+    } else if (url.contains("livedoor") || url.contains("ldblog") || url.contains("doorblog")) {
+      (url + "index.rdf").some
+    } else {
+      driver.get(url)
+
+      // head内のlinkにapplication/rss+xmlがあれば、それがRSS URLなのでそれを返す
+      driver.findElementByTagName("head").findElements(By.tagName("link")).asScala.find(_.getAttribute("type") == "application/rss+xml") match {
+        case Some(x) => x.getAttribute("href").some
+        case None => none
+      }
+    }
+  }
+
 
   /**
    * informaライブラリを利用してRSSを取得します。
