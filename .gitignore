@@ -15,6 +15,7 @@ dist
 /RUNNING_PID
 /.settings
 /public
+.application-debug.log
 
 # Front
 bower_components

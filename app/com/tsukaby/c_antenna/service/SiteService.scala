@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.service
 
-import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao}
+import com.tsukaby.c_antenna.dao.{SiteSummaryDao, ArticleDao, RssDao, SiteDao}
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, Site, SitePage}
 import de.nava.informa.core.ItemIF
@@ -18,8 +18,8 @@ object SiteService extends BaseService {
    * @return サイトの一覧
    */
   def getByCondition(condition: SimpleSearchCondition): SitePage = {
-    val sites = SiteDao.getByCondition(condition: SimpleSearchCondition)
-    val count = SiteDao.countAll
+    val sites = SiteSummaryDao.getByCondition(condition: SimpleSearchCondition)
+    val count = SiteSummaryDao.countAll
 
     SitePage(sites, count)
   }
@@ -47,7 +47,6 @@ object SiteService extends BaseService {
   }
 
   def crawl: Unit = {
-    //val sites = SiteDao.getOldCrawledSite(10)
     val sites = SiteDao.getAll
 
     sites foreach (site => {
