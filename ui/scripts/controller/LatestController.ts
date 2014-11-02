@@ -2,7 +2,7 @@
 
 ///<reference path='../Model.ts' />
 
-module Sample {
+module LatestControllerModule {
   "use strict";
 
   export interface IScope extends ng.IScope {
@@ -18,7 +18,6 @@ module Sample {
   export class LatestController {
 
     constructor(public $scope:IScope, private $http:ng.IHttpService, private ngTableParams:any, private $timeout:ng.ITimeoutService) {
-
       $scope.data = new Model.Page<Model.Article>();
 
       $scope.condition = new Model.SimpleSearchCondition();

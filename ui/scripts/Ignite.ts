@@ -18,7 +18,7 @@ module App {
   // モジュールの定義
   angular.module(
     appName,
-    ["ui.router", "ngTable", "ui.bootstrap", appName + ".controller", appName + ".service", appName + ".filter", appName + ".directive"],
+    ["ui.router", "ngTable", "ui.bootstrap", "angulartics", "angulartics.google.analytics", appName + ".controller", appName + ".service", appName + ".filter", appName + ".directive"],
     ($stateProvider:ng.ui.IStateProvider, $locationProvider:ng.ILocationProvider)=> {
       $stateProvider
         .state('/', {
@@ -46,8 +46,10 @@ module App {
     }
   )
     // モジュールとして登録する。angular.module() -> .config() -> .run() で1セット。
-    .run(()=> {
-      false;
+    .run(($rootScope:ng.IRootScopeService)=> {
+      $rootScope.$on("$stateChangeSuccess", () => {
+        $rootScope.$emit("$routeChangeSuccess");
+      });
     })
   ;
 
@@ -73,8 +75,8 @@ module App {
     ()=> {
       false;
     }
-  ).controller("TopController", Sample.TopController)
-    .controller("LatestController", Sample.LatestController)
+  ).controller("TopController", TopControllerModule.TopController)
+    .controller("LatestController", LatestControllerModule.LatestController)
   ;
 
   // モジュールの定義。directiveに関するモジュール。

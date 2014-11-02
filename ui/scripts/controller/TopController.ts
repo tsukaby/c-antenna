@@ -2,7 +2,7 @@
 
 ///<reference path='../Model.ts' />
 
-module Sample {
+module TopControllerModule {
   "use strict";
 
   export interface IScope extends ng.IScope {
