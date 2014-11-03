@@ -81,7 +81,7 @@ object SiteService extends BaseService {
                       Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
                     }
                     // DB登録
-                    ArticleDao.create(updatedSite.id, item.getLink.toString, item.getTitle, tags, new DateTime(item.getDate))
+                    ArticleDao.create(updatedSite.id, item.getLink.toString, item.getTitle, tags, 0, new DateTime(item.getDate))
                 }
               }
           }

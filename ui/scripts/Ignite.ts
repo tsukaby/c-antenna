@@ -40,6 +40,11 @@ module App {
           url: "/latest",
           templateUrl: "partials/latest.html",
           controller: "LatestController"
+        })
+        .state('article_ranking', {
+          url: "/article_ranking",
+          templateUrl: "partials/article_ranking.html",
+          controller: "ArticleRankingController"
         });
       // hashの書き換えの代わりにHTML5のHistory API関係を使うモードを設定する。
       $locationProvider.html5Mode(true);
@@ -75,7 +80,8 @@ module App {
     ()=> {
       false;
     }
-  ).controller("TopController", TopControllerModule.TopController)
+  ).controller("ArticleRankingController", ArticleRankingControllerModule.ArticleRankingController)
+    .controller("TopController", TopControllerModule.TopController)
     .controller("LatestController", LatestControllerModule.LatestController)
   ;
 

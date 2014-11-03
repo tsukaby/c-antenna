@@ -12,7 +12,9 @@ import scalaz.Scalaz._
  */
 case class SimpleSearchCondition(
                                   page: Option[Int], // ページ番号 1-origin
-                                  count: Option[Int] // 取得する件数
+                                  count: Option[Int], // 取得する件数
+
+                                  sort: Option[Sort]
                                   )
 
 object SimpleSearchCondition {
@@ -37,7 +39,23 @@ object SimpleSearchCondition {
         case None => 10
       }
 
-      Right(SimpleSearchCondition(page.some, count.some)).some
+      val sortKey = params.get("sort[key]") match {
+        case Some(x) => x.head.some
+        case None => none
+      }
+
+      val sortOrder = params.get("sort[order]") match {
+        case Some(x) => SortOrder.valueOf(x.head.toInt).some
+        case None => none
+      }
+
+      val sort = if (sortKey.isDefined && sortOrder.isDefined) {
+        Sort(sortKey.get, sortOrder.get).some
+      } else {
+        none
+      }
+
+      Right(SimpleSearchCondition(page.some, count.some, sort)).some
     }
 
     override def unbind(key: String, value: SimpleSearchCondition): String = {

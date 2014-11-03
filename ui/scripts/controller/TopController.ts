@@ -24,11 +24,13 @@ module TopControllerModule {
     // 検索処理
     loadData: () => void;
 
+    postClickLogSite: Function;
+    postClickLogArticle: Function;
   }
 
   export class TopController {
 
-    constructor(public $scope:IScope, private $http:ng.IHttpService) {
+    constructor(public $scope:IScope, private $http:ng.IHttpService, $window:ng.IWindowService) {
       $scope.condition = new Model.SimpleSearchCondition();
       $scope.condition.page = 1;
       $scope.condition.count = 9;
@@ -51,6 +53,31 @@ module TopControllerModule {
 
       // 初期データロード
       $scope.loadData();
+
+      $scope.postClickLogSite = (site:Model.Site) => {
+        var clickLog = new Model.ClickLog();
+        clickLog.siteId = site.id;
+
+        $http.post("/api/click_log", clickLog).success((data:any) => {
+          return true;
+        });
+
+        $window.open(site.url, "_blank");
+
+      };
+
+      $scope.postClickLogArticle = (article:Model.Article) => {
+        var clickLog = new Model.ClickLog();
+        clickLog.siteId = article.siteId;
+        clickLog.articleId = article.id;
+
+        $http.post("/api/click_log", clickLog).success((data:any) => {
+          return true;
+        });
+
+        $window.open(article.url, "_blank");
+
+      };
     }
 
 

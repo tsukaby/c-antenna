@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.service
 
-import com.tsukaby.c_antenna.entity.SimpleSearchCondition
+import com.tsukaby.c_antenna.util.TestUtil._
 import org.specs2.mutable.Specification
 import play.api.test.{PlaySpecification, WithApplication}
 
@@ -24,9 +24,4 @@ object ArticleServiceSpec extends Specification with PlaySpecification {
       page.items.size must be equalTo 1
     }
   }
-
-  private def getBaseCondition: SimpleSearchCondition = {
-    SimpleSearchCondition(1.some, 10.some)
-  }
-
 }

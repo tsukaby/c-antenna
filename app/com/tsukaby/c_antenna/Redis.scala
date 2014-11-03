@@ -4,18 +4,22 @@ import java.io._
 
 import biz.source_code.base64Coder.Base64Coder
 import play.api.Play
+import scala.collection.JavaConverters._
 import redis.clients.jedis.Jedis
 import play.api.Play.current
 
+// TODO キャッシュキーを固定する仕組み
+// TODO DB番号指定を足す　1はキャッシュ用途で起動のたびに消す 2はランキングなど永続化？用など分ける
+// TODO onloadでキャッシュ削除する仕組み
 object Redis {
   val jedis: Jedis = new Jedis("localhost")
 
-  def set(key: String, value: Any, expire: Int): Unit = {
+  def set(key: String, value: Any, expire: Int): Unit = synchronized {
     val obj = new String(Base64Coder.encode(serialize(value)))
     jedis.setex(key, expire, obj)
   }
 
-  def get[T](key: String): Option[T] = {
+  def get[T](key: String): Option[T] = synchronized {
     val obj = jedis.get(key)
     if (obj == null) {
       None
@@ -24,7 +28,7 @@ object Redis {
     }
   }
 
-  def getOrElse[T](key: String, expire: Int = 0)(orElse: => T): T = {
+  def getOrElse[T](key: String, expire: Int = 0)(orElse: => T): T = synchronized {
     get[T](key).getOrElse {
       val value = orElse
       set(key, value, expire)
@@ -32,15 +36,39 @@ object Redis {
     }
   }
 
-  def remove(key: String) = {
+  def remove(key: String) = synchronized {
     jedis.del(key)
+  }
+
+  def exists(key: String): Boolean = synchronized {
+    jedis.exists(key)
+  }
+
+  def zincrby(key: String, score: Double, member: String): Double = synchronized {
+    jedis.zincrby(key, score, member)
+  }
+
+  def zrevrange(key: String, start: Long, end: Long): Set[String] = synchronized {
+    jedis.zrevrange(key, start, end).asScala.toSet
+  }
+
+  def zscore(key: String, element: String): Double = synchronized {
+    jedis.zscore(key, element)
+  }
+
+  def zcard(key: String): Long = synchronized {
+    jedis.zcard(key)
   }
 
   /**
    * Redis上のデータを削除します。
    */
-  def flushAll(): Unit = {
+  def flushAll(): Unit = synchronized {
     jedis.flushAll()
+  }
+
+  def flushDB(): Unit = synchronized {
+    jedis.flushDB()
   }
 
   private def serialize(obj: Any): Array[Byte] = {

@@ -13,6 +13,7 @@ object Global extends GlobalSettings {
     CrawlActor.runSiteNameMaintainer
 
     Redis.flushAll()
+    Redis.flushDB()
 
   }
 }

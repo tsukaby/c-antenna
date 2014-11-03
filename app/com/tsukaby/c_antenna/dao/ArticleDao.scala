@@ -2,7 +2,7 @@ package com.tsukaby.c_antenna.dao
 
 import com.tsukaby.c_antenna.Redis
 import com.tsukaby.c_antenna.db.mapper.ArticleMapper
-import com.tsukaby.c_antenna.entity.SimpleSearchCondition
+import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, SortOrder}
 import org.joda.time.DateTime
 import scalikejdbc._
 
@@ -20,11 +20,12 @@ object ArticleDao {
    * @param url 記事URL
    * @param title タイトル
    * @param tags タグ
+   * @param clickCount クリック数
    * @param createdAt 記事作成日時
    * @return 作成された記事
    */
-  def create(siteId: Long, url: String, title: String, tags: Option[String], createdAt: DateTime): ArticleMapper = {
-    val createdArticle = ArticleMapper.create(siteId, url, title, tags, createdAt)
+  def create(siteId: Long, url: String, title: String, tags: Option[String], clickCount: Long, createdAt: DateTime): ArticleMapper = {
+    val createdArticle = ArticleMapper.create(siteId, url, title, tags, clickCount, createdAt)
     Redis.set(s"article:${createdArticle.id}", Some(createdArticle), 300)
 
     createdArticle
@@ -33,7 +34,18 @@ object ArticleDao {
   /**
    * 記事を取得します。
    *
-   * @param url 取得する記事のID
+   * @param id 取得する記事のID
+   */
+  def getById(id: Long): Option[ArticleMapper] = {
+    Redis.getOrElse[Option[ArticleMapper]](s"article:$id", 300) {
+      ArticleMapper.findAllBy(sqls.eq(am.id, id)).headOption
+    }
+  }
+
+  /**
+   * 記事を取得します。
+   *
+   * @param url 取得する記事のURL
    */
   def getByUrl(url: String): Option[ArticleMapper] = {
     Redis.getOrElse[Option[ArticleMapper]](s"article:$url", 300) {
@@ -74,13 +86,54 @@ object ArticleDao {
   }
 
   /**
+   * 記事を更新します。
+   * @param article 更新する記事。更新内容
+   * @return 更新後の記事
+   */
+  def update(article: ArticleMapper): ArticleMapper = {
+    val updated = article.save()
+    refreshCache(article)
+
+    updated
+  }
+
+  /**
+   * キャッシュを削除します。参照処理以外が発生したときに呼び出します。
+   * @param article 更新や削除によって作られたオブジェクト
+   */
+  def refreshCache(article: ArticleMapper): Unit = {
+    Redis.set(s"article:${article.id}", article, 300)
+    Redis.set(s"article:${article.url}", article, 300)
+  }
+
+  /**
    * 引数の条件に従ってSQLを作成します。
    * @param condition 検索条件・ソート条件・ページング条件
    * @return SQLの一部
    */
   private def createSql(condition: SimpleSearchCondition): SQLSyntax = {
+
+    var sql = sqls.eq(sqls"1", 1)
+
+    // where
+
+    // order by
+    sql = condition.sort match {
+      case Some(x) =>
+        if (x.order == SortOrder.Asc) {
+          sql.orderBy(am.column(x.key)).asc
+        } else {
+          sql.orderBy(am.column(x.key)).desc
+        }
+      case None =>
+        sql.orderBy(am.createdAt).desc
+    }
+
+    // paging
     val page = condition.page.getOrElse(1)
     val count = condition.count.getOrElse(10)
-    sqls.eq(sqls"1", 1).orderBy(am.createdAt).desc.limit(count).offset((page - 1) * count)
+    sql = sql.limit(count).offset((page - 1) * count)
+
+    sql
   }
 }

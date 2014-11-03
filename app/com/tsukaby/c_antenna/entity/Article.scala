@@ -8,12 +8,15 @@ import play.api.libs.json.Json
  * thumbnailはBase64エンコードされた画像ファイルです。
  */
 case class Article(
+                    id: Long,
+                    siteId: Long,
                     url: String,
                     title: String,
                     thumbnail: String,
                     tags: Seq[String],
                     siteName: String,
-                    createdAt: DateTime)
+                    createdAt: DateTime,
+                    clickCount: Option[Long])
 
 object Article {
   implicit val format = Json.format[Article]

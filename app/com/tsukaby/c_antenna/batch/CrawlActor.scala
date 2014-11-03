@@ -1,7 +1,7 @@
 package com.tsukaby.c_antenna.batch
 
 import akka.actor.{Props, Actor}
-import com.tsukaby.c_antenna.service.SiteService
+import com.tsukaby.c_antenna.service.{ClickLogService, SiteService}
 import com.tsukaby.c_antenna.util.TimeUtil
 import play.api.Logger
 import play.api.libs.concurrent.Akka
@@ -30,6 +30,14 @@ class SampleActor extends Actor {
   }
 }
 
+class RankingActor extends Actor {
+  def receive: Actor.Receive = {
+    case e: String =>
+      val result = TimeUtil.time(ClickLogService.refreshRanking())
+      Logger.info(s"ランキングをDBに反映しました。 (${result._2.toSeconds}} ms)")
+  }
+}
+
 object CrawlActor {
 
   import us.theatr.akka.quartz._
@@ -49,6 +57,7 @@ object CrawlActor {
     val interval = 10.minutes
 
     Akka.system.scheduler.schedule(firstDelay, interval, Akka.system.actorOf(Props[CrawlActor]), "")
-  }
 
+    Akka.system.scheduler.schedule(30.seconds, 5.minutes, Akka.system.actorOf(Props[RankingActor]), "")
+  }
 }

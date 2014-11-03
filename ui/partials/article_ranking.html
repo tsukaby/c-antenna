@@ -4,6 +4,7 @@
 <div class="container">
   <table ng-table="tableParams" class="table">
     <tr ng-repeat="article in $data">
+      <td data-title="'クリック数'">{{article.clickCount}}</td>
       <td data-title="'日時'" width="150">{{article.createdAt | date : 'MM/dd HH:mm'}}</td>
       <td data-title="'タイトル'">
         <a analytics-on ng-click="postClickLog(article)" href="#">{{article.title}}</a>

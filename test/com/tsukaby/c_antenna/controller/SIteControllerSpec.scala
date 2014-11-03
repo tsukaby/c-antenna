@@ -1,5 +1,6 @@
 package com.tsukaby.c_antenna.controller
 
+import com.tsukaby.c_antenna.util.TestUtil._
 import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, SitePage}
 import org.specs2.mutable.Specification
 import play.api.libs.json.{JsError, JsSuccess}
@@ -33,10 +34,6 @@ object SiteControllerSpec extends Specification with PlaySpecification {
       status(res) must be equalTo OK
       page.items.size must be equalTo 1
     }
-  }
-
-  private def getBaseCondition: SimpleSearchCondition = {
-    SimpleSearchCondition(1.some, 10.some)
   }
 
   implicit def responseToPage(res: Future[Result]): SitePage = {

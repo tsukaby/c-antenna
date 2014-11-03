@@ -9,6 +9,7 @@ case class ArticleMapper(
   url: String, 
   title: String, 
   tag: Option[String] = None, 
+  clickCount: Long, 
   createdAt: DateTime) {
 
   def save()(implicit session: DBSession = ArticleMapper.autoSession): ArticleMapper = ArticleMapper.save(this)(session)
@@ -22,7 +23,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
 
   override val tableName = "ARTICLE"
 
-  override val columns = Seq("ID", "SITE_ID", "URL", "TITLE", "TAG", "CREATED_AT")
+  override val columns = Seq("ID", "SITE_ID", "URL", "TITLE", "TAG", "CLICK_COUNT", "CREATED_AT")
 
   def apply(am: SyntaxProvider[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = apply(am.resultName)(rs)
   def apply(am: ResultName[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = new ArticleMapper(
@@ -31,6 +32,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     url = rs.get(am.url),
     title = rs.get(am.title),
     tag = rs.get(am.tag),
+    clickCount = rs.get(am.clickCount),
     createdAt = rs.get(am.createdAt)
   )
       
@@ -69,6 +71,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     url: String,
     title: String,
     tag: Option[String] = None,
+    clickCount: Long,
     createdAt: DateTime)(implicit session: DBSession = autoSession): ArticleMapper = {
     val generatedKey = withSQL {
       insert.into(ArticleMapper).columns(
@@ -76,12 +79,14 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.url,
         column.title,
         column.tag,
+        column.clickCount,
         column.createdAt
       ).values(
         siteId,
         url,
         title,
         tag,
+        clickCount,
         createdAt
       )
     }.updateAndReturnGeneratedKey.apply()
@@ -92,6 +97,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
       url = url,
       title = title,
       tag = tag,
+      clickCount = clickCount,
       createdAt = createdAt)
   }
 
@@ -103,6 +109,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.url -> entity.url,
         column.title -> entity.title,
         column.tag -> entity.tag,
+        column.clickCount -> entity.clickCount,
         column.createdAt -> entity.createdAt
       ).where.eq(column.id, entity.id)
     }.update.apply()

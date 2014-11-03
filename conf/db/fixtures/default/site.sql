@@ -1,7 +1,7 @@
 #!Ups
 
 INSERT INTO SITE
-VALUES (1, 'site_name', 'http://example.com', 'http://example.com/index.rdf', NULL, '', '2014-01-01 00:00:00');
+VALUES (1, 'site_name', 'http://example.com', 'http://example.com/index.rdf', NULL, '', 0, '2014-01-01 00:00:00');
 INSERT INTO SITE SELECT
                    ID + 1,
                    NAME,
@@ -9,6 +9,7 @@ INSERT INTO SITE SELECT
                    RSS_URL,
                    THUMBNAIL,
                    SCRAPING_CSS_SELECTOR,
+                   CLICK_COUNT,
                    CRAWLED_AT
                  FROM SITE;
 INSERT INTO SITE SELECT
@@ -18,6 +19,7 @@ INSERT INTO SITE SELECT
                    RSS_URL,
                    THUMBNAIL,
                    SCRAPING_CSS_SELECTOR,
+                   CLICK_COUNT,
                    CRAWLED_AT
                  FROM SITE;
 INSERT INTO SITE SELECT
@@ -27,6 +29,7 @@ INSERT INTO SITE SELECT
                    RSS_URL,
                    THUMBNAIL,
                    SCRAPING_CSS_SELECTOR,
+                   CLICK_COUNT,
                    CRAWLED_AT
                  FROM SITE;
 INSERT INTO SITE SELECT
@@ -36,6 +39,7 @@ INSERT INTO SITE SELECT
                    RSS_URL,
                    THUMBNAIL,
                    SCRAPING_CSS_SELECTOR,
+                   CLICK_COUNT,
                    CRAWLED_AT
                  FROM SITE;
 INSERT INTO SITE SELECT
@@ -45,5 +49,6 @@ INSERT INTO SITE SELECT
                    RSS_URL,
                    THUMBNAIL,
                    SCRAPING_CSS_SELECTOR,
+                   CLICK_COUNT,
                    CRAWLED_AT
                  FROM SITE;

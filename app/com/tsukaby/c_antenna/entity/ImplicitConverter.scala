@@ -4,6 +4,8 @@ import com.tsukaby.c_antenna.dao.ArticleDao
 import com.tsukaby.c_antenna.db.mapper.{SiteSummaryMapper, ArticleMapper, SiteMapper}
 import com.tsukaby.c_antenna.service.SiteService
 
+import scalaz.Scalaz._
+
 object ImplicitConverter {
 
   implicit def dbSitesToSites(siteMapper: SiteMapper, articleMappers: Seq[ArticleMapper]): Site = {
@@ -36,7 +38,7 @@ object ImplicitConverter {
       case Some(x) => x.name
       case None => ""
     }
-    Article(articleMapper.url, articleMapper.title, "", tags, siteName, articleMapper.createdAt)
+    Article(articleMapper.id, articleMapper.siteId, articleMapper.url, articleMapper.title, "", tags, siteName, articleMapper.createdAt, none)
   }
 
   implicit def dbArticlesToArticles(articleMappers: Seq[ArticleMapper]): Seq[Article] = {

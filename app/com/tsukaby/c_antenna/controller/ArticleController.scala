@@ -16,6 +16,19 @@ trait ArticleController extends Controller {
 
     Ok(Json.toJson(page)).as("application/json")
   }
+
+  /**
+   * 記事一覧をランキング上位順で返却します。
+   * @return
+   */
+  def ranking(condition: SimpleSearchCondition) = Action {
+    val page = ArticleService.getByRanking(condition)
+
+    Ok(Json.toJson(page)).as("application/json")
+  }
+
+
+
 }
 
 object ArticleController extends ArticleController
