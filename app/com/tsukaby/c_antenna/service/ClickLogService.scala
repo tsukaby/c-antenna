@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.service
 
-import com.tsukaby.c_antenna.Redis
+import com.tsukaby.c_antenna.VolatilityCache
 import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
 import com.tsukaby.c_antenna.entity.ClickLog
 
@@ -10,21 +10,21 @@ object ClickLogService extends BaseService {
     clickLog.siteId match {
       case Some(x) =>
         // サイトのクリックカウントを１つ上げる
-        Redis.zincrby("siteRanking", 1, x.toString)
+        VolatilityCache.zincrby("siteRanking", 1, x.toString)
       case None =>
     }
 
     clickLog.articleId match {
       case Some(x) =>
         // 記事のクリックカウントを１つ上げる
-        Redis.zincrby("articleRanking", 1, x.toString)
+        VolatilityCache.zincrby("articleRanking", 1, x.toString)
       case None =>
     }
   }
 
   def refreshRanking(): Unit = {
-    Redis.zrevrange("siteRanking", 0, Redis.zcard("siteRanking") - 1) foreach { siteId =>
-      val clickCount = Redis.zscore("siteRanking", siteId).toLong
+    VolatilityCache.zrevrange("siteRanking", 0, VolatilityCache.zcard("siteRanking") - 1) foreach { siteId =>
+      val clickCount = VolatilityCache.zscore("siteRanking", siteId).toLong
 
       // Redis上のクリック数をDBに反映
       SiteDao.getById(siteId.toLong) match {
@@ -33,8 +33,8 @@ object ClickLogService extends BaseService {
       }
     }
 
-    Redis.zrevrange("articleRanking", 0, Redis.zcard("articleRanking") - 1) foreach { articleId =>
-      val clickCount = Redis.zscore("articleRanking", articleId).toLong
+    VolatilityCache.zrevrange("articleRanking", 0, VolatilityCache.zcard("articleRanking") - 1) foreach { articleId =>
+      val clickCount = VolatilityCache.zscore("articleRanking", articleId).toLong
 
       // Redis上のクリック数をDBに反映
 

@@ -11,8 +11,8 @@ import play.api.Play.current
 // TODO キャッシュキーを固定する仕組み
 // TODO DB番号指定を足す　1はキャッシュ用途で起動のたびに消す 2はランキングなど永続化？用など分ける
 // TODO onloadでキャッシュ削除する仕組み
-object Redis {
-  val jedis: Jedis = new Jedis("localhost")
+trait Redis {
+  val jedis: Jedis
 
   def set(key: String, value: Any, expire: Int): Unit = synchronized {
     val obj = new String(Base64Coder.encode(serialize(value)))

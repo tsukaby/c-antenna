@@ -1,4 +1,4 @@
-import com.tsukaby.c_antenna.Redis
+import com.tsukaby.c_antenna.VolatilityCache
 import com.tsukaby.c_antenna.batch.CrawlActor
 import play.api.{Application, GlobalSettings}
 
@@ -12,8 +12,7 @@ object Global extends GlobalSettings {
     // サイト名を最新に保つバッチ実行
     CrawlActor.runSiteNameMaintainer
 
-    Redis.flushAll()
-    Redis.flushDB()
+    VolatilityCache.flushDB()
 
   }
 }

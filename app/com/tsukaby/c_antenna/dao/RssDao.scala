@@ -2,7 +2,7 @@ package com.tsukaby.c_antenna.dao
 
 import java.net.URL
 
-import com.tsukaby.c_antenna.Redis
+import com.tsukaby.c_antenna.VolatilityCache
 import de.nava.informa.core.ChannelIF
 import de.nava.informa.impl.basic.ChannelBuilder
 import de.nava.informa.parsers.FeedParser
@@ -16,7 +16,7 @@ object RssDao {
   def getByUrl(rssUrl: String): Option[ChannelIF] = {
 
     // RSSは常に変化するのでキャッシュ時間は短めに設定
-    Redis.getOrElse[Option[ChannelIF]](rssUrl, 60) {
+    VolatilityCache.getOrElse[Option[ChannelIF]](rssUrl, 60) {
       // 403で弾かれることが多い為、User-agentを指定して極力回避
       val feedUrl = new URL(rssUrl)
       val conn = feedUrl.openConnection
@@ -26,7 +26,7 @@ object RssDao {
         if (result == null) {
           none
         } else {
-          Redis.set(rssUrl, result, 60)
+          VolatilityCache.set(rssUrl, result, 60)
           result.some
         }
       } catch {

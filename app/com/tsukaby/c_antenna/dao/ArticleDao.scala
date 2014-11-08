@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.dao
 
-import com.tsukaby.c_antenna.Redis
+import com.tsukaby.c_antenna.VolatilityCache
 import com.tsukaby.c_antenna.db.mapper.ArticleMapper
 import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, SortOrder}
 import org.joda.time.DateTime
@@ -26,7 +26,7 @@ object ArticleDao {
    */
   def create(siteId: Long, url: String, title: String, tags: Option[String], clickCount: Long, createdAt: DateTime): ArticleMapper = {
     val createdArticle = ArticleMapper.create(siteId, url, title, tags, clickCount, createdAt)
-    Redis.set(s"article:${createdArticle.id}", Some(createdArticle), 300)
+    VolatilityCache.set(s"article:${createdArticle.id}", Some(createdArticle), 300)
 
     createdArticle
   }
@@ -37,7 +37,7 @@ object ArticleDao {
    * @param id 取得する記事のID
    */
   def getById(id: Long): Option[ArticleMapper] = {
-    Redis.getOrElse[Option[ArticleMapper]](s"article:$id", 300) {
+    VolatilityCache.getOrElse[Option[ArticleMapper]](s"article:$id", 300) {
       ArticleMapper.findAllBy(sqls.eq(am.id, id)).headOption
     }
   }
@@ -48,7 +48,7 @@ object ArticleDao {
    * @param url 取得する記事のURL
    */
   def getByUrl(url: String): Option[ArticleMapper] = {
-    Redis.getOrElse[Option[ArticleMapper]](s"article:$url", 300) {
+    VolatilityCache.getOrElse[Option[ArticleMapper]](s"article:$url", 300) {
       ArticleMapper.findAllBy(sqls.eq(am.url, url)).headOption
     }
   }
@@ -80,7 +80,7 @@ object ArticleDao {
    * @return 最新記事の一覧
    */
   def getLatelyBySiteId(siteId: Long): Seq[ArticleMapper] = {
-    Redis.getOrElse[Seq[ArticleMapper]](s"latelyBySiteId:$siteId", 300) {
+    VolatilityCache.getOrElse[Seq[ArticleMapper]](s"latelyBySiteId:$siteId", 300) {
       ArticleMapper.findAllBy(sqls.eq(am.siteId, siteId).orderBy(am.createdAt).desc.limit(5)).toSeq
     }
   }
@@ -102,8 +102,8 @@ object ArticleDao {
    * @param article 更新や削除によって作られたオブジェクト
    */
   def refreshCache(article: ArticleMapper): Unit = {
-    Redis.set(s"article:${article.id}", article, 300)
-    Redis.set(s"article:${article.url}", article, 300)
+    VolatilityCache.set(s"article:${article.id}", article, 300)
+    VolatilityCache.set(s"article:${article.url}", article, 300)
   }
 
   /**

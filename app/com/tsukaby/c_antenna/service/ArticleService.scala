@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.service
 
-import com.tsukaby.c_antenna.Redis
+import com.tsukaby.c_antenna.VolatilityCache
 import com.tsukaby.c_antenna.dao.ArticleDao
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{ArticlePage, SimpleSearchCondition}
@@ -33,7 +33,7 @@ object ArticleService {
     val start = (condition.page.get - 1) * condition.count.get
     val end = start + condition.count.get
 
-    val articleIds: Set[Long] = Redis.zrevrange("articleRanking", start, end) map (x => x.toLong)
+    val articleIds: Set[Long] = VolatilityCache.zrevrange("articleRanking", start, end) map (x => x.toLong)
 
     val articles = articleIds map { x =>
       ArticleDao.getById(x)

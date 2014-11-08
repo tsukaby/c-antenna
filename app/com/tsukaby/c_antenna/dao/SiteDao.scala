@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.dao
 
-import com.tsukaby.c_antenna.Redis
+import com.tsukaby.c_antenna.VolatilityCache
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.SimpleSearchCondition
 import scalikejdbc._
@@ -18,7 +18,7 @@ object SiteDao {
    * @param id 取得するサイトのID
    */
   def getById(id: Long): Option[SiteMapper] = {
-    Redis.getOrElse[Option[SiteMapper]](s"site:$id", 300) {
+    VolatilityCache.getOrElse[Option[SiteMapper]](s"site:$id", 300) {
       SiteMapper.find(id)
     }
   }
@@ -83,8 +83,8 @@ object SiteDao {
    * @param site 更新や削除によって作られたオブジェクト
    */
   def refreshCache(site: SiteMapper): Unit = {
-    Redis.set(s"site:${site.id}", Some(site), 300)
-    Redis.remove(s"siteAll")
+    VolatilityCache.set(s"site:${site.id}", Some(site), 300)
+    VolatilityCache.remove(s"siteAll")
   }
 
   // TODO 共通かできたら考える 多分引数変わるから無理
