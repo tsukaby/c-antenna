@@ -3,20 +3,22 @@
 # ~~~~
 
 # Debug
-GET         /refreshSiteName             com.tsukaby.c_antenna.controller.DebugController.refreshSiteName
+GET         /debug/refreshSiteName           com.tsukaby.c_antenna.controller.DebugController.refreshSiteName
+GET         /debug/refreshSiteRanking        com.tsukaby.c_antenna.controller.DebugController.refreshSiteRanking
 
 # Site
-GET         /api/sites                   com.tsukaby.c_antenna.controller.SiteController.showAll(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
+GET         /api/sites                       com.tsukaby.c_antenna.controller.SiteController.showAll(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
 
 # Article
-GET         /api/lately_articles         com.tsukaby.c_antenna.controller.ArticleController.lately(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
-GET         /api/ranking_articles        com.tsukaby.c_antenna.controller.ArticleController.ranking(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
+GET         /api/lately_articles             com.tsukaby.c_antenna.controller.ArticleController.lately(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
+GET         /api/ranking_articles            com.tsukaby.c_antenna.controller.ArticleController.ranking(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
 
 
 # Click
-POST        /api/click_log               com.tsukaby.c_antenna.controller.ClickLogController.clickLog
+POST        /api/click_log                   com.tsukaby.c_antenna.controller.ClickLogController.clickLog
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /                            controllers.Assets.at(path="/public", file="index.html")
-GET         /latest                      controllers.Assets.at(path="/public", file="index.html")
-GET         /*file                       controllers.Assets.at(path="/public", file)
+GET         /                                controllers.Assets.at(path="/public", file="index.html")
+GET         /latest                          controllers.Assets.at(path="/public", file="index.html")
+GET         /article_ranking                 controllers.Assets.at(path="/public", file="index.html")
+GET         /*file                           controllers.Assets.at(path="/public", file)

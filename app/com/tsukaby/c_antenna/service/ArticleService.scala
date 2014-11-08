@@ -1,9 +1,9 @@
 package com.tsukaby.c_antenna.service
 
-import com.tsukaby.c_antenna.VolatilityCache
 import com.tsukaby.c_antenna.dao.ArticleDao
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{ArticlePage, SimpleSearchCondition}
+import com.github.nscala_time.time.Imports._
 
 /**
  * 記事に関する処理を行うクラスです。
@@ -18,7 +18,7 @@ object ArticleService {
   def getLately(condition: SimpleSearchCondition): ArticlePage = {
 
     val articles = ArticleDao.getByCondition(condition)
-    val count = ArticleDao.countAll
+    val count = ArticleDao.countByCondition(condition)
 
     ArticlePage(articles, count)
   }
@@ -30,18 +30,9 @@ object ArticleService {
    */
   def getByRanking(condition: SimpleSearchCondition): ArticlePage = {
 
-    val start = (condition.page.get - 1) * condition.count.get
-    val end = start + condition.count.get
+    val articles = ArticleDao.getByCondition(condition, 1.days)
 
-    val articleIds: Set[Long] = VolatilityCache.zrevrange("articleRanking", start, end) map (x => x.toLong)
-
-    val articles = articleIds map { x =>
-      ArticleDao.getById(x)
-    } collect {
-      case x if x.isDefined => x.get
-    } toSeq
-
-    val count = ArticleDao.countAll
+    val count = ArticleDao.countByCondition(condition, 1.days)
 
     ArticlePage(articles, count)
   }

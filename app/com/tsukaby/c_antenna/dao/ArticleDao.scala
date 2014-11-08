@@ -1,10 +1,13 @@
 package com.tsukaby.c_antenna.dao
 
+import com.github.nscala_time.time.Imports._
 import com.tsukaby.c_antenna.VolatilityCache
 import com.tsukaby.c_antenna.db.mapper.ArticleMapper
 import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, SortOrder}
 import org.joda.time.DateTime
 import scalikejdbc._
+
+import scalaz.Scalaz._
 
 /**
  * 記事に関する操作を行います。
@@ -60,7 +63,19 @@ object ArticleDao {
    * @return 最新記事の一覧
    */
   def getByCondition(condition: SimpleSearchCondition): Seq[ArticleMapper] = {
-    val sql = createSql(condition)
+    val sql = createSql(condition, withPaging = true)
+    // cache keyが難しいので一旦キャッシュは保留
+    ArticleMapper.findAllBy(sql).toSeq
+  }
+
+  /**
+   * 検索条件に従って記事を取得します。
+   *
+   * @param condition 検索条件
+   * @return 最新記事の一覧
+   */
+  def getByCondition(condition: SimpleSearchCondition, time: Period): Seq[ArticleMapper] = {
+    val sql = createSql(condition, time, withPaging = true)
     // cache keyが難しいので一旦キャッシュは保留
     ArticleMapper.findAllBy(sql).toSeq
   }
@@ -71,6 +86,24 @@ object ArticleDao {
    */
   def countAll: Long = {
     ArticleMapper.countAll
+  }
+
+  /**
+   * 全体の件数を取得します。
+   * @return 件数
+   */
+  def countByCondition(condition: SimpleSearchCondition): Long = {
+    val sql = createSql(condition, withPaging = false)
+    ArticleMapper.countBy(sql)
+  }
+
+  /**
+   * 全体の件数を取得します。
+   * @return 件数
+   */
+  def countByCondition(condition: SimpleSearchCondition, time: Period): Long = {
+    val sql = createSql(condition, time, withPaging = false)
+    ArticleMapper.countBy(sql)
   }
 
   /**
@@ -102,16 +135,17 @@ object ArticleDao {
    * @param article 更新や削除によって作られたオブジェクト
    */
   def refreshCache(article: ArticleMapper): Unit = {
-    VolatilityCache.set(s"article:${article.id}", article, 300)
-    VolatilityCache.set(s"article:${article.url}", article, 300)
+    VolatilityCache.set(s"article:${article.id}", article.some, 300)
+    VolatilityCache.set(s"article:${article.url}", article.some, 300)
   }
 
   /**
    * 引数の条件に従ってSQLを作成します。
    * @param condition 検索条件・ソート条件・ページング条件
+   * @param withPaging ページングの有無
    * @return SQLの一部
    */
-  private def createSql(condition: SimpleSearchCondition): SQLSyntax = {
+  private def createSql(condition: SimpleSearchCondition, withPaging: Boolean): SQLSyntax = {
 
     var sql = sqls.eq(sqls"1", 1)
 
@@ -130,9 +164,43 @@ object ArticleDao {
     }
 
     // paging
-    val page = condition.page.getOrElse(1)
-    val count = condition.count.getOrElse(10)
-    sql = sql.limit(count).offset((page - 1) * count)
+    if(withPaging){
+      val page = condition.page.getOrElse(1)
+      val count = condition.count.getOrElse(10)
+      sql = sql.limit(count).offset((page - 1) * count)
+    }
+
+    sql
+  }
+
+  /**
+   * 引数の条件に従ってSQLを作成します。
+   * @param condition 検索条件・ソート条件・ページング条件
+   * @return SQLの一部
+   */
+  private def createSql(condition: SimpleSearchCondition, time: Period, withPaging: Boolean): SQLSyntax = {
+
+    // where
+    var sql = sqls.gt(am.createdAt, DateTime.now - time)
+
+    // order by
+    sql = condition.sort match {
+      case Some(x) =>
+        if (x.order == SortOrder.Asc) {
+          sql.orderBy(am.column(x.key)).asc
+        } else {
+          sql.orderBy(am.column(x.key)).desc
+        }
+      case None =>
+        sql.orderBy(am.createdAt).desc
+    }
+
+    // paging
+    if (withPaging) {
+      val page = condition.page.getOrElse(1)
+      val count = condition.count.getOrElse(10)
+      sql = sql.limit(count).offset((page - 1) * count)
+    }
 
     sql
   }

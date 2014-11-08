@@ -51,7 +51,9 @@ module Model {
   }
 
   export enum SortOrder {
-    Unknown, Asc, Desc
+    Unknown,
+    Asc,
+    Desc
   }
 
   /**

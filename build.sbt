@@ -34,7 +34,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.3.2", // batch用
   "io.spray" %% "spray-client" % "1.3.1", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
   "org.scalaz" %% "scalaz-core" % "7.0.6", // より良い構文のため
-  "us.theatr" %% "akka-quartz" % "0.3.0" // cron形式でジョブ登録・実行するためのもの
+  "us.theatr" %% "akka-quartz" % "0.3.0", // cron形式でジョブ登録・実行するためのもの
+  "com.github.nscala-time" %% "nscala-time" % "1.4.0" // 日付用
 )
 
 scalikejdbcSettings

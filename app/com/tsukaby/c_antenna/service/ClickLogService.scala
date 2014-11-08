@@ -22,7 +22,7 @@ object ClickLogService extends BaseService {
     }
   }
 
-  def refreshRanking(): Unit = {
+  def refreshRanking(): Unit = synchronized {
     VolatilityCache.zrevrange("siteRanking", 0, VolatilityCache.zcard("siteRanking") - 1) foreach { siteId =>
       val clickCount = VolatilityCache.zscore("siteRanking", siteId).toLong
 
@@ -32,6 +32,7 @@ object ClickLogService extends BaseService {
         case None =>
       }
     }
+
 
     VolatilityCache.zrevrange("articleRanking", 0, VolatilityCache.zcard("articleRanking") - 1) foreach { articleId =>
       val clickCount = VolatilityCache.zscore("articleRanking", articleId).toLong
@@ -43,6 +44,10 @@ object ClickLogService extends BaseService {
         case None =>
       }
     }
+
+    // キャッシュ情報をDBに追加したのでキャッシュは削除
+    VolatilityCache.remove("siteRanking")
+    VolatilityCache.remove("articleRanking")
 
   }
 

@@ -38,7 +38,7 @@ object ImplicitConverter {
       case Some(x) => x.name
       case None => ""
     }
-    Article(articleMapper.id, articleMapper.siteId, articleMapper.url, articleMapper.title, "", tags, siteName, articleMapper.createdAt, none)
+    Article(articleMapper.id, articleMapper.siteId, articleMapper.url, articleMapper.title, "", tags, siteName, articleMapper.createdAt, articleMapper.clickCount)
   }
 
   implicit def dbArticlesToArticles(articleMappers: Seq[ArticleMapper]): Seq[Article] = {

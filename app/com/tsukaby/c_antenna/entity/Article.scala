@@ -16,7 +16,7 @@ case class Article(
                     tags: Seq[String],
                     siteName: String,
                     createdAt: DateTime,
-                    clickCount: Option[Long])
+                    clickCount: Long)
 
 object Article {
   implicit val format = Json.format[Article]
