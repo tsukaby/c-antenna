@@ -5,6 +5,7 @@ import java.net.URL
 import de.nava.informa.core.ChannelIF
 import de.nava.informa.impl.basic.ChannelBuilder
 import de.nava.informa.parsers.FeedParser
+import play.api.Logger
 
 import scalaz.Scalaz._
 
@@ -29,6 +30,7 @@ object RssDao {
       }
     } catch {
       case e: Exception =>
+        Logger.info("error", e)
         none
     }
   }

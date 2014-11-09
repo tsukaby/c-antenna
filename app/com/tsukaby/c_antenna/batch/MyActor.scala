@@ -21,7 +21,7 @@ class SampleActor extends Actor {
   def receive: Actor.Receive = {
     case e: String =>
       val result = TimeUtil.time(SiteService.refreshSiteName())
-      Logger.info(s"サイト名を最新状態にしました。 (${result._2.toSeconds}} sec)")
+      Logger.info(s"サイト名を最新状態にしました。 (${result._2.toSeconds} sec)")
   }
 }
 
@@ -29,6 +29,6 @@ class RankingActor extends Actor {
   def receive: Actor.Receive = {
     case e: String =>
       val result = TimeUtil.time(ClickLogService.refreshRanking())
-      Logger.info(s"ランキングをDBに反映しました。 (${result._2.toSeconds}} sec)")
+      Logger.info(s"ランキングをDBに反映しました。 (${result._2.toSeconds} sec)")
   }
 }
