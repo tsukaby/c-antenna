@@ -11,7 +11,7 @@ trait ArticleController extends Controller {
    * 記事一覧をランキング上位順で返却します。
    * @return
    */
-  def ranking(condition: SimpleSearchCondition) = Action {
+  def showAll(condition: SimpleSearchCondition) = Action {
     val page = ArticleService.getByCondition(condition)
 
     Ok(Json.toJson(page)).as("application/json")

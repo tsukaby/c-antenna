@@ -13,13 +13,13 @@ object ArticleServiceSpec extends Specification with PlaySpecification {
   s"$TargetClass#getLately" should {
 
     "記事一覧が取得できること" in new WithApplication {
-      val page = TargetClass.getLately(getBaseCondition)
+      val page = TargetClass.getByCondition(getBaseCondition)
 
       page.items.size must be greaterThan 0
     }
 
     "取得件数を1件にした場合、１件だけ取得できること" in new WithApplication {
-      val page = TargetClass.getLately(getBaseCondition.copy(count = 1.some))
+      val page = TargetClass.getByCondition(getBaseCondition.copy(count = 1.some))
 
       page.items.size must be equalTo 1
     }

@@ -49,16 +49,15 @@ object SiteService extends BaseService {
   def crawl: Unit = {
     val sites = SiteDao.getAll
 
-    sites foreach (site => {
+    sites.par foreach (site => {
 
-      val updatedSite = SiteDao.update(site.copy(crawledAt = new DateTime()))
+      Logger.info(s"サイト情報を更新します。${site.name}")
+      //val updatedSite = SiteDao.update(site.copy(crawledAt = new DateTime()))
 
       RssDao.getByUrl(site.rssUrl) match {
         case Some(channel) =>
           // サイト情報更新
-          Logger.info(s"サイト情報を更新します。${updatedSite.name}")
-
-          channel.getItems.asScala foreach {
+          channel.getItems.asScala.par foreach {
             // RSS記事URL更新
             case (item: ItemIF) =>
 
@@ -67,21 +66,18 @@ object SiteService extends BaseService {
                 // +1は多少未来の投稿時間でも許容する為。
                 // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
 
-                ArticleDao.getByUrl(item.getLink.toString) match {
-                  case Some(x) => //対象記事が見つかった場合は既に登録されているので無視
-                  case None =>
-                    //まだ記事が無い場合
-
-                    // 記事を解析してタグを取得
-                    //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
-                    val tmp = Seq[(String, Int)]()
-                    val tags = if (tmp.length == 0) {
-                      None
-                    } else {
-                      Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
-                    }
-                    // DB登録
-                    ArticleDao.create(updatedSite.id, item.getLink.toString, item.getTitle, tags, 0, new DateTime(item.getDate))
+                if(ArticleDao.countByUrl(item.getLink.toString) == 0){
+                  //まだ記事が無い場合
+                  // 記事を解析してタグを取得
+                  //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
+                  val tmp = Seq[(String, Int)]()
+                  val tags = if (tmp.length == 0) {
+                    None
+                  } else {
+                    Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
+                  }
+                  // DB登録
+                  ArticleDao.create(site.id, item.getLink.toString, item.getTitle, tags, 0, new DateTime(item.getDate))
                 }
               }
           }

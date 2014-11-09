@@ -17,7 +17,7 @@ object ArticleControllerSpec extends Specification with PlaySpecification {
   s"$TargetClass#lately" should {
 
     "記事一覧が取得できること" in new WithApplication {
-      val res = TargetClass.lately(getBaseCondition)(FakeRequest())
+      val res = TargetClass.showAll(getBaseCondition)(FakeRequest())
 
       val page: ArticlePage = res
 
@@ -27,7 +27,7 @@ object ArticleControllerSpec extends Specification with PlaySpecification {
     }
 
     "取得件数を1件にした場合、１件だけ取得できること" in new WithApplication {
-      val res = TargetClass.lately(getBaseCondition.copy(count = 1.some))(FakeRequest())
+      val res = TargetClass.showAll(getBaseCondition.copy(count = 1.some))(FakeRequest())
 
       val page: ArticlePage = res
 

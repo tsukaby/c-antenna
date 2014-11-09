@@ -3,6 +3,7 @@
 # ~~~~
 
 # Debug
+GET         /debug/runRssCrawl               com.tsukaby.c_antenna.controller.DebugController.runRssCrawl
 GET         /debug/refreshSiteName           com.tsukaby.c_antenna.controller.DebugController.refreshSiteName
 GET         /debug/refreshSiteRanking        com.tsukaby.c_antenna.controller.DebugController.refreshSiteRanking
 
@@ -10,7 +11,7 @@ GET         /debug/refreshSiteRanking        com.tsukaby.c_antenna.controller.De
 GET         /api/sites                       com.tsukaby.c_antenna.controller.SiteController.showAll(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
 
 # Article
-GET         /api/articles            com.tsukaby.c_antenna.controller.ArticleController.ranking(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
+GET         /api/articles                    com.tsukaby.c_antenna.controller.ArticleController.showAll(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
 
 
 # Click

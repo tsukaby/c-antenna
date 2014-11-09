@@ -7,6 +7,12 @@ import play.api.mvc.{Action, Controller}
  * デバッグ用のコントローラ
  */
 trait DebugController extends Controller {
+
+  def runRssCrawl = Action {
+    SiteService.crawl
+    Ok("done")
+  }
+
   def refreshSiteName = Action {
     SiteService.refreshSiteName()
     Ok("done")

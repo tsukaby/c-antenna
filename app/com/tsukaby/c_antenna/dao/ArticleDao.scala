@@ -76,6 +76,15 @@ object ArticleDao {
   }
 
   /**
+   * 記事の数を取得します。
+   *
+   * @param url 取得する記事のURL
+   */
+  def countByUrl(url: String): Long = {
+    ArticleMapper.countBy(sqls.eq(am.url, url))
+  }
+
+  /**
    * 全体の件数を取得します。
    * @return 件数
    */
