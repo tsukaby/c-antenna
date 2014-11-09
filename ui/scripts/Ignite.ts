@@ -26,16 +26,6 @@ module App {
           templateUrl: "partials/top.html",
           controller: "TopController"
         })
-        .state('index', {
-          url: "/index",
-          templateUrl: "partials/top.html",
-          controller: "TopController"
-        })
-        .state('top', {
-          url: "/",
-          templateUrl: "partials/top.html",
-          controller: "TopController"
-        })
         .state('latest', {
           url: "/latest",
           templateUrl: "partials/latest.html",
