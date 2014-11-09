@@ -18,8 +18,13 @@ trait DebugController extends Controller {
     Ok("done")
   }
 
-  def refreshSiteRanking = Action {
+  def refreshRanking = Action {
     ClickLogService.refreshRanking()
+    Ok("done")
+  }
+
+  def refreshHatebuRanking = Action {
+    SiteService.refreshSiteRank()
     Ok("done")
   }
 }

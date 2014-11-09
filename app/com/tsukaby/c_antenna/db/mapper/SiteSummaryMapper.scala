@@ -6,7 +6,9 @@ case class SiteSummaryMapper(
   id: Long, 
   name: String, 
   url: String, 
-  count: Long) {
+  articleCount: Long, 
+  clickCount: Long, 
+  hatebuCount: Long) {
 
   def save()(implicit session: DBSession = SiteSummaryMapper.autoSession): SiteSummaryMapper = SiteSummaryMapper.save(this)(session)
 
@@ -19,23 +21,25 @@ object SiteSummaryMapper extends SQLSyntaxSupport[SiteSummaryMapper] {
 
   override val tableName = "SITE_SUMMARY"
 
-  override val columns = Seq("ID", "NAME", "URL", "COUNT")
+  override val columns = Seq("ID", "NAME", "URL", "ARTICLE_COUNT", "CLICK_COUNT", "HATEBU_COUNT")
 
   def apply(ssm: SyntaxProvider[SiteSummaryMapper])(rs: WrappedResultSet): SiteSummaryMapper = apply(ssm.resultName)(rs)
   def apply(ssm: ResultName[SiteSummaryMapper])(rs: WrappedResultSet): SiteSummaryMapper = new SiteSummaryMapper(
     id = rs.get(ssm.id),
     name = rs.get(ssm.name),
     url = rs.get(ssm.url),
-    count = rs.get(ssm.count)
+    articleCount = rs.get(ssm.articleCount),
+    clickCount = rs.get(ssm.clickCount),
+    hatebuCount = rs.get(ssm.hatebuCount)
   )
       
   val ssm = SiteSummaryMapper.syntax("ssm")
 
   override val autoSession = AutoSession
 
-  def find(id: Long, name: String, url: String, count: Long)(implicit session: DBSession = autoSession): Option[SiteSummaryMapper] = {
+  def find(id: Long, name: String, url: String, articleCount: Long, clickCount: Long, hatebuCount: Long)(implicit session: DBSession = autoSession): Option[SiteSummaryMapper] = {
     withSQL {
-      select.from(SiteSummaryMapper as ssm).where.eq(ssm.id, id).and.eq(ssm.name, name).and.eq(ssm.url, url).and.eq(ssm.count, count)
+      select.from(SiteSummaryMapper as ssm).where.eq(ssm.id, id).and.eq(ssm.name, name).and.eq(ssm.url, url).and.eq(ssm.articleCount, articleCount).and.eq(ssm.clickCount, clickCount).and.eq(ssm.hatebuCount, hatebuCount)
     }.map(SiteSummaryMapper(ssm.resultName)).single.apply()
   }
           
@@ -63,18 +67,24 @@ object SiteSummaryMapper extends SQLSyntaxSupport[SiteSummaryMapper] {
     id: Long,
     name: String,
     url: String,
-    count: Long)(implicit session: DBSession = autoSession): SiteSummaryMapper = {
+    articleCount: Long,
+    clickCount: Long,
+    hatebuCount: Long)(implicit session: DBSession = autoSession): SiteSummaryMapper = {
     withSQL {
       insert.into(SiteSummaryMapper).columns(
         column.id,
         column.name,
         column.url,
-        column.count
+        column.articleCount,
+        column.clickCount,
+        column.hatebuCount
       ).values(
         id,
         name,
         url,
-        count
+        articleCount,
+        clickCount,
+        hatebuCount
       )
     }.update.apply()
 
@@ -82,7 +92,9 @@ object SiteSummaryMapper extends SQLSyntaxSupport[SiteSummaryMapper] {
       id = id,
       name = name,
       url = url,
-      count = count)
+      articleCount = articleCount,
+      clickCount = clickCount,
+      hatebuCount = hatebuCount)
   }
 
   def save(entity: SiteSummaryMapper)(implicit session: DBSession = autoSession): SiteSummaryMapper = {
@@ -91,14 +103,16 @@ object SiteSummaryMapper extends SQLSyntaxSupport[SiteSummaryMapper] {
         column.id -> entity.id,
         column.name -> entity.name,
         column.url -> entity.url,
-        column.count -> entity.count
-      ).where.eq(column.id, entity.id).and.eq(column.name, entity.name).and.eq(column.url, entity.url).and.eq(column.count, entity.count)
+        column.articleCount -> entity.articleCount,
+        column.clickCount -> entity.clickCount,
+        column.hatebuCount -> entity.hatebuCount
+      ).where.eq(column.id, entity.id).and.eq(column.name, entity.name).and.eq(column.url, entity.url).and.eq(column.articleCount, entity.articleCount).and.eq(column.clickCount, entity.clickCount).and.eq(column.hatebuCount, entity.hatebuCount)
     }.update.apply()
     entity
   }
         
   def destroy(entity: SiteSummaryMapper)(implicit session: DBSession = autoSession): Unit = {
-    withSQL { delete.from(SiteSummaryMapper).where.eq(column.id, entity.id).and.eq(column.name, entity.name).and.eq(column.url, entity.url).and.eq(column.count, entity.count) }.update.apply()
+    withSQL { delete.from(SiteSummaryMapper).where.eq(column.id, entity.id).and.eq(column.name, entity.name).and.eq(column.url, entity.url).and.eq(column.articleCount, entity.articleCount).and.eq(column.clickCount, entity.clickCount).and.eq(column.hatebuCount, entity.hatebuCount) }.update.apply()
   }
         
 }

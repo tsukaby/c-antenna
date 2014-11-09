@@ -17,11 +17,19 @@ class RssCrawlActor extends Actor {
 
 }
 
-class SampleActor extends Actor {
+class SiteNameActor extends Actor {
   def receive: Actor.Receive = {
     case e: String =>
       val result = TimeUtil.time(SiteService.refreshSiteName())
       Logger.info(s"サイト名を最新状態にしました。 (${result._2.toSeconds} sec)")
+  }
+}
+
+class HatebuActor extends Actor {
+  def receive: Actor.Receive = {
+    case e: String =>
+      val result = TimeUtil.time(SiteService.refreshSiteRank())
+      Logger.info(s"サイトのランキングを最新状態にしました。 (${result._2.toSeconds} sec)")
   }
 }
 

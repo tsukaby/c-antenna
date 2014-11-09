@@ -38,6 +38,8 @@ module TopControllerModule {
       $scope.condition = new Model.SimpleSearchCondition();
       $scope.condition.page = 1;
       $scope.condition.count = 9;
+      $scope.condition.sort = new Model.Sort("HATEBU_COUNT", Model.SortOrder.Desc);
+
       $scope.totalItems = 0;
       $scope.currentPage = 1;
 

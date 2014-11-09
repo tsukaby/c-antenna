@@ -11,6 +11,7 @@ case class SiteMapper(
   thumbnail: Option[Array[Byte]] = None, 
   scrapingCssSelector: String, 
   clickCount: Long, 
+  hatebuCount: Long, 
   crawledAt: DateTime) {
 
   def save()(implicit session: DBSession = SiteMapper.autoSession): SiteMapper = SiteMapper.save(this)(session)
@@ -24,7 +25,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
 
   override val tableName = "SITE"
 
-  override val columns = Seq("ID", "NAME", "URL", "RSS_URL", "THUMBNAIL", "SCRAPING_CSS_SELECTOR", "CLICK_COUNT", "CRAWLED_AT")
+  override val columns = Seq("ID", "NAME", "URL", "RSS_URL", "THUMBNAIL", "SCRAPING_CSS_SELECTOR", "CLICK_COUNT", "HATEBU_COUNT", "CRAWLED_AT")
 
   def apply(sm: SyntaxProvider[SiteMapper])(rs: WrappedResultSet): SiteMapper = apply(sm.resultName)(rs)
   def apply(sm: ResultName[SiteMapper])(rs: WrappedResultSet): SiteMapper = new SiteMapper(
@@ -35,6 +36,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     thumbnail = rs.get(sm.thumbnail),
     scrapingCssSelector = rs.get(sm.scrapingCssSelector),
     clickCount = rs.get(sm.clickCount),
+    hatebuCount = rs.get(sm.hatebuCount),
     crawledAt = rs.get(sm.crawledAt)
   )
       
@@ -75,6 +77,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     thumbnail: Option[Array[Byte]] = None,
     scrapingCssSelector: String,
     clickCount: Long,
+    hatebuCount: Long,
     crawledAt: DateTime)(implicit session: DBSession = autoSession): SiteMapper = {
     val generatedKey = withSQL {
       insert.into(SiteMapper).columns(
@@ -84,6 +87,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         column.thumbnail,
         column.scrapingCssSelector,
         column.clickCount,
+        column.hatebuCount,
         column.crawledAt
       ).values(
         name,
@@ -92,6 +96,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         thumbnail,
         scrapingCssSelector,
         clickCount,
+        hatebuCount,
         crawledAt
       )
     }.updateAndReturnGeneratedKey.apply()
@@ -104,6 +109,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
       thumbnail = thumbnail,
       scrapingCssSelector = scrapingCssSelector,
       clickCount = clickCount,
+      hatebuCount = hatebuCount,
       crawledAt = crawledAt)
   }
 
@@ -117,6 +123,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         column.thumbnail -> entity.thumbnail,
         column.scrapingCssSelector -> entity.scrapingCssSelector,
         column.clickCount -> entity.clickCount,
+        column.hatebuCount -> entity.hatebuCount,
         column.crawledAt -> entity.crawledAt
       ).where.eq(column.id, entity.id)
     }.update.apply()

@@ -1,13 +1,16 @@
 package com.tsukaby.c_antenna.service
 
+import java.net.URL
+
 import com.tsukaby.c_antenna.dao.{SiteSummaryDao, ArticleDao, RssDao, SiteDao}
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, Site, SitePage}
 import de.nava.informa.core.ItemIF
+import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
 import play.api.Logger
 import scalikejdbc.DB
-
+import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
 object SiteService extends BaseService {
@@ -18,8 +21,8 @@ object SiteService extends BaseService {
    * @return サイトの一覧
    */
   def getByCondition(condition: SimpleSearchCondition): SitePage = {
-    val sites = SiteSummaryDao.getByCondition(condition: SimpleSearchCondition)
-    val count = SiteSummaryDao.countAll
+    val sites = SiteSummaryDao.getByCondition(condition)
+    val count = SiteSummaryDao.countByCondition(condition)
 
     SitePage(sites, count)
   }
@@ -111,6 +114,26 @@ object SiteService extends BaseService {
           case None =>
         }
       }
+    }
+  }
+
+  /**
+   * サイトのランクを更新します。
+   */
+  def refreshSiteRank(): Unit = DB localTx { implicit session =>
+    SiteDao.getAll foreach { x =>
+      // クライアント設定作成
+      val conf = new XmlRpcClientConfigImpl()
+      conf.setServerURL(new URL("http://b.hatena.ne.jp/xmlrpc"))
+      // XML-RPCクライアント生成
+      val client = new XmlRpcClient()
+      // クライアント設定をセット
+      client.setConfig(conf)
+      // パラメータ作成
+      // 実行
+      val ret = client.execute("bookmark.getTotalCount", List(x.url))
+
+      SiteDao.update(x.copy(hatebuCount = ret.toString.toLong))
     }
   }
 
