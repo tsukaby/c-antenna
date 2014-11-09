@@ -6,9 +6,11 @@
     <tr ng-repeat="article in $data">
       <td data-title="'日時'" class="text-center" style="width: 120px;">{{article.createdAt | date : 'MM/dd HH:mm'}}</td>
       <td data-title="'タイトル'">
-        <a analytics-on ng-click="postClickLog(article)" href="#">{{article.title}}</a>
+        <a analytics-on ng-href="{{article.url}}" target="_blank" ng-mousedown="clickLogService.postClickLogArticle(article)">{{article.title}}</a>
       </td>
-      <td data-title="'サイト'"><a analytics-on ng-click="postClickLog(article)" href="#">{{article.siteName}}</a></td>
+      <td data-title="'サイト'">
+        <a analytics-on ng-href="{{article.url}}" target="_blank" ng-mousedown="clickLogService.postClickLogArticle(article)">{{article.siteName}}</a>
+      </td>
     </tr>
   </table>
 

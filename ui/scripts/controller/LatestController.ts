@@ -1,6 +1,7 @@
 ///<reference path='../../typings/angularjs/angular.d.ts' />
 
 ///<reference path='../Model.ts' />
+///<reference path='../Service.ts' />
 
 module LatestControllerModule {
   "use strict";
@@ -14,12 +15,19 @@ module LatestControllerModule {
     // 検索条件 ページング条件
     condition:Model.SimpleSearchCondition;
 
-    postClickLog:Function;
+    clickLogService:Service.ClickLogService;
   }
 
   export class LatestController {
 
-    constructor(public $scope:IScope, private $http:ng.IHttpService, private ngTableParams:any, private $timeout:ng.ITimeoutService, private $window:ng.IWindowService) {
+    constructor(public $scope:IScope,
+                private $http:ng.IHttpService,
+                private ngTableParams:any,
+                private $timeout:ng.ITimeoutService,
+                private clickLogService:Service.ClickLogService) {
+
+      $scope.clickLogService = clickLogService;
+
       $scope.data = new Model.Page<Model.Article>();
 
       $scope.condition = new Model.SimpleSearchCondition();
@@ -49,20 +57,6 @@ module LatestControllerModule {
           });
         }
       });
-
-      $scope.postClickLog = (article:Model.Article) => {
-        var clickLog = new Model.ClickLog();
-        clickLog.siteId = article.siteId;
-        clickLog.articleId = article.id;
-
-        $http.post("/api/click_log", clickLog).success((data:any) => {
-          return true;
-        });
-
-        $window.open(article.url, "_blank");
-
-      };
     }
-
   }
 }

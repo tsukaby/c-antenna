@@ -4,3 +4,11 @@
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
 }
+
+.navbar-brand {
+  float: left;
+  font-size: 18px;
+  height: 30px;
+  line-height: 20px;
+  padding: 5px;
+}
