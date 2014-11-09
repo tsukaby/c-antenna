@@ -6,12 +6,12 @@
     <div class="col-sm-4" ng-repeat="site in sites">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <a analytics-on ng-click="postClickLog(site)" href="#">{{site.name}}</a>
+          <a analytics-on ng-click="postClickLogSite(site)" href="#">{{site.name}}</a>
         </div>
         <div class="panel-body">
           <ul>
             <li ng-repeat="article in site.recentArticles">
-              <a analytics-on ng-click="postClickLog(article)" href="#">
+              <a analytics-on ng-click="postClickLogArticle(article)" href="#">
                 <span>
                   {{article.title}}<span class="badge" ng-repeat="tag in article.tags">{{tag}}</span>
                 </span>
