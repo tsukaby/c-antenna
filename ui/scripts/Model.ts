@@ -37,6 +37,10 @@ module Model {
     page:number;
     count:number;
 
+    // 期間範囲指定
+    startDateTime:string;
+    endDateTime:string;
+
     sort:Sort;
   }
 

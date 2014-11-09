@@ -10,7 +10,7 @@ import scalaz.Scalaz._
 object TestUtil {
 
   def getBaseCondition: SimpleSearchCondition = {
-    SimpleSearchCondition(1.some, 10.some, none)
+    SimpleSearchCondition(1.some, 10.some, none, none, none)
   }
 
   def getBaseClickLog: ClickLog = {

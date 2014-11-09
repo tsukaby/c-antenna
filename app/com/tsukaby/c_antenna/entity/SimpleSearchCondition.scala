@@ -2,6 +2,8 @@ package com.tsukaby.c_antenna.entity
 
 import java.net.URLEncoder
 
+import org.joda.time.DateTime
+import org.joda.time.format.ISODateTimeFormat
 import play.api.libs.json.Json
 import play.api.mvc.QueryStringBindable
 
@@ -14,6 +16,9 @@ case class SimpleSearchCondition(
                                   page: Option[Int], // ページ番号 1-origin
                                   count: Option[Int], // 取得する件数
 
+                                  startDateTime: Option[DateTime],
+                                  endDateTime: Option[DateTime],
+
                                   sort: Option[Sort]
                                   )
 
@@ -25,18 +30,34 @@ object SimpleSearchCondition {
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, SimpleSearchCondition]] = {
       val page = params.get("page") match {
         case Some(x) => x.headOption match {
-          case Some(x) => x.toInt
-          case None => 1
+          case Some(x) => x.toInt.some
+          case None => 1.some
         }
-        case None => 1
+        case None => 1.some
       }
 
       val count = params.get("count") match {
         case Some(x) => x.headOption match {
-          case Some(x) => x.toInt
-          case None => 10
+          case Some(x) => x.toInt.some
+          case None => 10.some
         }
-        case None => 10
+        case None => 10.some
+      }
+
+      val startDateTime = params.get("startDateTime") match {
+        case Some(x) => x.headOption match {
+          case Some(x) => ISODateTimeFormat.dateTime().parseDateTime(x).some
+          case None => none
+        }
+        case None => none
+      }
+
+      val endDateTime = params.get("endDateTime") match {
+        case Some(x) => x.headOption match {
+          case Some(x) => ISODateTimeFormat.dateTime().parseDateTime(x).some
+          case None => none
+        }
+        case None => none
       }
 
       val sortKey = params.get("sort[key]") match {
@@ -55,7 +76,7 @@ object SimpleSearchCondition {
         none
       }
 
-      Right(SimpleSearchCondition(page.some, count.some, sort)).some
+      Right(SimpleSearchCondition(page, count, startDateTime, endDateTime, sort)).some
     }
 
     override def unbind(key: String, value: SimpleSearchCondition): String = {

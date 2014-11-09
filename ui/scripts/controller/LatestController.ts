@@ -37,7 +37,7 @@ module LatestControllerModule {
           $scope.condition.page = Number(params.url().page);
           $scope.condition.count = Number(params.url().count);
 
-          $http.get("/api/lately_articles?" + $.param($scope.condition)).success((data:Model.Page<Model.Article>) => {
+          $http.get("/api/articles?" + $.param($scope.condition)).success((data:Model.Page<Model.Article>) => {
             $scope.data = data;
 
             $timeout(() => {

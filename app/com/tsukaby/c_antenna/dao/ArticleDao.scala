@@ -1,6 +1,5 @@
 package com.tsukaby.c_antenna.dao
 
-import com.github.nscala_time.time.Imports._
 import com.tsukaby.c_antenna.VolatilityCache
 import com.tsukaby.c_antenna.db.mapper.ArticleMapper
 import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, SortOrder}
@@ -69,18 +68,6 @@ object ArticleDao {
   }
 
   /**
-   * 検索条件に従って記事を取得します。
-   *
-   * @param condition 検索条件
-   * @return 最新記事の一覧
-   */
-  def getByCondition(condition: SimpleSearchCondition, time: Period): Seq[ArticleMapper] = {
-    val sql = createSql(condition, time, withPaging = true)
-    // cache keyが難しいので一旦キャッシュは保留
-    ArticleMapper.findAllBy(sql).toSeq
-  }
-
-  /**
    * 全体の件数を取得します。
    * @return 件数
    */
@@ -94,15 +81,6 @@ object ArticleDao {
    */
   def countByCondition(condition: SimpleSearchCondition): Long = {
     val sql = createSql(condition, withPaging = false)
-    ArticleMapper.countBy(sql)
-  }
-
-  /**
-   * 全体の件数を取得します。
-   * @return 件数
-   */
-  def countByCondition(condition: SimpleSearchCondition, time: Period): Long = {
-    val sql = createSql(condition, time, withPaging = false)
     ArticleMapper.countBy(sql)
   }
 
@@ -150,38 +128,10 @@ object ArticleDao {
     var sql = sqls.eq(sqls"1", 1)
 
     // where
-
-    // order by
-    sql = condition.sort match {
-      case Some(x) =>
-        if (x.order == SortOrder.Asc) {
-          sql.orderBy(am.column(x.key)).asc
-        } else {
-          sql.orderBy(am.column(x.key)).desc
-        }
-      case None =>
-        sql.orderBy(am.createdAt).desc
+    sql = condition.startDateTime match {
+      case Some(x) => sql.and.gt(am.createdAt, x)
+      case None => sql
     }
-
-    // paging
-    if(withPaging){
-      val page = condition.page.getOrElse(1)
-      val count = condition.count.getOrElse(10)
-      sql = sql.limit(count).offset((page - 1) * count)
-    }
-
-    sql
-  }
-
-  /**
-   * 引数の条件に従ってSQLを作成します。
-   * @param condition 検索条件・ソート条件・ページング条件
-   * @return SQLの一部
-   */
-  private def createSql(condition: SimpleSearchCondition, time: Period, withPaging: Boolean): SQLSyntax = {
-
-    // where
-    var sql = sqls.gt(am.createdAt, DateTime.now - time)
 
     // order by
     sql = condition.sort match {

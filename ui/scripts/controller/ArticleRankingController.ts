@@ -25,6 +25,9 @@ module ArticleRankingControllerModule {
       $scope.condition = new Model.SimpleSearchCondition();
       $scope.condition.page = 1;
       $scope.condition.count = 20;
+      var d = new Date();
+      d.setDate(d.getDate() - 1);
+      $scope.condition.startDateTime = d.toISOString();
       $scope.condition.sort = new Model.Sort("CLICK_COUNT", Model.SortOrder.Desc);
 
       $scope.tableParams = new ngTableParams({
@@ -38,7 +41,7 @@ module ArticleRankingControllerModule {
           $scope.condition.page = Number(params.url().page);
           $scope.condition.count = Number(params.url().count);
 
-          $http.get("/api/ranking_articles?" + $.param($scope.condition)).success((data:Model.Page<Model.Article>) => {
+          $http.get("/api/articles?" + $.param($scope.condition)).success((data:Model.Page<Model.Article>) => {
             $scope.data = data;
 
             $timeout(() => {

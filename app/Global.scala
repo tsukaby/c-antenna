@@ -1,6 +1,6 @@
 import akka.actor.Props
 import com.tsukaby.c_antenna.VolatilityCache
-import com.tsukaby.c_antenna.batch.{RankingActor, SampleActor}
+import com.tsukaby.c_antenna.batch.{RssCrawlActor, RankingActor, SampleActor}
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 import play.api.{Application, GlobalSettings}
