@@ -31,7 +31,7 @@ libraryDependencies ++= Seq(
   "informa" % "informa" % "0.6.0", //RSS取得
   "redis.clients" % "jedis" % "2.6.0", //Redis
   "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
-  "com.github.detro.ghostdriver" % "phantomjsdriver" % "1.1.0", // 画面キャプチャ用
+  "com.github.detro" % "phantomjsdriver" % "1.2.0" exclude("org.seleniumhq.selenium", "jetty-repacked"), // 画面キャプチャ用
   "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
   "com.typesafe.akka" %% "akka-actor" % "2.3.2", // batch用
   "io.spray" %% "spray-client" % "1.3.1", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
@@ -40,7 +40,8 @@ libraryDependencies ++= Seq(
   "com.github.nscala-time" %% "nscala-time" % "1.4.0", // 日付用
   "org.apache.xmlrpc" % "xmlrpc-common" % "3.1.3", //XML RPC
   "org.apache.xmlrpc" % "xmlrpc-client" % "3.1.3", //XML RPC
-  "xml-apis" % "xml-apis" % "2.0.2" //XML RPC
+  "xml-apis" % "xml-apis" % "2.0.2", //XML RPC
+  "com.sksamuel.scrimage" %% "scrimage-core" % "1.4.2"
 )
 
 scalikejdbcSettings

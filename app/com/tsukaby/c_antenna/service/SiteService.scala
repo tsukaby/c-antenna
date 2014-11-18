@@ -12,20 +12,21 @@ import play.api.Logger
 import scalikejdbc.DB
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
+import scalaz.Scalaz._
 
 object SiteService extends BaseService {
-
   /**
    * 引数で指定した検索条件に従ってサイトを取得します。
    * @param condition 条件
    * @return サイトの一覧
    */
-  def getByCondition(condition: SimpleSearchCondition): SitePage = {
+  def getByCondition(condition: SimpleSearchCondition): SitePage = DB readOnly { implicit session =>
     val sites = SiteSummaryDao.getByCondition(condition)
     val count = SiteSummaryDao.countByCondition(condition)
 
     SitePage(sites, count)
   }
+
 
   /**
    * 全てのサイトの情報を取得します。
@@ -33,7 +34,7 @@ object SiteService extends BaseService {
    *
    * @return
    */
-  def getAll: Seq[Site] = {
+  def getAll: Seq[Site] = DB readOnly { implicit session =>
     SiteDao.getAll map (x => dbSitesToSites(x, ArticleDao.getLatelyBySiteId(x.id)))
   }
 
@@ -42,7 +43,7 @@ object SiteService extends BaseService {
    * @param id サイトID
    * @return サイト
    */
-  def getById(id: Long): Option[Site] = {
+  def getById(id: Long): Option[Site] = DB readOnly { implicit session =>
     SiteDao.getById(id) match {
       case Some(x) => x
       case None => None
@@ -69,7 +70,7 @@ object SiteService extends BaseService {
                 // +1は多少未来の投稿時間でも許容する為。
                 // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
 
-                if(ArticleDao.countByUrl(item.getLink.toString) == 0){
+                if (ArticleDao.countByUrl(item.getLink.toString) == 0) {
                   //まだ記事が無い場合
                   // 記事を解析してタグを取得
                   //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
@@ -104,15 +105,13 @@ object SiteService extends BaseService {
   /**
    * 全てのサイトのRSSを取得し、サイト名を最新の状態にします。
    */
-  def refreshSiteName(): Unit = {
-    DB localTx { implicit session =>
-      SiteDao.getAll foreach { x =>
+  def refreshSiteName(): Unit = DB localTx { implicit session =>
+    SiteDao.getAll foreach { x =>
 
-        RssDao.getByUrl(x.rssUrl) match {
-          case Some(rss) =>
-            x.copy(name = rss.getTitle).save()
-          case None =>
-        }
+      RssDao.getByUrl(x.rssUrl) match {
+        case Some(rss) =>
+          x.copy(name = rss.getTitle).save()
+        case None =>
       }
     }
   }
@@ -134,6 +133,20 @@ object SiteService extends BaseService {
       val ret = client.execute("bookmark.getTotalCount", List(x.url))
 
       SiteDao.update(x.copy(hatebuCount = ret.toString.toLong))
+    }
+  }
+
+  /**
+   * サイトのサムネイルを更新します。
+   */
+  def refreshSiteThumbnail(): Unit = DB localTx { implicit session =>
+    SiteDao.getAll.par foreach { x =>
+      if (x.thumbnail.isEmpty) {
+        // サムネ未登録の場合、登録
+        val image = WebScrapingService.getImage(x.url)
+        println(x.name)
+        SiteDao.update(x.copy(thumbnail = image.some))
+      }
     }
   }
 

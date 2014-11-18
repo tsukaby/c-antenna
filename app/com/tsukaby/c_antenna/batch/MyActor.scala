@@ -25,6 +25,14 @@ class SiteNameActor extends Actor {
   }
 }
 
+class SiteThumbnailActor extends Actor {
+  def receive: Actor.Receive = {
+    case e: String =>
+      val result = TimeUtil.time(SiteService.refreshSiteThumbnail())
+      Logger.info(s"サイトのサムネイルを最新状態にしました。 (${result._2.toSeconds} sec)")
+  }
+}
+
 class HatebuActor extends Actor {
   def receive: Actor.Receive = {
     case e: String =>

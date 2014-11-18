@@ -10,6 +10,12 @@
              ng-mousedown="clickLogService.postClickLogSite(site)">{{site.name}}</a>
         </div>
         <div class="panel-body">
+          <div class="text-center">
+            <a analytics-on ng-href="{{site.url}}" target="_blank"
+               ng-mousedown="clickLogService.postClickLogSite(site)">
+              <img src="data:image/jpeg;base64,{{site.thumbnail}}" alt="{{site.name}}" width="100%" height="100%">
+            </a>
+          </div>
           <ul>
             <li ng-repeat="article in site.recentArticles">
               <a analytics-on ng-href="{{article.url}}" target="_blank"

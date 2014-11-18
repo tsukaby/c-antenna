@@ -1,10 +1,13 @@
 package com.tsukaby.c_antenna.service
 
+import java.io.{ByteArrayOutputStream, FileInputStream}
+
+import com.sksamuel.scrimage.{Format, Image, Position}
 import com.tsukaby.c_antenna.dao.RssDao
 import de.nava.informa.core.ChannelIF
-import org.openqa.selenium.By
 import org.openqa.selenium.phantomjs.{PhantomJSDriver, PhantomJSDriverService}
 import org.openqa.selenium.remote.DesiredCapabilities
+import org.openqa.selenium.{By, Dimension, OutputType}
 
 import scala.collection.JavaConverters._
 import scalaz.Scalaz._
@@ -49,6 +52,31 @@ object WebScrapingService extends BaseService {
     } else {
       Option(str)
     }
+  }
+
+  def getImage(url: String): Array[Byte] = {
+    implicit val driverTmp = new PhantomJSDriver()
+    driverTmp.get(url)
+    driverTmp.manage().window().setSize(new Dimension(1024, 768))
+    val file = driverTmp.getScreenshotAs(OutputType.FILE)
+
+    val fis = new FileInputStream(file)
+    // 横幅を400に変更 GhostDriver側ではあくまでウィンドウのサイズを設定できるだけで、キャプチャは意図通りのサイズにならない
+    // そのため、ここで400に変更
+    // 縦を100にして保存
+    //val img = Image(fis).scaleToWidth(400).resizeTo(400, 100, Position.TopLeft)
+    val img = Image(fis).scaleToWidth(400).resizeTo(400, 100, Position.TopLeft).writer(Format.JPEG).withCompression(80)
+
+    fis.close()
+    driverTmp.close()
+
+
+    val baos = new ByteArrayOutputStream()
+    img.write(baos)
+    val result = baos.toByteArray
+    baos.close()
+
+    result
   }
 
   def getTitle(url: String): String = {
