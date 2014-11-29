@@ -3,6 +3,7 @@ package com.tsukaby.c_antenna.service
 import java.net.URL
 
 import com.tsukaby.c_antenna.dao.{SiteSummaryDao, ArticleDao, RssDao, SiteDao}
+import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, Site, SitePage}
 import de.nava.informa.core.ItemIF
@@ -50,13 +51,8 @@ object SiteService extends BaseService {
     }
   }
 
-  def crawl: Unit = {
-    val sites = SiteDao.getAll
-
-    sites.par foreach (site => {
-
+  def crawl(site: SiteMapper): Unit = {
       Logger.info(s"サイト情報を更新します。${site.name}")
-      //val updatedSite = SiteDao.update(site.copy(crawledAt = new DateTime()))
 
       RssDao.getByUrl(site.rssUrl) match {
         case Some(channel) =>
@@ -87,7 +83,6 @@ object SiteService extends BaseService {
           }
         case None =>
       }
-    })
   }
 
   private def getTags(articleUrl: String, cssSelector: String): Seq[(String, Int)] = {

@@ -1,5 +1,6 @@
 package com.tsukaby.c_antenna.controller
 
+import com.tsukaby.c_antenna.dao.SiteDao
 import com.tsukaby.c_antenna.service.{ClickLogService, SiteService}
 import play.api.mvc.{Action, Controller}
 
@@ -9,7 +10,9 @@ import play.api.mvc.{Action, Controller}
 trait DebugController extends Controller {
 
   def runRssCrawl = Action {
-    SiteService.crawl
+    SiteDao.getAll.par foreach { x =>
+      SiteService.crawl(x)
+    }
     Ok("done")
   }
 

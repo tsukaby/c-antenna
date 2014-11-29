@@ -1,7 +1,8 @@
 package com.tsukaby.c_antenna.batch
 
 import akka.actor.Actor
-import com.tsukaby.c_antenna.service.{ClickLogService, SiteService}
+import com.tsukaby.c_antenna.dao.SiteDao
+import com.tsukaby.c_antenna.service._
 import com.tsukaby.c_antenna.util.TimeUtil
 import play.api.Logger
 
@@ -11,7 +12,13 @@ import play.api.Logger
 class RssCrawlActor extends Actor {
   def receive: Actor.Receive = {
     case e: String =>
-      val result = TimeUtil.time(SiteService.crawl)
+      val result = TimeUtil.time({
+        val sites = SiteDao.getAll
+        sites.par foreach { site =>
+          SiteService.crawl(site)
+        }
+      })
+
       Logger.info(s"クロールに成功しました！ (${result._2.toSeconds} sec)")
   }
 
