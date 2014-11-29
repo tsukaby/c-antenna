@@ -14,28 +14,21 @@ object Global extends GlobalSettings {
     super.onStart(app)
 
     // 各サイトをクロールしてRSSを最新に保つバッチ実行登録
-    Akka.system.scheduler.schedule(10.minutes, 10.minutes, Akka.system.actorOf(Props[RssCrawlActor]), "")
-
-    // TODO
-    Akka.system.scheduler.schedule(10.seconds, 1000.minutes, Akka.system.actorOf(Props[SiteThumbnailActor]), "")
+    Akka.system.scheduler.schedule(10.seconds, 10.minutes, Akka.system.actorOf(Props[RssCrawlActor]), "")
 
     // クリックのランキングを保存するバッチ実行登録
     Akka.system.scheduler.schedule(5.minutes, 5.minutes, Akka.system.actorOf(Props[RankingActor]), "")
 
-    val destinationActorRef = Akka.system.actorOf(Props[SiteNameActor])
     val quartzActor = Akka.system.actorOf(Props[QuartzActor])
-    // サイト名を最新に保つバッチ実行登録
-    quartzActor ! AddCronSchedule(destinationActorRef, "0 0 3 * * ?", "Refresh site name")
 
-    val thumbActorRef = Akka.system.actorOf(Props[SiteThumbnailActor])
-    val quartzActorForThumb = Akka.system.actorOf(Props[QuartzActor])
     // サイト名を最新に保つバッチ実行登録
-    quartzActorForThumb ! AddCronSchedule(thumbActorRef, "0 0 4 * * ?", "Refresh site thumbnail")
+    quartzActor ! AddCronSchedule(Akka.system.actorOf(Props[SiteNameActor]), "0 0 3 * * ?", "Refresh site name")
 
-    val hatebuActorRef = Akka.system.actorOf(Props[HatebuActor])
-    val quartzActorForHatebu = Akka.system.actorOf(Props[QuartzActor])
+    // サイト名を最新に保つバッチ実行登録
+    quartzActor ! AddCronSchedule(Akka.system.actorOf(Props[SiteThumbnailActor]), "0 0 4 * * ?", "Refresh site thumbnail")
+
     // サイトランキングを最新に保つバッチ実行登録
-    quartzActorForHatebu ! AddCronSchedule(hatebuActorRef, "0 0 4 * * ?", "Refresh site name")
+    quartzActor ! AddCronSchedule(Akka.system.actorOf(Props[HatebuActor]), "0 0 4 * * ?", "Refresh site name")
 
     // キャッシュ削除
     VolatilityCache.flushDB()
