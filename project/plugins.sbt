@@ -2,10 +2,6 @@ logLevel := Level.Warn
 
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
-libraryDependencies ++= Seq(
-  "mysql" % "mysql-connector-java" % "5.1.33"
-)
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.6")
 
-addSbtPlugin("org.scalikejdbc" %% "scalikejdbc-mapper-generator" % "2.1.2")
-
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.5")
+addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")

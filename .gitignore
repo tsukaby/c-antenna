@@ -6,8 +6,8 @@ target
 tmp
 .history
 dist
-/.idea
-/*.iml
+.idea
+*.iml
 /out
 /.idea_modules
 /.classpath
@@ -23,8 +23,8 @@ node_modules
 typings
 .sass-cache
 .tscache
-/ui/**/*.css
-/ui/**/*.js
-/ui/**/*.map
+/modules/layered-application/ui/**/*.css
+/modules/layered-application/ui/**/*.js
+/modules/layered-application/ui/**/*.map
 tscommand-*.tmp.txt
 test-results.xml

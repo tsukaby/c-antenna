@@ -1,10 +1,10 @@
-import play.PlayScala
+import sbt.Keys._
+
+name := """LayeredInfrastructure"""
+
+version := "1.0-SNAPSHOT"
 
 scalaVersion := "2.11.4"
-
-name := "c-antenna"
-
-version := "1.0"
 
 conflictWarning := ConflictWarning.disable
 
@@ -17,6 +17,8 @@ resolvers += "ATILIKA dependencies" at "http://www.atilika.org/nexus/content/rep
 resolvers += "Sedis Repo" at "http://pk11-scratch.googlecode.com/svn/trunk"
 
 resolvers += "Akka-Quartz Repo" at "http://repo.theatr.us"
+
+lazy val layeredInfrastructure = project in file(".")
 
 libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.33",
@@ -42,16 +44,3 @@ libraryDependencies ++= Seq(
   "xml-apis" % "xml-apis" % "2.0.2", //XML RPC
   "com.sksamuel.scrimage" %% "scrimage-core" % "1.4.2"
 )
-
-lazy val root = (project in file("."))
-  .aggregate(layeredApplication, layeredDomain, layeredInfrastructure)
-  .dependsOn(layeredApplication, layeredDomain, layeredInfrastructure)
-
-lazy val layeredApplication = (project in file("modules/layered-application"))
-  .enablePlugins(PlayScala)
-  .dependsOn(layeredDomain, layeredInfrastructure)
-
-lazy val layeredDomain = (project in file("modules/layered-domain"))
-  .dependsOn(layeredInfrastructure)
-
-lazy val layeredInfrastructure = project in file("modules/layered-infrastructure")
