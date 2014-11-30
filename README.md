@@ -1,5 +1,35 @@
 # カテゴリアンテナ
 
+### Setup
+
+    brew install mysql
+    brew install nodejs
+    brew install ruby
+    gem install -g compass
+    node install -g grunt-cli
+
+### Install
+
+    cd modules/layered-application
+    npm install
+    grunt setup
+    grunt
+    cd ../../
+
+### Run
+
+    sbt run
+
+### Test
+
+    sbt test
+    cd modules/layered-application
+    grunt test
+
+### Deploy
+
+    ./setup/deploy_to_server.sh
+
 ### memo
 
 my.cnf

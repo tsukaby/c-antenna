@@ -51,37 +51,37 @@ trait SiteService extends BaseService {
   }
 
   def crawl(site: SiteMapper): Unit = {
-      Logger.info(s"サイト情報を更新します。${site.name}")
+    Logger.info(s"サイト情報を更新します。${site.name}")
 
-      RssDao.getByUrl(site.rssUrl) match {
-        case Some(channel) =>
-          // サイト情報更新
-          channel.getItems.asScala.par foreach {
-            // RSS記事URL更新
-            case (item: ItemIF) =>
+    RssDao.getByUrl(site.rssUrl) match {
+      case Some(channel) =>
+        // サイト情報更新
+        channel.getItems.asScala.par foreach {
+          // RSS記事URL更新
+          case (item: ItemIF) =>
 
-              if (new DateTime(item.getDate).isBefore(new DateTime().plusHours(1))) {
-                // RSS記事の日付が現在日時+1時間より前に作成されたものであればDB格納
-                // +1は多少未来の投稿時間でも許容する為。
-                // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
+            if (new DateTime(item.getDate).isBefore(new DateTime().plusHours(1))) {
+              // RSS記事の日付が現在日時+1時間より前に作成されたものであればDB格納
+              // +1は多少未来の投稿時間でも許容する為。
+              // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
 
-                if (ArticleDao.countByUrl(item.getLink.toString) == 0) {
-                  //まだ記事が無い場合
-                  // 記事を解析してタグを取得
-                  //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
-                  val tmp = Seq[(String, Int)]()
-                  val tags = if (tmp.length == 0) {
-                    None
-                  } else {
-                    Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
-                  }
-                  // DB登録
-                  ArticleDao.create(site.id, item.getLink.toString, item.getTitle, tags, 0, new DateTime(item.getDate))
+              if (ArticleDao.countByUrl(item.getLink.toString) == 0) {
+                //まだ記事が無い場合
+                // 記事を解析してタグを取得
+                //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
+                val tmp = Seq[(String, Int)]()
+                val tags = if (tmp.length == 0) {
+                  None
+                } else {
+                  Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
                 }
+                // DB登録
+                ArticleDao.create(site.id, item.getLink.toString, item.getTitle, tags, 0, new DateTime(item.getDate))
               }
-          }
-        case None =>
-      }
+            }
+        }
+      case None =>
+    }
   }
 
   private def getTags(articleUrl: String, cssSelector: String): Seq[(String, Int)] = {

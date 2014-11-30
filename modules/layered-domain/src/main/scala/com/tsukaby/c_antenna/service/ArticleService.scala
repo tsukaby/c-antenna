@@ -7,7 +7,7 @@ import com.tsukaby.c_antenna.entity.{ArticlePage, SimpleSearchCondition}
 /**
  * 記事に関する処理を行うクラスです。
  */
-trait ArticleService {
+trait ArticleService extends BaseService {
 
   /**
    * 検索条件にマッチする記事を取得します。
