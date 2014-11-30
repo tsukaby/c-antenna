@@ -1,7 +1,7 @@
-import play.PlayImport.PlayKeys.playRunHooks
 import play.PlayScala
+import play.PlayImport.PlayKeys._
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.4"
 
 name := "c-antenna"
 
@@ -9,46 +9,21 @@ version := "1.0"
 
 conflictWarning := ConflictWarning.disable
 
-javaOptions in Test += "-Dconfig.file=conf/test.conf"
+lazy val root = (project in file("."))
+  .aggregate(layeredApplication, layeredDomain, layeredInfrastructure)
+  .dependsOn(layeredApplication, layeredDomain, layeredInfrastructure).enablePlugins(PlayScala)
 
-resolvers += "Maven Central Server" at "http://repo1.maven.org/maven2"
+lazy val layeredApplication = (project in file("modules/layered-application"))
+  .enablePlugins(PlayScala)
+  .dependsOn(
+    layeredDomain % "test->test;test->compile;compile->compile",
+    layeredInfrastructure % "test->test;compile->compile")
+  .settings(
+    // QueryPathBinderを使う為に以下をroutesにインポート
+    routesImport += "com.tsukaby.c_antenna.controller.Implicits._"
+  )
 
-resolvers += "ATILIKA dependencies" at "http://www.atilika.org/nexus/content/repositories/atilika"
+lazy val layeredDomain = (project in file("modules/layered-domain"))
+  .dependsOn(layeredInfrastructure % "test->test;test->compile;compile->compile")
 
-resolvers += "Sedis Repo" at "http://pk11-scratch.googlecode.com/svn/trunk"
-
-resolvers += "Akka-Quartz Repo" at "http://repo.theatr.us"
-
-libraryDependencies ++= Seq(
-  "mysql" % "mysql-connector-java" % "5.1.33",
-  "org.scalikejdbc" %% "scalikejdbc" % "2.1.2",
-  "org.scalikejdbc" %% "scalikejdbc-config" % "2.1.2",
-  "org.scalikejdbc" %% "scalikejdbc-play-plugin" % "2.3.2",
-  "org.scalikejdbc" %% "scalikejdbc-play-fixture-plugin" % "2.3.2",
-  "org.scalikejdbc" %% "scalikejdbc-test" % "2.1.2" % "test",
-  "com.h2database" % "h2" % "1.4.181" % "test",
-  "ch.qos.logback" % "logback-classic" % "1.1.2",
-  "informa" % "informa" % "0.6.0", //RSS取得
-  "redis.clients" % "jedis" % "2.6.0", //Redis
-  "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
-  "com.github.detro" % "phantomjsdriver" % "1.2.0" exclude("org.seleniumhq.selenium", "jetty-repacked"), // 画面キャプチャ用
-  "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
-  "com.typesafe.akka" %% "akka-actor" % "2.3.2", // batch用
-  "io.spray" %% "spray-client" % "1.3.1", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
-  "org.scalaz" %% "scalaz-core" % "7.0.6", // より良い構文のため
-  "us.theatr" %% "akka-quartz" % "0.3.0", // cron形式でジョブ登録・実行するためのもの
-  "com.github.nscala-time" %% "nscala-time" % "1.4.0", // 日付用
-  "org.apache.xmlrpc" % "xmlrpc-common" % "3.1.3", //XML RPC
-  "org.apache.xmlrpc" % "xmlrpc-client" % "3.1.3", //XML RPC
-  "xml-apis" % "xml-apis" % "2.0.2", //XML RPC
-  "com.sksamuel.scrimage" %% "scrimage-core" % "1.4.2"
-)
-
-scalikejdbcSettings
-
-playRunHooks <+= baseDirectory.map(base => Grunt(base))
-
-lazy val root = (project in file(".")).settings(
-  unmanagedResourceDirectories in Assets += baseDirectory.value / "ui",
-  excludeFilter in Assets := "*.ts" || "scss" || "*.map" || "test" || "typings"
-).enablePlugins(PlayScala)
+lazy val layeredInfrastructure = project in file("modules/layered-infrastructure")
