@@ -5,7 +5,7 @@ import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
 import com.tsukaby.c_antenna.entity.ClickLog
 import scalikejdbc.DB
 
-object ClickLogService extends BaseService {
+trait ClickLogService extends BaseService {
 
   def storeClickLog(clickLog: ClickLog) {
     clickLog.siteId match {
@@ -53,3 +53,5 @@ object ClickLogService extends BaseService {
     }
   }
 }
+
+object ClickLogService extends ClickLogService

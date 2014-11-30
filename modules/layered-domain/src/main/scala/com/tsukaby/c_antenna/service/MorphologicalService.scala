@@ -7,7 +7,7 @@ import scala.collection.JavaConverters._
 /**
  * 形態素解析処理を行うサービスです。
  */
-object MorphologicalService extends BaseService {
+trait MorphologicalService extends BaseService {
 
   private val tokenizer: Tokenizer = Tokenizer.builder().userDictionary("conf/my-userdict.txt").build()
 
@@ -53,3 +53,5 @@ object MorphologicalService extends BaseService {
 
   }
 }
+
+object MorphologicalService extends MorphologicalService

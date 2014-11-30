@@ -15,7 +15,7 @@ import scalaz.Scalaz._
 /**
  * Webスクレイピング処理を行うクラスです。
  */
-object WebScrapingService extends BaseService {
+trait WebScrapingService extends BaseService {
 
   private val driver: PhantomJSDriver = new PhantomJSDriver({
     val dcap = new DesiredCapabilities()
@@ -132,3 +132,5 @@ object WebScrapingService extends BaseService {
 
 
 }
+
+object WebScrapingService extends WebScrapingService

@@ -2,26 +2,23 @@ package com.tsukaby.c_antenna.controller
 
 import com.tsukaby.c_antenna.entity.ClickLog
 import com.tsukaby.c_antenna.service.ClickLogService
-import play.api.libs.json.{Json, JsError, JsSuccess}
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Action
+import spray.json._
 
 /**
  * クリックログを保存して記事などのランキングを作成するコントローラです。
  */
-trait ClickLogController extends Controller {
+trait ClickLogController extends BaseController {
 
   def clickLog = Action { request =>
 
-    implicit val format = Json.format[ClickLog]
-
-    val clickLog = request.body.asJson.get.validate[ClickLog] match {
-      case JsSuccess(value, path) => value
-      case JsError(errors) => throw new IllegalArgumentException(errors.toString())
+    request.body.asText match {
+      case None => BadRequest("Invalidated.")
+      case Some(x) =>
+        val clickLog = x.parseJson.convertTo[ClickLog]
+        ClickLogService.storeClickLog(clickLog)
+        Ok("")
     }
-
-    ClickLogService.storeClickLog(clickLog)
-
-    Ok("")
   }
 }
 

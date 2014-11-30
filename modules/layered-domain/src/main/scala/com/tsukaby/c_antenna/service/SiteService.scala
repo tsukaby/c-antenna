@@ -14,7 +14,7 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scalaz.Scalaz._
 
-object SiteService extends BaseService {
+trait SiteService extends BaseService {
   /**
    * 引数で指定した検索条件に従ってサイトを取得します。
    * @param condition 条件
@@ -145,3 +145,5 @@ object SiteService extends BaseService {
   }
 
 }
+
+object SiteService extends SiteService

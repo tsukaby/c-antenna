@@ -11,7 +11,7 @@ import scalaz.Scalaz._
 /**
  * 記事に関する操作を行います。
  */
-object ArticleDao {
+trait ArticleDao {
 
   private val am = ArticleMapper.am
 
@@ -61,7 +61,7 @@ object ArticleDao {
    * @param condition 検索条件
    * @return 最新記事の一覧
    */
-  def getByCondition(condition: SimpleSearchCondition): Seq[ArticleMapper] = {
+  def getByCondition(condition: SimpleSearchCondition): Seq[ArticleMapper] = DB readOnly { session =>
     val sql = createSql(condition, withPaging = true)
     // cache keyが難しいので一旦キャッシュは保留
     ArticleMapper.findAllBy(sql).toSeq
@@ -88,7 +88,7 @@ object ArticleDao {
    * 全体の件数を取得します。
    * @return 件数
    */
-  def countByCondition(condition: SimpleSearchCondition): Long = {
+  def countByCondition(condition: SimpleSearchCondition): Long = DB readOnly { session =>
     val sql = createSql(condition, withPaging = false)
     ArticleMapper.countBy(sql)
   }
@@ -164,3 +164,5 @@ object ArticleDao {
     sql
   }
 }
+
+object ArticleDao extends ArticleDao

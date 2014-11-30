@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.controller
 
-import com.tsukaby.c_antenna.BaseSpecification
+import com.tsukaby.c_antenna.service._
 import com.tsukaby.c_antenna.entity.ArticlePage
 import com.tsukaby.c_antenna.util.TestUtil._
 import play.api.mvc.Result
@@ -10,13 +10,16 @@ import spray.json._
 import scala.concurrent.Future
 import scalaz.Scalaz._
 
-class ArticleControllerSpec extends BaseSpecification {
+class ArticleControllerSpec extends BaseControllerSpecification {
 
   val TargetClass = ArticleController
 
   s"$TargetClass#lately" should {
 
     "記事一覧が取得できること" in new WithApplication {
+      val mockArticleService = mock[ArticleService]
+      mockArticleService.getByCondition(getBaseCondition) returns ArticlePage(Seq(getBaseArticle), 1)
+
       val res = TargetClass.showAll(getBaseCondition)(FakeRequest())
 
       val page = res.convertTo[ArticlePage]

@@ -8,7 +8,7 @@ import scalikejdbc._
 /**
  * サイトに関する操作を行います。
  */
-object SiteDao {
+trait SiteDao {
 
   private val sm = SiteMapper.sm
 
@@ -95,3 +95,5 @@ object SiteDao {
   }
 
 }
+
+object SiteDao extends SiteDao

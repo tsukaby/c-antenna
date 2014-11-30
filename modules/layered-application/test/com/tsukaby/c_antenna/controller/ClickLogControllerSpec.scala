@@ -1,12 +1,11 @@
 package com.tsukaby.c_antenna.controller
 
-import com.tsukaby.c_antenna.BaseSpecification
 import com.tsukaby.c_antenna.cache.VolatilityCache
 import com.tsukaby.c_antenna.util.TestUtil._
 import play.api.test.{FakeRequest, WithApplication}
 import spray.json._
 
-class ClickLogControllerSpec extends BaseSpecification {
+class ClickLogControllerSpec extends BaseControllerSpecification {
 
   val TargetClass = ClickLogController
 

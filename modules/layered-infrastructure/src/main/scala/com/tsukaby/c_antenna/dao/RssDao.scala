@@ -11,7 +11,7 @@ import scalaz.Scalaz._
 /**
  * informaライブラリを利用してRSSを取得するクラスです。
  */
-object RssDao {
+trait RssDao {
   def getByUrl(rssUrl: String): Option[ChannelIF] = {
 
     // RSSは常に変化するのでキャッシュしない
@@ -33,3 +33,5 @@ object RssDao {
     }
   }
 }
+
+object RssDao extends RssDao

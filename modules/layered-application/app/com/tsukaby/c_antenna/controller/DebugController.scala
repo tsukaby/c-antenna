@@ -2,12 +2,12 @@ package com.tsukaby.c_antenna.controller
 
 import com.tsukaby.c_antenna.dao.SiteDao
 import com.tsukaby.c_antenna.service.{ClickLogService, SiteService}
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Action
 
 /**
  * デバッグ用のコントローラ
  */
-trait DebugController extends Controller {
+trait DebugController extends BaseController {
 
   def runRssCrawl = Action {
     SiteDao.getAll.par foreach { x =>

@@ -8,6 +8,8 @@ scalaVersion := "2.11.4"
 
 conflictWarning := ConflictWarning.disable
 
+javaOptions in Test += "-Dconfig.file=test.conf"
+
 libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.33",
   "org.scalikejdbc" %% "scalikejdbc" % "2.2.+",

@@ -40,5 +40,7 @@ libraryDependencies ++= Seq(
   "org.apache.xmlrpc" % "xmlrpc-common" % "3.1.3", //XML RPC
   "org.apache.xmlrpc" % "xmlrpc-client" % "3.1.3", //XML RPC
   "xml-apis" % "xml-apis" % "2.0.2", //XML RPC
-  "com.sksamuel.scrimage" %% "scrimage-core" % "1.4.2"
+  "com.sksamuel.scrimage" %% "scrimage-core" % "1.4.2",
+  "org.specs2" %% "specs2-core" % "2.3.13" % "test",
+  "org.specs2" %% "specs2-mock" % "2.3.13" % "test"
 )

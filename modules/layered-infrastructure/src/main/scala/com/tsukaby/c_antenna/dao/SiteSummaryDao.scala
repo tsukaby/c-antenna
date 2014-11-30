@@ -8,7 +8,7 @@ import scalikejdbc._
 /**
  * サイトに関する操作を行います。
  */
-object SiteSummaryDao {
+trait SiteSummaryDao {
 
   private val ssm = SiteSummaryMapper.ssm
 
@@ -81,3 +81,5 @@ object SiteSummaryDao {
   }
 
 }
+
+object SiteSummaryDao extends SiteSummaryDao

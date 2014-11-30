@@ -1,6 +1,5 @@
 package com.tsukaby.c_antenna.controller
 
-import com.tsukaby.c_antenna.BaseSpecification
 import com.tsukaby.c_antenna.entity.SitePage
 import com.tsukaby.c_antenna.util.TestUtil._
 import play.api.mvc.Result
@@ -10,7 +9,7 @@ import spray.json._
 import scala.concurrent.Future
 import scalaz.Scalaz._
 
-class SiteControllerSpec extends BaseSpecification {
+class SiteControllerSpec extends BaseControllerSpecification {
 
   val TargetClass = SiteController
 
