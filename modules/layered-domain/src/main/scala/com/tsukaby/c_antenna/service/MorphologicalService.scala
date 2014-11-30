@@ -1,6 +1,5 @@
 package com.tsukaby.c_antenna.service
 
-import ch.qos.logback.core.subst.Tokenizer
 import org.atilika.kuromoji.Tokenizer
 
 import scala.collection.JavaConverters._

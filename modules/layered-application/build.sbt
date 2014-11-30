@@ -1,4 +1,3 @@
-import play.PlayScala
 import sbt.Keys._
 
 //playRunHooks <+= baseDirectory.map(base => Grunt(base))
@@ -19,13 +18,6 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc-config" % "2.2.+",
   "org.scalikejdbc" %% "scalikejdbc-play-plugin" % "2.3.4",
   "org.scalikejdbc" %% "scalikejdbc-play-fixture-plugin" % "2.3.4",
-  "org.scalikejdbc" %% "scalikejdbc-test" % "2.2.+" % "test"
+  "org.scalikejdbc" %% "scalikejdbc-test" % "2.2.+" % "test",
+  "io.spray" %%  "spray-json" % "1.3.1"
 )
-
-lazy val layeredDomain = (project in file("../layered-domain")).enablePlugins(PlayScala)
-
-lazy val layeredInfrastructure = project in file("../layered-infrastructure")
-
-lazy val layeredApplication = (project in file("."))
-  .enablePlugins(PlayScala)
-  .dependsOn(layeredDomain, layeredInfrastructure)

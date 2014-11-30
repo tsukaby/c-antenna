@@ -1,9 +1,9 @@
 package com.tsukaby.c_antenna.service
 
-import org.specs2.mutable.Specification
-import play.api.test.{PlaySpecification, WithApplication}
+import com.tsukaby.c_antenna.BaseSpecification
+import play.api.test.WithApplication
 
-object MorphologicalServiceSpec extends Specification with PlaySpecification {
+class MorphologicalServiceSpec extends BaseSpecification {
 
   val TargetClass = MorphologicalService
 

@@ -8,11 +8,6 @@ scalaVersion := "2.11.4"
 
 conflictWarning := ConflictWarning.disable
 
-lazy val layeredInfrastructure = project in file("../layered-infrastructure")
-
-lazy val layeredDomain = (project in file("."))
-  .dependsOn(layeredInfrastructure)
-
 libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.33",
   "org.scalikejdbc" %% "scalikejdbc" % "2.2.+",

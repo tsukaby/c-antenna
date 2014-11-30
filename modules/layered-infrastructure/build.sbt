@@ -18,8 +18,6 @@ resolvers += "Sedis Repo" at "http://pk11-scratch.googlecode.com/svn/trunk"
 
 resolvers += "Akka-Quartz Repo" at "http://repo.theatr.us"
 
-lazy val layeredInfrastructure = project in file(".")
-
 libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.33",
   "org.scalikejdbc" %% "scalikejdbc" % "2.2.+",

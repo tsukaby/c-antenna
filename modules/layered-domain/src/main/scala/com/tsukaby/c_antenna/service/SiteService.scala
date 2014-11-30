@@ -9,7 +9,6 @@ import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, Site, SitePage}
 import de.nava.informa.core.ItemIF
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
-import play.api.Logger
 import scalikejdbc.DB
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._

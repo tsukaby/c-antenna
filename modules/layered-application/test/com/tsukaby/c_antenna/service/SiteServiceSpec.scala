@@ -1,12 +1,12 @@
 package com.tsukaby.c_antenna.service
 
+import com.tsukaby.c_antenna.BaseSpecification
 import com.tsukaby.c_antenna.util.TestUtil._
-import org.specs2.mutable.Specification
-import play.api.test.{PlaySpecification, WithApplication}
+import play.api.test.WithApplication
 
 import scalaz.Scalaz._
 
-object SiteServiceSpec extends Specification with PlaySpecification {
+class SiteServiceSpec extends BaseSpecification {
 
   val TargetClass = SiteService
 

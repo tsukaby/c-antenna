@@ -1,11 +1,11 @@
 package com.tsukaby.c_antenna.service
 
-import com.tsukaby.c_antenna.VolatilityCache
+import com.tsukaby.c_antenna.BaseSpecification
+import com.tsukaby.c_antenna.cache.VolatilityCache
 import com.tsukaby.c_antenna.util.TestUtil._
-import org.specs2.mutable.Specification
-import play.api.test.{PlaySpecification, WithApplication}
+import play.api.test.WithApplication
 
-object ClickLogServiceSpec extends Specification with PlaySpecification {
+class ClickLogServiceSpec extends BaseSpecification {
 
   val TargetClass = ClickLogService
 

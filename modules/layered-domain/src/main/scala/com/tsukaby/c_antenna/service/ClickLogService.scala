@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.service
 
-import com.tsukaby.c_antenna.VolatilityCache
+import com.tsukaby.c_antenna.cache.VolatilityCache
 import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
 import com.tsukaby.c_antenna.entity.ClickLog
 import scalikejdbc.DB

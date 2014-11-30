@@ -1,16 +1,16 @@
 package com.tsukaby.c_antenna.controller
 
+import com.tsukaby.c_antenna.BaseSpecification
+import com.tsukaby.c_antenna.entity.SitePage
 import com.tsukaby.c_antenna.util.TestUtil._
-import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, SitePage}
-import org.specs2.mutable.Specification
-import play.api.libs.json.{JsError, JsSuccess}
 import play.api.mvc.Result
-import play.api.test.{FakeRequest, PlaySpecification, WithApplication}
+import play.api.test.{FakeRequest, WithApplication}
+import spray.json._
 
 import scala.concurrent.Future
 import scalaz.Scalaz._
 
-object SiteControllerSpec extends Specification with PlaySpecification {
+class SiteControllerSpec extends BaseSpecification {
 
   val TargetClass = SiteController
 
@@ -19,7 +19,7 @@ object SiteControllerSpec extends Specification with PlaySpecification {
     "サイト一覧が取得できること" in new WithApplication {
       val res = TargetClass.showAll(getBaseCondition)(FakeRequest())
 
-      val page: SitePage = res
+      val page: SitePage = res.convertTo[SitePage]
 
       status(res) must be equalTo OK
       contentType(res) must beSome("application/json")
@@ -29,17 +29,14 @@ object SiteControllerSpec extends Specification with PlaySpecification {
     "取得件数を1件にした場合、１件だけ取得できること" in new WithApplication {
       val res = TargetClass.showAll(getBaseCondition.copy(count = 1.some))(FakeRequest())
 
-      val page: SitePage = res
+      val page: SitePage = res.convertTo[SitePage]
 
       status(res) must be equalTo OK
       page.items.size must be equalTo 1
     }
   }
 
-  implicit def responseToPage(res: Future[Result]): SitePage = {
-    contentAsJson(res).validate[SitePage] match {
-      case JsSuccess(value, path) => value
-      case JsError(errors) => throw new IllegalStateException(errors.toString())
-    }
+  implicit def responseToPage[T](res: Future[Result]): JsValue = {
+    contentAsString(res).parseJson
   }
 }
