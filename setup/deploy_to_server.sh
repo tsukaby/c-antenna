@@ -2,10 +2,18 @@
 
 # SCPとSSHを使ってリモートサーバにアプリをデプロイします。
 
-# ビルド
+# フロントビルド
+cd modules/layered-application
+npm install
+grunt clean
+grunt setup
+grunt
+cd ../../
+
+# サーバビルド
 sbt clean stage
 # リセット
-ssh -t sakura2_app "if [[ -e c-antenna/RUNNING_PID ]]; then sudo kill `cat c-antenna/RUNNING_PID`; else echo NOT RUNNING; fi; sudo rm -rf ~/c-antenna"
+ssh -t sakura2_app "if [[ -e c-antenna/RUNNING_PID ]]; then sudo kill -9 `cat c-antenna/RUNNING_PID`; else echo NOT RUNNING; fi; sudo rm -rf ~/c-antenna"
 
 cp setup/run_play.sh target/universal/stage/
 
