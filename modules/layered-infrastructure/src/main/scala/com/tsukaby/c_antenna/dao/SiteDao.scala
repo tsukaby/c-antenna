@@ -12,13 +12,15 @@ trait SiteDao {
 
   private val sm = SiteMapper.sm
 
+  private val expireSeconds = 60 * 60 * 3
+
   /**
    * サイトを取得します。
    *
    * @param id 取得するサイトのID
    */
   def getById(id: Long): Option[SiteMapper] = {
-    VolatilityCache.getOrElse[Option[SiteMapper]](s"site:$id", 300) {
+    VolatilityCache.getOrElse[Option[SiteMapper]](s"site:$id", expireSeconds) {
       SiteMapper.find(id)
     }
   }
@@ -29,22 +31,10 @@ trait SiteDao {
    * @return サイトの一覧
    */
   def getAll: Seq[SiteMapper] = {
-    SiteMapper.findAll()
-    /*
-    Redis.getOrElse[Seq[SiteMapper]](s"siteAll", 300) {
-      SiteMapper.findAll()
-    }*/
-  }
 
-  /**
-   * クロールすべきサイトを取得します。
-   * クロールすべきサイトとは前回クロールした日付が古いサイトのことです。
-   *
-   * @param amount 取得する件数
-   * @return クロールすべきサイトの一覧
-   */
-  def getOldCrawledSite(amount: Int): Seq[SiteMapper] = {
-    SiteMapper.findAll().sortWith(_.crawledAt.getMillis < _.crawledAt.getMillis).take(amount).toSeq
+    VolatilityCache.getOrElse[Seq[SiteMapper]](s"siteAll", expireSeconds) {
+      SiteMapper.findAll().toSeq
+    }
   }
 
   /**
@@ -63,7 +53,9 @@ trait SiteDao {
    * @return 件数
    */
   def countAll: Long = {
-    SiteMapper.countAll()
+    VolatilityCache.getOrElse[Long](s"siteAllCount", expireSeconds) {
+      SiteMapper.countAll()
+    }
   }
 
   /**
@@ -83,8 +75,9 @@ trait SiteDao {
    * @param site 更新や削除によって作られたオブジェクト
    */
   def refreshCache(site: SiteMapper): Unit = {
-    VolatilityCache.set(s"site:${site.id}", Some(site), 300)
+    VolatilityCache.set(s"site:${site.id}", Some(site), expireSeconds)
     VolatilityCache.remove(s"siteAll")
+    VolatilityCache.remove(s"siteAllCount")
   }
 
   // TODO 共通かできたら考える 多分引数変わるから無理
