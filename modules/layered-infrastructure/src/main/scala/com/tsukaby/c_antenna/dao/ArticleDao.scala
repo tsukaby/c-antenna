@@ -28,7 +28,8 @@ trait ArticleDao {
    */
   def create(siteId: Long, url: String, title: String, tags: Option[String], clickCount: Long, createdAt: DateTime): ArticleMapper = {
     val createdArticle = ArticleMapper.create(siteId, url, title, tags, clickCount, createdAt)
-    VolatilityCache.set(s"article:${createdArticle.id}", Some(createdArticle), 300)
+
+    refreshCache(createdArticle)
 
     createdArticle
   }
@@ -81,7 +82,9 @@ trait ArticleDao {
    * @param url 取得する記事のURL
    */
   def countByUrl(url: String): Long = {
-    ArticleMapper.countBy(sqls.eq(am.url, url))
+    VolatilityCache.getOrElse[Long](s"articleCount:$url", 300) {
+      ArticleMapper.countBy(sqls.eq(am.url, url))
+    }
   }
 
   /**
@@ -118,12 +121,13 @@ trait ArticleDao {
   }
 
   /**
-   * キャッシュを削除します。参照処理以外が発生したときに呼び出します。
+   * キャッシュを再設定します。参照処理以外が発生したときに呼び出します。
    * @param article 更新や削除によって作られたオブジェクト
    */
   def refreshCache(article: ArticleMapper): Unit = {
     VolatilityCache.set(s"article:${article.id}", article.some, 300)
     VolatilityCache.set(s"article:${article.url}", article.some, 300)
+    VolatilityCache.set(s"articleCount:${article.url}", 1L, 300)
   }
 
   /**

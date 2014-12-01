@@ -19,7 +19,7 @@ object Global extends GlobalSettings {
     super.onStart(app)
 
     // 各サイトをクロールしてRSSを最新に保つバッチ実行登録
-    Akka.system.scheduler.schedule(10.seconds, 10.minutes, Akka.system.actorOf(Props[RssCrawlActor]), "")
+    Akka.system.scheduler.schedule(10.seconds, 3.minutes, Akka.system.actorOf(Props[RssCrawlActor]), "")
 
     // クリックのランキングを保存するバッチ実行登録
     Akka.system.scheduler.schedule(5.minutes, 5.minutes, Akka.system.actorOf(Props[RankingActor]), "")

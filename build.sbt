@@ -11,7 +11,11 @@ conflictWarning := ConflictWarning.disable
 
 lazy val root = (project in file("."))
   .aggregate(layeredApplication, layeredDomain, layeredInfrastructure)
-  .dependsOn(layeredApplication, layeredDomain, layeredInfrastructure).enablePlugins(PlayScala)
+  .dependsOn(layeredApplication, layeredDomain, layeredInfrastructure)
+  .enablePlugins(PlayScala)
+  .settings(
+    doc in Compile <<= target.map(_ / "none")
+  )
 
 lazy val layeredApplication = (project in file("modules/layered-application"))
   .enablePlugins(PlayScala)
