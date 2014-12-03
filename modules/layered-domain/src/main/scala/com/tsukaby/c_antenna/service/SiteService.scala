@@ -65,7 +65,7 @@ trait SiteService extends BaseService {
               // +1は多少未来の投稿時間でも許容する為。
               // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
 
-              if (ArticleDao.countByUrl(item.getLink.toString) == 0) {
+              if (item.getLink != null && ArticleDao.countByUrl(item.getLink.toString) == 0) {
                 //まだ記事が無い場合
                 // 記事を解析してタグを取得
                 //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
