@@ -1,7 +1,7 @@
 import play.PlayScala
 import play.PlayImport.PlayKeys._
 
-scalaVersion := "2.11.4"
+scalaVersion in ThisBuild := "2.11.4"
 
 name := "c-antenna"
 
