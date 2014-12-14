@@ -10,4 +10,9 @@
     <priority>1.0</priority>
     <changefreq>hourly</changefreq>
   </url>
+  <url>
+    <loc>http://c-antenna.tsukaby.com/article_ranking</loc>
+    <priority>1.0</priority>
+    <changefreq>hourly</changefreq>
+  </url>
 </urlset>
