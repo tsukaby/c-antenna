@@ -4,6 +4,7 @@ import akka.actor.{ActorSystem, Props}
 import com.tsukaby.c_antenna.batch.RssCrawlActor
 import scalikejdbc.config.DBs
 
+import scala.language.postfixOps
 import scala.concurrent.Await
 
 /**

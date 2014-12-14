@@ -12,6 +12,8 @@ import us.theatr.akka.quartz.{AddCronSchedule, QuartzActor}
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.language.postfixOps
+
 import akka.pattern.ask
 
 /**

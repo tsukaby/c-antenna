@@ -1,6 +1,7 @@
 package com.tsukaby.c_antenna.util
 
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 /**
  * 日付に関する操作を提供します。
