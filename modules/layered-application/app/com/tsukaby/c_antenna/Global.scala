@@ -1,15 +1,18 @@
 package com.tsukaby.c_antenna
 
 import akka.actor.Props
+import akka.util.Timeout
 import com.tsukaby.c_antenna.batch._
 import com.tsukaby.c_antenna.cache.VolatilityCache
+import play.api.Play.current
 import play.api.libs.concurrent.Akka
 import play.api.{Application, GlobalSettings}
-import play.api.Play.current
 import us.theatr.akka.quartz.{AddCronSchedule, QuartzActor}
 
-import scala.concurrent.duration._
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import akka.pattern.ask
 
 /**
  * アプリケーションの設定
@@ -19,7 +22,14 @@ object Global extends GlobalSettings {
     super.onStart(app)
 
     // 各サイトをクロールしてRSSを最新に保つバッチ実行登録
-    Akka.system.scheduler.schedule(10.seconds, 3.minutes, Akka.system.actorOf(Props[RssCrawlActor]), "")
+    Akka.system.scheduler.schedule(10.seconds, 3.minutes) {
+      // なぜか非同期形式にしないと処理がActorが終了せず、そのうち実行できなくなる・・・
+      implicit val timeout = Timeout(3 minutes)
+
+      val actor = Akka.system.actorOf(Props[RssCrawlActor])
+      val f = actor ? ""
+      Await.result(f, timeout.duration)
+    }
 
     // クリックのランキングを保存するバッチ実行登録
     Akka.system.scheduler.schedule(5.minutes, 5.minutes, Akka.system.actorOf(Props[RankingActor]), "")

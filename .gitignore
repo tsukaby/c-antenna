@@ -16,6 +16,7 @@ dist
 /.settings
 /public
 /application-debug.log
+*.log
 
 # Front
 bower_components

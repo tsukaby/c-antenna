@@ -20,6 +20,7 @@ class RssCrawlActor extends Actor {
       })
 
       Logger.info(s"クロールに成功しました！ (${result._2.toSeconds} sec)")
+      sender() ! s"finifhed$e"
   }
 
 }

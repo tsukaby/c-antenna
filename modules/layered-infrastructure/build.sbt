@@ -1,15 +1,5 @@
 import sbt.Keys._
 
-name := """LayeredInfrastructure"""
-
-version := "1.0-SNAPSHOT"
-
-scalaVersion := "2.11.4"
-
-conflictWarning := ConflictWarning.disable
-
-javaOptions in Test += "-Dconfig.file=conf/test.conf"
-
 resolvers += "Maven Central Server" at "http://repo1.maven.org/maven2"
 
 resolvers += "ATILIKA dependencies" at "http://www.atilika.org/nexus/content/repositories/atilika"
@@ -44,3 +34,13 @@ libraryDependencies ++= Seq(
   "org.specs2" %% "specs2-core" % "2.3.13" % "test",
   "org.specs2" %% "specs2-mock" % "2.3.13" % "test"
 )
+
+lazy val layeredInfrastructure = (project in file("."))
+  .settings(
+    name := "layered-infrastructure",
+    version := "1.0",
+    organization := "com.tsukaby",
+    scalaVersion in ThisBuild := "2.11.4",
+    scalacOptions += "-feature",
+    javaOptions in Test += "-Dconfig.file=test.conf"
+  )
