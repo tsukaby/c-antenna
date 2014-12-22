@@ -11,7 +11,9 @@
         <progressbar max="10" value="article.clickCount" style="margin-bottom: 0px;"></progressbar>
       </td>
       <td data-title="'タイトル'">
-        <a analytics-on ng-href="{{article.url}}" target="_blank"
+        <a analytics-on ng-href="{{article.url}}"
+           target="_blank"
+           title="{{article.url}}"
            ng-mousedown="clickLogService.postClickLogArticle(article)">{{article.title}}</a>
       </td>
       <td data-title="'サイト'">

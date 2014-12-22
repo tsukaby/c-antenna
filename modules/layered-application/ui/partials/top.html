@@ -16,10 +16,13 @@
               <img src="data:image/jpeg;base64,{{site.thumbnail}}" alt="{{site.name}}" width="100%" height="100%">
             </a>
           </div>
-          <ul>
+          <ul style="list-style: none">
             <li ng-repeat="article in site.recentArticles">
-              <a analytics-on ng-href="{{article.url}}" target="_blank"
-                 ng-mousedown="clickLogService.postClickLogArticle(article)">
+              <a analytics-on ng-href="{{article.url}}"
+                 target="_blank"
+                 title="{{article.title}}"
+                 ng-mousedown="clickLogService.postClickLogArticle(article)"
+                 style="width: 100%; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 <span>
                   {{article.title}}<span class="badge" ng-repeat="tag in article.tags">{{tag}}</span>
                 </span>
