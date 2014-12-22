@@ -1,48 +1,38 @@
 package com.tsukaby.c_antenna
 
 import akka.actor.{ActorSystem, Props}
+import akka.pattern._
+import akka.util.Timeout
 import com.tsukaby.c_antenna.batch.RssCrawlActor
-import scalikejdbc.config.DBs
+import scalikejdbc.config.{DBs, DBsWithEnv}
 
-import scala.language.postfixOps
 import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
-/**
- * Created by tsukaby on 2014/12/13.
- */
 object Main {
   def main(args: Array[String]): Unit = {
-    println("start")
+    Option(System.getProperty("config.resource")) match {
+      case None =>
+        DBs.setupAll()
+      case Some(x) =>
+        DBsWithEnv(x.replace(".conf", "")).setupAll()
+    }
 
-    //DBs.setup()
-
-    import scalikejdbc._
-    GlobalSettings.loggingSQLAndTime = LoggingSQLAndTimeSettings(
-      enabled = true,
-      singleLineMode = true,
-      logLevel = 'DEBUG,
-      warningEnabled = true,
-      warningThresholdMillis = 1000L,
-      warningLogLevel = 'WARN
-    )
-
-    Class.forName("com.mysql.jdbc.Driver")
-    ConnectionPool.singleton("jdbc:mysql://localhost:3306/C_ANTENNA?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8", "root", "")
-
-    val system = ActorSystem("c-antenna")
-    val actor = system.actorOf(Props[RssCrawlActor])
-
-    import akka.pattern.ask
-    import akka.util.Timeout
-    import scala.concurrent.duration._
-
-    implicit val timeout = Timeout(60 seconds)
-
-    val f = actor ? "go"
-    val res = Await.result(f, timeout.duration).asInstanceOf[String]
-
-
-    DBs.close()
+    crawl()
 
   }
+
+  private def crawl() = {
+    val system = ActorSystem("mySystem")
+    val actor = system.actorOf(Props[RssCrawlActor])
+
+    // なぜか非同期形式にしないと処理がActorが終了せず、そのうち実行できなくなる・・・
+    implicit val timeout = Timeout(3 minutes)
+
+    val f = actor ? "a"
+    Await.result(f, timeout.duration)
+    system.shutdown()
+  }
+
 }
