@@ -9,7 +9,12 @@ import scala.collection.JavaConverters._
  */
 trait MorphologicalService extends BaseService {
 
-  private val tokenizer: Tokenizer = Tokenizer.builder().userDictionary("conf/my-userdict.txt").build()
+  private val tokenizer: Tokenizer = {
+    val input = this.getClass.getClassLoader.getResourceAsStream("my-userdict.txt")
+    val tokenizer = Tokenizer.builder().userDictionary(input).build()
+    input.close()
+    tokenizer
+  }
 
   /**
    * 引数で指定したテキストからタグを生成し、取得します。

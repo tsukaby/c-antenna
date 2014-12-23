@@ -7,12 +7,14 @@ import spray.json._
 
 trait ArticleController extends BaseController {
 
+  val articleService: ArticleService = ArticleService
+
   /**
    * 記事一覧をランキング上位順で返却します。
    * @return
    */
   def showAll(condition: SimpleSearchCondition) = Action {
-    val page:ArticlePage = ArticleService.getByCondition(condition)
+    val page:ArticlePage = articleService.getByCondition(condition)
 
     Ok(page.toJson.compactPrint).as("application/json")
   }

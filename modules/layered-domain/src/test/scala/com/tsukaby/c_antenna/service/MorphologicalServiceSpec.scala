@@ -1,6 +1,8 @@
 package com.tsukaby.c_antenna.service
 
-class MorphologicalServiceSpec extends BaseServiceSpecification {
+import com.tsukaby.c_antenna.BaseServiceSpec
+
+class MorphologicalServiceSpec extends BaseServiceSpec {
 
   val TargetClass = MorphologicalService
 
@@ -25,5 +27,4 @@ class MorphologicalServiceSpec extends BaseServiceSpecification {
       second._2 must be equalTo 2
     }
   }
-
 }

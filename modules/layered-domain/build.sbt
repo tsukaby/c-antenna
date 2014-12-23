@@ -5,7 +5,7 @@ lazy val commonSettings = Seq(
   organization := "com.tsukaby",
   scalaVersion in ThisBuild := "2.11.4",
   scalacOptions += "-feature",
-  javaOptions in Test += "-Dconfig.file=test.conf",
+  javaOptions in Test += "-Dconfig.file=application.conf",
   test in assembly := {},
   doc in Compile <<= target.map(_ / "none"),
   assemblyMergeStrategy in assembly := {

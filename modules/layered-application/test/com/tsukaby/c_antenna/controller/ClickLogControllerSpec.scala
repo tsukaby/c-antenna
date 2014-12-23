@@ -1,6 +1,5 @@
 package com.tsukaby.c_antenna.controller
 
-import com.tsukaby.c_antenna.cache.VolatilityCache
 import com.tsukaby.c_antenna.util.TestUtil._
 import play.api.test.{FakeRequest, WithApplication}
 import spray.json._
@@ -9,19 +8,18 @@ class ClickLogControllerSpec extends BaseControllerSpecification {
 
   val TargetClass = ClickLogController
 
-  s"$TargetClass#lately" should {
+  s"$TargetClass#clickLog" should {
 
-    "ClickLogがRedisに保存されること" in new WithApplication {
-
-      VolatilityCache.exists("siteRanking") must be equalTo false
-      VolatilityCache.exists("articleRanking") must be equalTo false
-
+    "正常なRequestBodyの場合200が返ること" in new WithApplication {
       val res = TargetClass.clickLog(FakeRequest().withTextBody(getBaseClickLog.toJson.compactPrint))
 
       status(res) must be equalTo OK
+    }
 
-      VolatilityCache.exists("siteRanking") must be equalTo true
-      VolatilityCache.exists("articleRanking") must be equalTo true
+    "異常なRequestBodyの場合400が返ること" in new WithApplication {
+      val res = TargetClass.clickLog(FakeRequest())
+
+      status(res) must be equalTo BAD_REQUEST
     }
 
   }

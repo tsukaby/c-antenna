@@ -2,27 +2,34 @@ package com.tsukaby.c_antenna.service
 
 import java.net.URL
 
-import com.tsukaby.c_antenna.dao.{SiteSummaryDao, ArticleDao, RssDao, SiteDao}
+import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao, SiteSummaryDao}
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, Site, SitePage}
 import de.nava.informa.core.ItemIF
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
-import scalikejdbc.DB
+import scalikejdbc.{AutoSession, DBSession}
+
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scalaz.Scalaz._
 
 trait SiteService extends BaseService {
+
+  val siteSummaryDao: SiteSummaryDao = SiteSummaryDao
+  val siteDao: SiteDao = SiteDao
+  val rssDao: RssDao = RssDao
+  val articleDao: ArticleDao = ArticleDao
+
   /**
    * 引数で指定した検索条件に従ってサイトを取得します。
    * @param condition 条件
    * @return サイトの一覧
    */
-  def getByCondition(condition: SimpleSearchCondition): SitePage = DB readOnly { implicit session =>
-    val sites = SiteSummaryDao.getByCondition(condition)
-    val count = SiteSummaryDao.countByCondition(condition)
+  def getByCondition(condition: SimpleSearchCondition)(implicit session: DBSession = AutoSession): SitePage = {
+    val sites = siteSummaryDao.getByCondition(condition)
+    val count = siteSummaryDao.countByCondition(condition)
 
     SitePage(sites, count)
   }
@@ -34,8 +41,8 @@ trait SiteService extends BaseService {
    *
    * @return
    */
-  def getAll: Seq[Site] = DB readOnly { implicit session =>
-    SiteDao.getAll map (x => dbSitesToSites(x, ArticleDao.getLatelyBySiteId(x.id)))
+  def getAll(implicit session: DBSession = AutoSession): Seq[Site] = {
+    siteDao.getAll map (x => dbSitesToSites(x, articleDao.getLatelyBySiteId(x.id)))
   }
 
   /**
@@ -43,17 +50,17 @@ trait SiteService extends BaseService {
    * @param id サイトID
    * @return サイト
    */
-  def getById(id: Long): Option[Site] = DB readOnly { implicit session =>
-    SiteDao.getById(id) match {
+  def getById(id: Long)(implicit session: DBSession = AutoSession): Option[Site] = {
+    siteDao.getById(id) match {
       case Some(x) => x
       case None => None
     }
   }
 
-  def crawl(site: SiteMapper): Unit = {
+  def crawl(site: SiteMapper)(implicit session: DBSession = AutoSession): Unit = {
     Logger.info(s"サイト情報を更新します。${site.name}")
 
-    RssDao.getByUrl(site.rssUrl) match {
+    rssDao.getByUrl(site.rssUrl) match {
       case Some(channel) =>
         // サイト情報更新
         channel.getItems.asScala.par foreach {
@@ -65,7 +72,7 @@ trait SiteService extends BaseService {
               // +1は多少未来の投稿時間でも許容する為。
               // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
 
-              if (item.getLink != null && ArticleDao.countByUrl(item.getLink.toString) == 0) {
+              if (item.getLink != null && articleDao.countByUrl(item.getLink.toString) == 0) {
                 //まだ記事が無い場合
                 // 記事を解析してタグを取得
                 //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
@@ -76,7 +83,7 @@ trait SiteService extends BaseService {
                   Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
                 }
                 // DB登録
-                ArticleDao.create(site.id, item.getLink.toString, item.getTitle, tags, 0, new DateTime(item.getDate))
+                articleDao.create(site.id, item.getLink.toString, item.getTitle, tags, 0, new DateTime(item.getDate))
               }
             }
         }
@@ -99,10 +106,10 @@ trait SiteService extends BaseService {
   /**
    * 全てのサイトのRSSを取得し、サイト名を最新の状態にします。
    */
-  def refreshSiteName(): Unit = DB localTx { implicit session =>
-    SiteDao.getAll foreach { x =>
+  def refreshSiteName(implicit session: DBSession = AutoSession): Unit = {
+    siteDao.getAll foreach { x =>
 
-      RssDao.getByUrl(x.rssUrl) match {
+      rssDao.getByUrl(x.rssUrl) match {
         case Some(rss) =>
           x.copy(name = rss.getTitle).save()
         case None =>
@@ -113,8 +120,8 @@ trait SiteService extends BaseService {
   /**
    * サイトのランクを更新します。
    */
-  def refreshSiteRank(): Unit = DB localTx { implicit session =>
-    SiteDao.getAll foreach { x =>
+  def refreshSiteRank(implicit session: DBSession = AutoSession): Unit = {
+    siteDao.getAll foreach { x =>
       // クライアント設定作成
       val conf = new XmlRpcClientConfigImpl()
       conf.setServerURL(new URL("http://b.hatena.ne.jp/xmlrpc"))
@@ -126,20 +133,20 @@ trait SiteService extends BaseService {
       // 実行
       val ret = client.execute("bookmark.getTotalCount", List(x.url))
 
-      SiteDao.update(x.copy(hatebuCount = ret.toString.toLong))
+      siteDao.update(x.copy(hatebuCount = ret.toString.toLong))
     }
   }
 
   /**
    * サイトのサムネイルを更新します。
    */
-  def refreshSiteThumbnail(): Unit = DB localTx { implicit session =>
-    SiteDao.getAll.par foreach { x =>
+  def refreshSiteThumbnail(implicit session: DBSession = AutoSession): Unit = {
+    siteDao.getAll.par foreach { x =>
       if (x.thumbnail.isEmpty) {
         // サムネ未登録の場合、登録
         val image = WebScrapingService.getImage(x.url)
         println(x.name)
-        SiteDao.update(x.copy(thumbnail = image.some))
+        siteDao.update(x.copy(thumbnail = image.some))
       }
     }
   }

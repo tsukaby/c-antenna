@@ -5,6 +5,7 @@ import com.tsukaby.c_antenna.dao.SiteDao
 import com.tsukaby.c_antenna.service._
 import com.tsukaby.c_antenna.util.TimeUtil
 import play.api.Logger
+import scalikejdbc.DB
 
 /**
  *
@@ -52,7 +53,9 @@ class HatebuActor extends Actor {
 class RankingActor extends Actor {
   def receive: Actor.Receive = {
     case e: String =>
-      val result = TimeUtil.time(ClickLogService.refreshRanking())
+      val result = DB localTx { session =>
+        TimeUtil.time(ClickLogService.refreshRanking())
+      }
       Logger.info(s"ランキングをDBに反映しました。 (${result._2.toSeconds} sec)")
   }
 }

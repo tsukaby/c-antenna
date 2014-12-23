@@ -10,13 +10,15 @@ import spray.json._
  */
 trait ClickLogController extends BaseController {
 
+  val clickLogService: ClickLogService = ClickLogService
+
   def clickLog = Action { request =>
 
     request.body.asText match {
       case None => BadRequest("Invalidated.")
       case Some(x) =>
         val clickLog = x.parseJson.convertTo[ClickLog]
-        ClickLogService.storeClickLog(clickLog)
+        clickLogService.storeClickLog(clickLog)
         Ok("")
     }
   }

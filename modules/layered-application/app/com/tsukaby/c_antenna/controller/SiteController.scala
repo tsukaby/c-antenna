@@ -7,9 +7,11 @@ import spray.json._
 
 trait SiteController extends BaseController {
 
+  val siteService: SiteService = SiteService
+
   def showAll(condition: SimpleSearchCondition) = Action { implicit request =>
 
-    val page = SiteService.getByCondition(condition)
+    val page = siteService.getByCondition(condition)
 
     Ok(page.toJson.compactPrint).as("application/json")
   }
