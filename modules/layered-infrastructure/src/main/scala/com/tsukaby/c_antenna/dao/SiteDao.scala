@@ -1,8 +1,8 @@
 package com.tsukaby.c_antenna.dao
 
 import com.tsukaby.c_antenna.cache.VolatilityCache
+import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
-import com.tsukaby.c_antenna.entity.SimpleSearchCondition
 import scalikejdbc._
 
 /**

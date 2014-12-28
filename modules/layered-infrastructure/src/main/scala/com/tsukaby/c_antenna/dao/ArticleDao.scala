@@ -1,8 +1,8 @@
 package com.tsukaby.c_antenna.dao
 
 import com.tsukaby.c_antenna.cache.VolatilityCache
+import com.tsukaby.c_antenna.db.entity.{SortOrder, SimpleSearchCondition}
 import com.tsukaby.c_antenna.db.mapper.ArticleMapper
-import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, SortOrder}
 import org.joda.time.DateTime
 import scalikejdbc._
 

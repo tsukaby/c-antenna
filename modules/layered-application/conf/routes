@@ -9,12 +9,12 @@ GET         /debug/refreshRanking              com.tsukaby.c_antenna.controller.
 GET         /debug/refreshHatebuRanking        com.tsukaby.c_antenna.controller.DebugController.refreshHatebuRanking
 
 # Site
-GET         /api/sites                         com.tsukaby.c_antenna.controller.SiteController.showAll(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
+GET         /api/sites                         com.tsukaby.c_antenna.controller.SiteController.showAll(condition: SimpleSearchCondition)
 
 GET         /api/images/siteThumbs/:id         com.tsukaby.c_antenna.controller.SiteController.showThumbs(id: Long)
 
 # Article
-GET         /api/articles                      com.tsukaby.c_antenna.controller.ArticleController.showAll(condition: com.tsukaby.c_antenna.entity.SimpleSearchCondition)
+GET         /api/articles                      com.tsukaby.c_antenna.controller.ArticleController.showAll(condition: SimpleSearchCondition)
 
 
 # Click

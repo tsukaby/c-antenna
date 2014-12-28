@@ -2,7 +2,7 @@ package com.tsukaby.c_antenna.controller
 
 import java.net.URLEncoder
 
-import com.tsukaby.c_antenna.entity.{Sort, SortOrder, SimpleSearchCondition}
+import com.tsukaby.c_antenna.db.entity.{SimpleSearchCondition, Sort, SortOrder}
 import org.joda.time.format.ISODateTimeFormat
 import play.api.mvc.QueryStringBindable
 

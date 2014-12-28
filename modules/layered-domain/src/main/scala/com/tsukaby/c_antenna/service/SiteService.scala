@@ -3,9 +3,10 @@ package com.tsukaby.c_antenna.service
 import java.net.URL
 
 import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao, SiteSummaryDao}
+import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
-import com.tsukaby.c_antenna.entity.{SimpleSearchCondition, Site, SitePage}
+import com.tsukaby.c_antenna.entity.{Site, SitePage}
 import de.nava.informa.core.ItemIF
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime

@@ -1,4 +1,4 @@
-package com.tsukaby.c_antenna.entity
+package com.tsukaby.c_antenna.db.entity
 
 /**
  * ソートを表現するクラスです。

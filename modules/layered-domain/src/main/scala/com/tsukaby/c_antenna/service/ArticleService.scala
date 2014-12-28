@@ -1,8 +1,9 @@
 package com.tsukaby.c_antenna.service
 
 import com.tsukaby.c_antenna.dao.ArticleDao
+import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
-import com.tsukaby.c_antenna.entity.{ArticlePage, SimpleSearchCondition}
+import com.tsukaby.c_antenna.entity.ArticlePage
 import scalikejdbc.{AutoSession, DBSession}
 
 /**

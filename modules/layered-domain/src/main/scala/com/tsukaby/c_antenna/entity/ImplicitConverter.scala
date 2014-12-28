@@ -1,11 +1,10 @@
 package com.tsukaby.c_antenna.entity
 
-import com.tsukaby.c_antenna.dao.{SiteDao, ArticleDao}
-import com.tsukaby.c_antenna.db.mapper.{SiteSummaryMapper, ArticleMapper, SiteMapper}
+import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
+import com.tsukaby.c_antenna.db.mapper.{ArticleMapper, SiteMapper, SiteSummaryMapper}
 import org.apache.commons.codec.binary.Base64
 
 import scala.language.implicitConversions
-
 import scalaz.Scalaz._
 
 object ImplicitConverter {

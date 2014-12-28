@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.controller
 
-import com.tsukaby.c_antenna.entity.SimpleSearchCondition
+import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.service.{SiteService, ThumbnailService}
 import play.api.mvc.Action
 import spray.json._

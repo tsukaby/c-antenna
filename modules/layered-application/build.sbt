@@ -39,7 +39,11 @@ lazy val layeredApplication = (project in file("."))
   .settings(commonSettings: _*)
   .settings(
     // QueryPathBinderを使う為に以下をroutesにインポート
-    routesImport += "com.tsukaby.c_antenna.controller.Implicits._",
+    routesImport ++= Seq(
+      "com.tsukaby.c_antenna.controller.Implicits._",
+      "com.tsukaby.c_antenna.entity._",
+      "com.tsukaby.c_antenna.db.entity._"
+    ),
     playRunHooks <+= baseDirectory.map(base => Grunt(base)),
     unmanagedResourceDirectories in Assets += baseDirectory.value / "ui",
     excludeFilter in Assets := "*.ts" || "scss" || "*.map" || "test" || "typings",

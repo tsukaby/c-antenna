@@ -33,7 +33,11 @@ lazy val layeredApplication = (project in file("modules/layered-application"))
   .settings(commonSettings: _*)
   .settings(
     // QueryPathBinderを使う為に以下をroutesにインポート
-    routesImport += "com.tsukaby.c_antenna.controller.Implicits._"
+    routesImport ++= Seq(
+      "com.tsukaby.c_antenna.controller.Implicits._",
+      "com.tsukaby.c_antenna.entity._",
+      "com.tsukaby.c_antenna.db.entity._"
+    )
   )
 
 lazy val root = (project in file("."))

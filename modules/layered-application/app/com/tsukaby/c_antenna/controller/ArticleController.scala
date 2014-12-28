@@ -1,5 +1,6 @@
 package com.tsukaby.c_antenna.controller
 
+import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.entity._
 import com.tsukaby.c_antenna.service.ArticleService
 import play.api.mvc.Action

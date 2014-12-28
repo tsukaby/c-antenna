@@ -1,5 +1,6 @@
 package com.tsukaby.c_antenna
 
+import com.tsukaby.c_antenna.db.entity.{Sort, SortOrder, SimpleSearchCondition}
 import com.tsukaby.c_antenna.entity._
 import org.joda.time.{DateTimeZone, DateTime}
 import org.joda.time.format.ISODateTimeFormat

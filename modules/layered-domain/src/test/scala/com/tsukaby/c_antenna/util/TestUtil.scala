@@ -1,7 +1,8 @@
 package com.tsukaby.c_antenna.util
 
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
-import com.tsukaby.c_antenna.db.mapper.{SiteMapper, SiteSummaryMapper, ArticleMapper}
+import com.tsukaby.c_antenna.db.mapper.{ArticleMapper, SiteMapper, SiteSummaryMapper}
+import com.tsukaby.c_antenna.entity.{Site, Article, ClickLog}
 import org.joda.time.DateTime
 
 import scalaz.Scalaz._
@@ -15,8 +16,20 @@ object TestUtil {
     SimpleSearchCondition(1.some, 10.some, none, none, none)
   }
 
+  def getBaseClickLog: ClickLog = {
+    ClickLog(1L.some, 1L.some)
+  }
+
+  def getBaseArticle: Article = {
+    Article(1, 1, "http://example.com", "title", Seq("tag"), "site_name", DateTime.now, 1)
+  }
+
   def getBaseArticleMapper: ArticleMapper = {
     ArticleMapper(1, 1, "http://example.com", "title", "tag".some, 1, DateTime.now)
+  }
+
+  def getBaseSite: Site = {
+    Site(1, "site_name", "http://", Seq(getBaseArticle))
   }
 
   def getBaseSiteMapper: SiteMapper = {
