@@ -28,11 +28,11 @@ trait MyJsonProtocol extends DefaultJsonProtocol {
   }
 
 
-  implicit val ArticleFormat = jsonFormat9(Article)
+  implicit val ArticleFormat = jsonFormat8(Article)
   implicit val ClickLogFormat = jsonFormat2(ClickLog)
   implicit val SortFormat = jsonFormat2(Sort)
   implicit val SimpleSearchConditionFormat = jsonFormat5(SimpleSearchCondition)
-  implicit val SiteFormat = jsonFormat5(Site)
+  implicit val SiteFormat = jsonFormat4(Site)
   implicit val ArticlePageFormat = jsonFormat2(ArticlePage)
   implicit val SitePageFormat = jsonFormat2(SitePage)
 }

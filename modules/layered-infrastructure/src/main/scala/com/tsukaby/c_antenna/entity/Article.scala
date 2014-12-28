@@ -11,7 +11,6 @@ case class Article(
                     siteId: Long,
                     url: String,
                     title: String,
-                    thumbnail: String,
                     tags: Seq[String],
                     siteName: String,
                     createdAt: DateTime,

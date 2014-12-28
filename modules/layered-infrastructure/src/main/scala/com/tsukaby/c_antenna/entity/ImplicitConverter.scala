@@ -15,7 +15,6 @@ object ImplicitConverter {
       siteMapper.id,
       siteMapper.name,
       siteMapper.url,
-      siteMapper.thumbnail,
       dbArticlesToArticles(articleMappers))
   }
 
@@ -28,7 +27,6 @@ object ImplicitConverter {
       siteSummaryMapper.id,
       siteSummaryMapper.name,
       siteSummaryMapper.url,
-      siteSummaryMapper.thumbnail,
       dbArticlesToArticles(articleMappers))
   }
 
@@ -37,7 +35,7 @@ object ImplicitConverter {
   }
 
   implicit def dbSiteToOptionSite(siteMapper: SiteMapper): Option[Site] = {
-    Site(siteMapper.id, siteMapper.name, siteMapper.url, siteMapper.thumbnail, Seq()).some
+    Site(siteMapper.id, siteMapper.name, siteMapper.url, Seq()).some
   }
 
   implicit def dbArticleToArticle(articleMapper: ArticleMapper): Article = {
@@ -56,7 +54,6 @@ object ImplicitConverter {
       articleMapper.siteId,
       articleMapper.url,
       articleMapper.title,
-      "",
       tags,
       siteName,
       articleMapper.createdAt,
