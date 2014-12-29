@@ -5,11 +5,18 @@ import com.tsukaby.c_antenna.service.{SiteService, ThumbnailService}
 import play.api.mvc.Action
 import spray.json._
 
+/**
+ * Webサイトに関する処理を行います。
+ */
 trait SiteController extends BaseController {
 
   val siteService: SiteService = SiteService
   val thumbnailService: ThumbnailService = ThumbnailService
 
+  /**
+   * 引数で指定した条件に従ってサイトを取得します。
+   * @param condition サイトを取得する条件
+   */
   def showAll(condition: SimpleSearchCondition) = Action { implicit request =>
 
     val page = siteService.getByCondition(condition)
@@ -28,7 +35,6 @@ trait SiteController extends BaseController {
     }
 
     Ok(byteArray).as("image/jpeg")
-
   }
 }
 

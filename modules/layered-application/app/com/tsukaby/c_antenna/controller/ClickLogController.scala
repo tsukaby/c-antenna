@@ -12,12 +12,15 @@ trait ClickLogController extends BaseController {
 
   val clickLogService: ClickLogService = ClickLogService
 
+  /**
+   * ClickLogをデータストアに保存します。
+   */
   def clickLog = Action { request =>
 
-    request.body.asText match {
+    request.body.asJson match {
       case None => BadRequest("Invalidated.")
       case Some(x) =>
-        val clickLog = x.parseJson.convertTo[ClickLog]
+        val clickLog = x.toString().parseJson.convertTo[ClickLog]
         clickLogService.storeClickLog(clickLog)
         Ok("")
     }

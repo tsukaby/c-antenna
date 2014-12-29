@@ -54,6 +54,11 @@ trait WebScrapingService extends BaseService {
     }
   }
 
+  /**
+   * 引数で指定したWebページのサムネイル画像を取得します。
+   * @param url サムネイル画像を取得するページのURL
+   * @return サムネイル画像のバイナリ
+   */
   def getImage(url: String): Array[Byte] = {
     implicit val driverTmp = new PhantomJSDriver()
     driverTmp.get(url)
@@ -77,14 +82,6 @@ trait WebScrapingService extends BaseService {
     baos.close()
 
     result
-  }
-
-  def getTitle(url: String): String = {
-    driver.get(url)
-
-    val element = driver.findElementByTagName("title")
-
-    element.getText
   }
 
   /**

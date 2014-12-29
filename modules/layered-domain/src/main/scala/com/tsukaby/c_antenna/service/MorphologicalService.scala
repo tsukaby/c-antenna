@@ -25,22 +25,6 @@ trait MorphologicalService extends BaseService {
 
     val tokensNormal = tokenizer.tokenize(text).asScala.toList
 
-    // debug
-    /*
-    tokensNormal.asScala.toList.filter(_.getAllFeaturesArray.head == "名詞").foreach(x => {
-      println("==================================================")
-      println("allFeatures : " + x.getAllFeatures)
-      println("partOfSpeech : " + x.getPartOfSpeech)
-      println("position : " + x.getPosition)
-      println("reading : " + x.getReading)
-      println("surfaceFrom : " + x.getSurfaceForm)
-      println("allFeaturesArray : " + x.getAllFeaturesArray)
-      println("辞書にある言葉? : " + x.isKnown)
-      println("未知語? : " + x.isUnknown)
-      println("ユーザ定義? : " + x.isUser)
-    })
-    */
-
     // 必要な単語だけに絞る
     val filteredTokens = tokensNormal filter { x =>
       val first = x.getAllFeaturesArray.array(0)

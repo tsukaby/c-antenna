@@ -16,7 +16,7 @@ class RssCrawlActor extends Actor {
       val result = TimeUtil.time({
         val sites = SiteDao.getAll
         sites.par foreach { site =>
-          SiteService.crawl(site)
+          SiteService.crawl(site.id)
         }
       })
 

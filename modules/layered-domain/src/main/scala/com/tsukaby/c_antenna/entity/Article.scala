@@ -3,8 +3,7 @@ package com.tsukaby.c_antenna.entity
 import org.joda.time.DateTime
 
 /**
- * 記事を表現します。
- * thumbnailはBase64エンコードされた画像ファイルです。
+ * Webサイトの記事。主にblogの1記事を表現
  */
 case class Article(
                     id: Long,

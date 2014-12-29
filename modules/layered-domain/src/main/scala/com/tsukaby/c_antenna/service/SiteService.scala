@@ -4,7 +4,6 @@ import java.net.URL
 
 import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao, SiteSummaryDao}
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
-import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{Site, SitePage}
 import de.nava.informa.core.ItemIF
@@ -58,8 +57,23 @@ trait SiteService extends BaseService {
     }
   }
 
-  def crawl(site: SiteMapper)(implicit session: DBSession = AutoSession): Unit = {
-    Logger.info(s"サイト情報を更新します。${site.name}")
+  /**
+   * 引数で指定したWebサイトをクロールし、最新RSSから記事の情報を集めます。
+   * 集めた記事情報はデータストアに保存します。
+   * @param id クロール対象サイトのID
+   * @param session DBセッション
+   */
+  def crawl(id: Long)(implicit session: DBSession = AutoSession): Unit = {
+
+
+    val site = SiteDao.getById(id) match {
+      case Some(x) =>
+        Logger.info(s"サイト情報を更新します。${x.name}")
+        x
+      case None =>
+        Logger.warn(s"サイトが取得できませんでした。id=$id")
+        return
+    }
 
     rssDao.getByUrl(site.rssUrl) match {
       case Some(channel) =>
