@@ -1,5 +1,7 @@
 # カテゴリアンテナ
 
+[![Build Status](https://travis-ci.org/tsukaby/c-antenna.svg?branch=develop)](https://travis-ci.org/tsukaby/c-antenna)
+
 ### Setup
 
     brew install mysql
