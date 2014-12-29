@@ -59,9 +59,6 @@ module App {
       false;
     }
   )
-    .factory("sampleService", ($http:ng.IHttpService):Service.SampleService=> {
-      return new Service.SampleService($http);
-    })
     .factory("clickLogService", ($http:ng.IHttpService):Service.ClickLogService => {
       return new Service.ClickLogService($http);
     })
