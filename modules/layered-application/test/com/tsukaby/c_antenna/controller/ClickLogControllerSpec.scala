@@ -1,8 +1,7 @@
 package com.tsukaby.c_antenna.controller
 
-import com.tsukaby.c_antenna.util.TestUtil._
+import play.api.libs.json.Json
 import play.api.test.{FakeRequest, WithApplication}
-import spray.json._
 
 class ClickLogControllerSpec extends BaseControllerSpecification {
 
@@ -11,7 +10,15 @@ class ClickLogControllerSpec extends BaseControllerSpecification {
   s"$TargetClass#clickLog" should {
 
     "正常なRequestBodyの場合200が返ること" in new WithApplication {
-      val res = TargetClass.clickLog(FakeRequest().withTextBody(getBaseClickLog.toJson.compactPrint))
+      val str =
+        """
+          |{
+          |  "siteId": 1,
+          |  "articleId": 1
+          |}
+          |
+        """.stripMargin
+      val res = TargetClass.clickLog(FakeRequest().withJsonBody(Json.parse(str)))
 
       status(res) must be equalTo OK
     }
