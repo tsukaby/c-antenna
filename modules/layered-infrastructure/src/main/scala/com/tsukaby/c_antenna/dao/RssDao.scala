@@ -3,12 +3,10 @@ package com.tsukaby.c_antenna.dao
 import java.io.{InputStreamReader, BufferedReader, Reader}
 import java.net.URL
 
-import com.rometools.rome.io.SyndFeedInput
-import de.nava.informa.impl.basic.Feed
+import com.rometools.rome.io._
+import com.rometools.rome.feed.synd._
 
 import scalaz.Scalaz._
-
-
 
 /**
  * informaライブラリを利用してRSSを取得するクラスです。
@@ -19,7 +17,7 @@ trait RssDao {
    * 引数で指定したURLのRSSを取得します。
    * @param rssUrl 取得するRSS URL
    */
-  def getByUrl(rssUrl: String): Option[Feed] = {
+  def getByUrl(rssUrl: String): Option[SyndFeed] = {
     try {
       val tmp = new URL(rssUrl)
       val conn = tmp.openConnection()
