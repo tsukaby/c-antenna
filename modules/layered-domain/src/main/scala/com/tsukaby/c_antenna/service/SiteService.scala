@@ -1,12 +1,14 @@
 package com.tsukaby.c_antenna.service
 
+import java.io.{Reader, InputStreamReader, BufferedReader}
 import java.net.URL
 
+import com.rometools.rome.feed.synd.SyndEntry
+import com.rometools.rome.io.SyndFeedInput
 import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao, SiteSummaryDao}
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{Site, SitePage}
-import de.nava.informa.core.ItemIF
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
 import scalikejdbc.{AutoSession, DBSession}
@@ -65,7 +67,6 @@ trait SiteService extends BaseService {
    */
   def crawl(id: Long)(implicit session: DBSession = AutoSession): Unit = {
 
-
     val site = SiteDao.getById(id) match {
       case Some(x) =>
         Logger.info(s"サイト情報を更新します。${x.name}")
@@ -76,18 +77,18 @@ trait SiteService extends BaseService {
     }
 
     rssDao.getByUrl(site.rssUrl) match {
-      case Some(channel) =>
+      case Some(feed) =>
         // サイト情報更新
-        channel.getItems.asScala.par foreach {
+        feed.getEntries.asScala.par foreach {
           // RSS記事URL更新
-          case (item: ItemIF) =>
+          case (entry: SyndEntry) =>
 
-            if (new DateTime(item.getDate).isBefore(new DateTime().plusHours(1))) {
+            if (new DateTime(entry.getPublishedDate).isBefore(new DateTime().plusHours(1))) {
               // RSS記事の日付が現在日時+1時間より前に作成されたものであればDB格納
               // +1は多少未来の投稿時間でも許容する為。
               // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
 
-              if (item.getLink != null && articleDao.countByUrl(item.getLink.toString) == 0) {
+              if (entry.getLink != null && articleDao.countByUrl(entry.getLink.toString) == 0) {
                 //まだ記事が無い場合
                 // 記事を解析してタグを取得
                 //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
@@ -98,12 +99,13 @@ trait SiteService extends BaseService {
                   Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
                 }
                 // DB登録
-                articleDao.create(site.id, item.getLink.toString, item.getTitle, tags, 0, new DateTime(item.getDate))
+                articleDao.create(site.id, entry.getLink, entry.getTitle, tags, 0, new DateTime(entry.getPublishedDate))
               }
             }
         }
       case None =>
     }
+
   }
 
   private def getTags(articleUrl: String, cssSelector: String): Seq[(String, Int)] = {
@@ -125,8 +127,8 @@ trait SiteService extends BaseService {
     siteDao.getAll foreach { x =>
 
       rssDao.getByUrl(x.rssUrl) match {
-        case Some(rss) =>
-          x.copy(name = rss.getTitle).save()
+        case Some(feed) =>
+          x.copy(name = feed.getTitle).save()
         case None =>
       }
     }
@@ -165,7 +167,6 @@ trait SiteService extends BaseService {
       }
     }
   }
-
 }
 
 object SiteService extends SiteService
