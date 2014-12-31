@@ -17,7 +17,7 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc-test" % "2.2.+" % "test",
   "com.h2database" % "h2" % "1.4.181" % "test",
   "ch.qos.logback" % "logback-classic" % "1.1.2",
-  "informa" % "informa" % "0.6.0", //RSS取得
+  "com.rometools" % "rome" % "1.5.0", //RSS
   "redis.clients" % "jedis" % "2.6.0", //Redis
   "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
   "com.github.detro" % "phantomjsdriver" % "1.2.0" exclude("org.seleniumhq.selenium", "jetty-repacked"), // 画面キャプチャ用

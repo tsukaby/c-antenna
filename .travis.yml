@@ -8,6 +8,9 @@ jdk:
 
 sudo: false
 
+services:
+  - redis-server
+
 script:
   - sbt test
 

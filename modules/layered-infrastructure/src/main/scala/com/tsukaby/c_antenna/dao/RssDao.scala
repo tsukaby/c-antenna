@@ -1,39 +1,36 @@
 package com.tsukaby.c_antenna.dao
 
+import java.io.{InputStreamReader, BufferedReader, Reader}
 import java.net.URL
 
-import de.nava.informa.core.ChannelIF
-import de.nava.informa.impl.basic.ChannelBuilder
-import de.nava.informa.parsers.FeedParser
-
+import com.rometools.rome.io.SyndFeedInput
+import com.rometools.rome.feed.synd.SyndFeed
 import scalaz.Scalaz._
 
 /**
  * informaライブラリを利用してRSSを取得するクラスです。
  */
 trait RssDao {
-  def getByUrl(rssUrl: String): Option[ChannelIF] = {
 
-    // RSSは常に変化するのでキャッシュしない
-
-    // 403で弾かれることが多い為、User-agentを指定して極力回避
-    val cb = new ChannelBuilder()
-    val feedUrl = new URL(rssUrl)
-    val conn = feedUrl.openConnection
-    conn.setRequestProperty("User-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36")
+  /**
+   * 引数で指定したURLのRSSを取得します。
+   * @param rssUrl 取得するRSS URL
+   */
+  def getByUrl(rssUrl: String): Option[SyndFeed] = {
     try {
-      val result = FeedParser.parse(cb, conn.getInputStream)
-      if (result == null) {
-        none
-      } else {
-        result.some
-      }
+      val tmp = new URL(rssUrl)
+      val conn = tmp.openConnection()
+      val reader: Reader = new BufferedReader(new InputStreamReader(conn.getInputStream))
+
+      val in = new SyndFeedInput()
+      val feed = in.build(reader)
+
+      feed.some
     } catch {
       case e: Exception =>
-        none
-    } finally {
-      cb.close()
+        None
     }
+
   }
 }
 

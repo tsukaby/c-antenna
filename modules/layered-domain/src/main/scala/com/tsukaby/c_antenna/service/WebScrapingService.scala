@@ -3,8 +3,6 @@ package com.tsukaby.c_antenna.service
 import java.io.{ByteArrayOutputStream, FileInputStream}
 
 import com.sksamuel.scrimage.{Format, Image, Position}
-import com.tsukaby.c_antenna.dao.RssDao
-import de.nava.informa.core.ChannelIF
 import org.openqa.selenium.phantomjs.{PhantomJSDriver, PhantomJSDriverService}
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.{By, Dimension, OutputType}
@@ -116,18 +114,6 @@ trait WebScrapingService extends BaseService {
       }
     }
   }
-
-
-  /**
-   * informaライブラリを利用してRSSを取得します。
-   * @param rssUrl RSSのURL
-   * @return RSSオブジェクト
-   */
-  def getRss(rssUrl: String): Option[ChannelIF] = {
-    RssDao.getByUrl(rssUrl)
-  }
-
-
 }
 
 object WebScrapingService extends WebScrapingService
