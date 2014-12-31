@@ -3,9 +3,8 @@ package com.tsukaby.c_antenna.dao
 import java.io.{InputStreamReader, BufferedReader, Reader}
 import java.net.URL
 
-import com.rometools.rome.io._
-import com.rometools.rome.feed.synd._
-
+import com.rometools.rome.io.SyndFeedInput
+import com.rometools.rome.feed.synd.SyndFeed
 import scalaz.Scalaz._
 
 /**

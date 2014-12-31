@@ -1,7 +1,7 @@
 package com.tsukaby.c_antenna.batch
 
 import akka.actor.Actor
-import com.tsukaby.c_antenna.dao.SiteDao
+import com.tsukaby.c_antenna.dao._
 import com.tsukaby.c_antenna.service._
 import com.tsukaby.c_antenna.util.TimeUtil
 import play.api.Logger
