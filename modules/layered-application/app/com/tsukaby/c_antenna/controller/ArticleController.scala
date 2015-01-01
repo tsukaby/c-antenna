@@ -4,7 +4,6 @@ import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.entity._
 import com.tsukaby.c_antenna.service.ArticleService
 import play.api.mvc.Action
-import spray.json._
 
 trait ArticleController extends BaseController {
 
@@ -17,7 +16,7 @@ trait ArticleController extends BaseController {
   def showAll(condition: SimpleSearchCondition) = Action {
     val page:ArticlePage = articleService.getByCondition(condition)
 
-    Ok(page.toJson.compactPrint).as("application/json")
+    Ok(decompose(page)).as("application/json")
   }
 }
 

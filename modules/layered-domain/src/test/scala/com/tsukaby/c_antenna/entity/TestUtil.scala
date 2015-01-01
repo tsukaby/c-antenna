@@ -1,8 +1,7 @@
-package com.tsukaby.c_antenna.util
+package com.tsukaby.c_antenna.entity
 
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.{ArticleMapper, SiteMapper, SiteSummaryMapper}
-import com.tsukaby.c_antenna.entity.{Site, Article, ClickLog}
 import org.joda.time.DateTime
 
 import scalaz.Scalaz._

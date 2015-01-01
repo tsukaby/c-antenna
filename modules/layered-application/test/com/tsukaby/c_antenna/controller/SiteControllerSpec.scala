@@ -1,11 +1,11 @@
 package com.tsukaby.c_antenna.controller
 
+import com.github.tototoshi.play2.json4s.test.native.Helpers._
 import com.tsukaby.c_antenna.entity.SitePage
-import com.tsukaby.c_antenna.service.{ThumbnailService, SiteService}
-import com.tsukaby.c_antenna.util.TestUtil._
+import com.tsukaby.c_antenna.entity.TestUtil._
+import com.tsukaby.c_antenna.service.{SiteService, ThumbnailService}
 import play.api.mvc.Result
 import play.api.test.{FakeRequest, WithApplication}
-import spray.json._
 
 import scala.concurrent.Future
 import scalaz.Scalaz._
@@ -28,7 +28,7 @@ class SiteControllerSpec extends BaseControllerSpecification {
 
       val res = targetClass.showAll(getBaseCondition)(FakeRequest())
 
-      val page: SitePage = res.convertTo[SitePage]
+      val page = extract[SitePage](contentAsJson4s(res))
 
       status(res) must be equalTo OK
       contentType(res) must beSome("application/json")
@@ -55,7 +55,4 @@ class SiteControllerSpec extends BaseControllerSpecification {
     }
   }
 
-  implicit def responseToPage[T](res: Future[Result]): JsValue = {
-    contentAsString(res).parseJson
-  }
 }

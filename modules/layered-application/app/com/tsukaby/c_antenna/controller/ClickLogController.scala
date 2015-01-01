@@ -1,28 +1,29 @@
 package com.tsukaby.c_antenna.controller
 
+import com.github.tototoshi.play2.json4s.native.Json4s
 import com.tsukaby.c_antenna.entity.ClickLog
 import com.tsukaby.c_antenna.service.ClickLogService
+import org.json4s._
 import play.api.mvc.Action
-import spray.json._
+
 
 /**
  * クリックログを保存して記事などのランキングを作成するコントローラです。
  */
-trait ClickLogController extends BaseController {
+trait ClickLogController extends BaseController with Json4s {
 
   val clickLogService: ClickLogService = ClickLogService
 
   /**
    * ClickLogをデータストアに保存します。
    */
-  def clickLog = Action { request =>
-
-    request.body.asJson match {
-      case None => BadRequest("Invalidated.")
+  def clickLog = Action(json) { request =>
+    request.body.extractOpt[ClickLog] match {
       case Some(x) =>
-        val clickLog = x.toString().parseJson.convertTo[ClickLog]
-        clickLogService.storeClickLog(clickLog)
+        clickLogService.storeClickLog(x)
         Ok("")
+      case None =>
+        BadRequest("Bad request body.")
     }
   }
 }

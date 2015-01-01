@@ -20,7 +20,10 @@ lazy val commonSettings = Seq(
     "org.scalikejdbc" %% "scalikejdbc-play-plugin" % "2.3.4",
     "org.scalikejdbc" %% "scalikejdbc-play-fixture-plugin" % "2.3.4",
     "org.scalikejdbc" %% "scalikejdbc-test" % "2.2.+" % "test",
-    "io.spray" %%  "spray-json" % "1.3.1"
+    "org.json4s" %% "json4s-native" % "3.2.10",
+    "org.json4s" %% "json4s-ext" % "3.2.10",
+    "com.github.tototoshi" %% "play-json4s-native" % "0.3.0",
+    "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.0" % "test"
   )
 )
 

@@ -3,7 +3,7 @@ package com.tsukaby.c_antenna.service
 import com.tsukaby.c_antenna.BaseServiceSpec
 import com.tsukaby.c_antenna.cache.VolatilityCache
 import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
-import com.tsukaby.c_antenna.util.TestUtil._
+import com.tsukaby.c_antenna.entity.TestUtil._
 
 class ClickLogServiceSpec extends BaseServiceSpec {
 
