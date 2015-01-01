@@ -6,8 +6,6 @@
 
 ///<reference path='../scripts/Service.ts' />
 
-///<reference path='service/SampleServiceModuleSpec.ts' />
-
 ((global:any)=> {
 	false;
 })(window);
