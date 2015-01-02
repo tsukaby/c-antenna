@@ -1,13 +1,10 @@
 package com.tsukaby.c_antenna
 
 import akka.actor.{ActorSystem, Props}
-import akka.pattern._
-import akka.util.Timeout
+import com.tsukaby.c_antenna.actor.{Reaper, ShutdownReaper}
 import com.tsukaby.c_antenna.batch.RssCrawlActor
 import scalikejdbc.config.{DBs, DBsWithEnv}
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
 import scala.language.postfixOps
 
 object Main {
@@ -27,12 +24,10 @@ object Main {
     val system = ActorSystem("mySystem")
     val actor = system.actorOf(Props[RssCrawlActor])
 
-    // なぜか非同期形式にしないと処理がActorが終了せず、そのうち実行できなくなる・・・
-    implicit val timeout = Timeout(3 minutes)
+    val reaper = system.actorOf(Props[ShutdownReaper])
+    reaper ! Reaper.WatchMe(actor)
 
-    val f = actor ? "a"
-    Await.result(f, timeout.duration)
-    system.shutdown()
+    actor ! "go"
   }
 
 }
