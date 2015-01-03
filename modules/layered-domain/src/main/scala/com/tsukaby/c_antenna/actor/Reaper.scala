@@ -31,5 +31,8 @@ abstract class Reaper extends BaseActor {
 
 class ShutdownReaper extends Reaper {
   // Shutdown
-  def allSoulsReaped(): Unit = context.system.shutdown()
+  def allSoulsReaped(): Unit = {
+    log.info("actor systemを終了します。")
+    context.system.shutdown()
+  }
 }

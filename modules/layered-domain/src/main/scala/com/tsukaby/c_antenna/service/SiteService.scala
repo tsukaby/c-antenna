@@ -7,6 +7,7 @@ import com.rometools.rome.feed.synd.SyndEntry
 import com.rometools.rome.io.SyndFeedInput
 import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao, SiteSummaryDao}
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
+import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{Site, SitePage}
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
@@ -62,19 +63,12 @@ trait SiteService extends BaseService {
   /**
    * 引数で指定したWebサイトをクロールし、最新RSSから記事の情報を集めます。
    * 集めた記事情報はデータストアに保存します。
-   * @param id クロール対象サイトのID
+   * @param site クロール対象サイト
    * @param session DBセッション
    */
-  def crawl(id: Long)(implicit session: DBSession = AutoSession): Unit = {
+  def crawl(site: SiteMapper)(implicit session: DBSession = AutoSession): Unit = {
 
-    val site = SiteDao.getById(id) match {
-      case Some(x) =>
-        Logger.info(s"サイト情報を更新します。${x.name}")
-        x
-      case None =>
-        Logger.warn(s"サイトが取得できませんでした。id=$id")
-        return
-    }
+    Logger.info(s"サイト情報を更新します。${site.name}")
 
     rssDao.getByUrl(site.rssUrl) match {
       case Some(feed) =>

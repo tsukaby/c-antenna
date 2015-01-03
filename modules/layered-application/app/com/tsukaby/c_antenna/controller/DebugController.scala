@@ -15,7 +15,7 @@ trait DebugController extends BaseController {
     val result = TimeUtil.time({
       val sites = SiteDao.getAll
       sites.par foreach { site =>
-        SiteService.crawl(site.id)
+        SiteService.crawl(site)
       }
     })
 

@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.batch
 
-import akka.actor.Actor
+import akka.actor.{ReceiveTimeout, Actor}
 import com.tsukaby.c_antenna.actor.BaseActor
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.service._
@@ -8,13 +8,23 @@ import com.tsukaby.c_antenna.util.TimeUtil
 import play.api.Logger
 import scalikejdbc.DB
 
+import scala.concurrent.duration._
+import scala.language.postfixOps
+
 /**
  * サイトのRSSクロールを行います。
  */
 class RssCrawlActor extends BaseActor {
+
+  context.setReceiveTimeout(1 minute)
+
   def receive: Actor.Receive = {
-    case site:SiteMapper =>
-      SiteService.crawl(site.id)
+    case ReceiveTimeout =>
+      log.info("timeout")
+      context.stop(self)
+    case site: SiteMapper =>
+      SiteService.crawl(site)
+      context.stop(self)
   }
 
 }

@@ -16,12 +16,14 @@ object Main {
 
   private def crawl() = {
     val system = ActorSystem("mySystem")
-    val actor = system.actorOf(Props[RssCrawlActor])
 
     val reaper = system.actorOf(Props[ShutdownReaper])
-    reaper ! Reaper.WatchMe(actor)
 
-    SiteDao.getAll.par.foreach(actor ! _)
+    SiteDao.getAll.foreach { x =>
+      val actor = system.actorOf(Props[RssCrawlActor])
+      reaper ! Reaper.WatchMe(actor)
+      actor ! x
+    }
   }
 
 }
