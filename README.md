@@ -1,6 +1,10 @@
 # カテゴリアンテナ
 
-[![Build Status](https://travis-ci.org/tsukaby/c-antenna.svg?branch=develop)](https://travis-ci.org/tsukaby/c-antenna)
+develop : [![Build Status](https://travis-ci.org/tsukaby/c-antenna.svg?branch=develop)](https://travis-ci.org/tsukaby/c-antenna)
+
+master  : [![Build Status](https://travis-ci.org/tsukaby/c-antenna.svg?branch=master)](https://travis-ci.org/tsukaby/c-antenna)
+
+climate : [![Code Climate](https://codeclimate.com/github/tsukaby/c-antenna/badges/gpa.svg)](https://codeclimate.com/github/tsukaby/c-antenna)
 
 ### Setup
 
