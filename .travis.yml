@@ -1,0 +1,16 @@
+language: scala
+
+scala:
+  - 2.11.4
+
+jdk:
+  - oraclejdk8
+
+sudo: false
+
+services:
+  - redis-server
+
+script:
+  - sbt test
+

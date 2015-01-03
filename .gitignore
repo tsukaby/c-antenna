@@ -1,3 +1,4 @@
+# Server
 logs
 project/project
 project/target
@@ -5,13 +6,26 @@ target
 tmp
 .history
 dist
-/.idea
-/*.iml
+.idea
+*.iml
 /out
 /.idea_modules
 /.classpath
 /.project
 /RUNNING_PID
 /.settings
+/public
+/application-debug.log
+*.log
 
-    
+# Front
+bower_components
+node_modules
+typings
+.sass-cache
+.tscache
+/modules/layered-application/ui/**/*.css
+/modules/layered-application/ui/**/*.js
+/modules/layered-application/ui/**/*.map
+tscommand-*.tmp.txt
+test-results.xml

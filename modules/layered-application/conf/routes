@@ -1,0 +1,27 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Debug
+GET         /debug/runRssCrawl                 com.tsukaby.c_antenna.controller.DebugController.runRssCrawl
+GET         /debug/refreshSiteName             com.tsukaby.c_antenna.controller.DebugController.refreshSiteName
+GET         /debug/refreshRanking              com.tsukaby.c_antenna.controller.DebugController.refreshRanking
+GET         /debug/refreshHatebuRanking        com.tsukaby.c_antenna.controller.DebugController.refreshHatebuRanking
+
+# Site
+GET         /api/sites                         com.tsukaby.c_antenna.controller.SiteController.showAll(condition: SimpleSearchCondition)
+
+GET         /api/images/siteThumbs/:id         com.tsukaby.c_antenna.controller.SiteController.showThumbs(id: Long)
+
+# Article
+GET         /api/articles                      com.tsukaby.c_antenna.controller.ArticleController.showAll(condition: SimpleSearchCondition)
+
+
+# Click
+POST        /api/click_log                     com.tsukaby.c_antenna.controller.ClickLogController.clickLog
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /                                  controllers.Assets.at(path="/public", file="index.html")
+GET         /latest                            controllers.Assets.at(path="/public", file="index.html")
+GET         /article_ranking                   controllers.Assets.at(path="/public", file="index.html")
+GET         /*file                             controllers.Assets.at(path="/public", file)
