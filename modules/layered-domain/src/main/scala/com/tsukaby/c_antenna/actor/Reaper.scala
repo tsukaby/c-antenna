@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.actor
 
-import akka.actor.{Actor, ActorRef, Terminated}
+import akka.actor.{ActorRef, Terminated}
 import scala.collection.mutable.ArrayBuffer
 
 object Reaper {
@@ -8,7 +8,7 @@ object Reaper {
   case class WatchMe(ref: ActorRef)
 }
 
-abstract class Reaper extends Actor {
+abstract class Reaper extends BaseActor {
   import Reaper._
 
   // Keep track of what we're watching

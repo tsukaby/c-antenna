@@ -1,32 +1,25 @@
 package com.tsukaby.c_antenna.batch
 
 import akka.actor.Actor
-import com.tsukaby.c_antenna.dao._
+import com.tsukaby.c_antenna.actor.BaseActor
+import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.service._
 import com.tsukaby.c_antenna.util.TimeUtil
 import play.api.Logger
 import scalikejdbc.DB
 
 /**
- *
+ * サイトのRSSクロールを行います。
  */
-class RssCrawlActor extends Actor {
+class RssCrawlActor extends BaseActor {
   def receive: Actor.Receive = {
-    case e: String =>
-      val result = TimeUtil.time({
-        val sites = SiteDao.getAll
-        sites.par foreach { site =>
-          SiteService.crawl(site.id)
-        }
-      })
-
-      Logger.info(s"クロールに成功しました！ (${result._2.toSeconds} sec)")
-      sender() ! s"finifhed$e"
+    case site:SiteMapper =>
+      SiteService.crawl(site.id)
   }
 
 }
 
-class SiteNameActor extends Actor {
+class SiteNameActor extends BaseActor {
   def receive: Actor.Receive = {
     case e: String =>
       val result = TimeUtil.time(SiteService.refreshSiteName())
@@ -34,7 +27,7 @@ class SiteNameActor extends Actor {
   }
 }
 
-class SiteThumbnailActor extends Actor {
+class SiteThumbnailActor extends BaseActor {
   def receive: Actor.Receive = {
     case e: String =>
       val result = TimeUtil.time(SiteService.refreshSiteThumbnail())
@@ -42,7 +35,7 @@ class SiteThumbnailActor extends Actor {
   }
 }
 
-class HatebuActor extends Actor {
+class HatebuActor extends BaseActor {
   def receive: Actor.Receive = {
     case e: String =>
       val result = TimeUtil.time(SiteService.refreshSiteRank())
@@ -50,7 +43,7 @@ class HatebuActor extends Actor {
   }
 }
 
-class RankingActor extends Actor {
+class RankingActor extends BaseActor {
   def receive: Actor.Receive = {
     case e: String =>
       val result = DB localTx { session =>

@@ -3,21 +3,15 @@ package com.tsukaby.c_antenna
 import akka.actor.{ActorSystem, Props}
 import com.tsukaby.c_antenna.actor.{Reaper, ShutdownReaper}
 import com.tsukaby.c_antenna.batch.RssCrawlActor
-import scalikejdbc.config.{DBs, DBsWithEnv}
+import com.tsukaby.c_antenna.dao.SiteDao
+import scalikejdbc.config.DBs
 
 import scala.language.postfixOps
 
 object Main {
   def main(args: Array[String]): Unit = {
-    Option(System.getProperty("config.resource")) match {
-      case None =>
-        DBs.setupAll()
-      case Some(x) =>
-        DBsWithEnv(x.replace(".conf", "")).setupAll()
-    }
-
+    DBs.setupAll()
     crawl()
-
   }
 
   private def crawl() = {
@@ -27,7 +21,7 @@ object Main {
     val reaper = system.actorOf(Props[ShutdownReaper])
     reaper ! Reaper.WatchMe(actor)
 
-    actor ! "go"
+    SiteDao.getAll.par.foreach(actor ! _)
   }
 
 }
