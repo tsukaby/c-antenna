@@ -4,33 +4,7 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-4" ng-repeat="site in sites">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <a analytics-on ng-href="{{site.url}}" target="_blank"
-             ng-mousedown="clickLogService.postClickLogSite(site)">{{site.name}}</a>
-        </div>
-        <div class="panel-body">
-          <div class="text-center">
-            <a analytics-on ng-href="{{site.url}}" target="_blank"
-               ng-mousedown="clickLogService.postClickLogSite(site)">
-              <img ng-src="/api/images/siteThumbs/{{site.id}}" alt="{{site.name}}" width="100%" height="100%">
-            </a>
-          </div>
-          <ul style="list-style: none">
-            <li class="article-title-wrapper" ng-repeat="article in site.recentArticles">
-              <a analytics-on ng-href="{{article.url}}"
-                 target="_blank"
-                 title="{{article.title}}"
-                 ng-mousedown="clickLogService.postClickLogArticle(article)"
-                 style="width: 100%; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                <span>
-                  {{article.title}}<span class="badge" ng-repeat="tag in article.tags">{{tag}}</span>
-                </span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <div site-panel-directive="site"></div>
     </div>
   </div>
   <div class="row">

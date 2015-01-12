@@ -81,6 +81,7 @@ module App {
     false;
   })
     .directive("adDirective", () => new Directive.AdDirective())
+    .directive("sitePanelDirective", () => new Directive.SitePanelDirective())
   ;
 
 
