@@ -6,4 +6,5 @@
 sbt clean assembly
 
 # 転送
-scp target/scala-2.11/c-antenna-assembly-1.0.jar sakura2_app:/usr/local/app/c-antenna-batch/c-antenna-batch-1.0.jar
+scp ./c-antenna-batch.jar sakura2_app:/usr/local/app/c-antenna-batch/c-antenna-batch.jar.tmp
+ssh -t sakura2_app "mv -f /usr/local/app/c-antenna-batch/c-antenna-batch.jar.tmp /usr/local/app/c-antenna-batch/c-antenna-batch.jar"

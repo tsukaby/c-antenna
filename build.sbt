@@ -48,8 +48,5 @@ lazy val root = (project in file("."))
   .settings(
     name := "c-antenna",
     mainClass in assembly := Some("com.tsukaby.c_antenna.Main"),
-    assemblyMergeStrategy in assembly := {
-      case "META-INF/MANIFEST.MF" => MergeStrategy.discard
-      case x => MergeStrategy.first
-    }
+    assemblyOutputPath in assembly := file("./c-antenna-batch.jar")
   )
