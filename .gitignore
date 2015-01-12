@@ -17,6 +17,7 @@ dist
 /public
 /application-debug.log
 *.log
+/*.jar
 
 # Front
 bower_components
