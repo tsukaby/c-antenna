@@ -8,7 +8,9 @@ import com.tsukaby.c_antenna.util.TimeUtil
 import play.api.Logger
 import scalikejdbc.DB
 
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 
 /**
@@ -23,7 +25,11 @@ class RssCrawlActor extends BaseActor {
       log.info("timeout")
       context.stop(self)
     case site: SiteMapper =>
-      SiteService.crawl(site)
+      val f = Future {
+        SiteService.crawl(site)
+      }
+
+      Await.ready(f, 60 seconds)
       context.stop(self)
   }
 
