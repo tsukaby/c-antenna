@@ -19,7 +19,7 @@ module App {
   // モジュールの定義
   angular.module(
     appName,
-    ["ui.router", "ngTable", "ui.bootstrap", "angulartics", "angulartics.google.analytics", appName + ".controller", appName + ".service", appName + ".filter", appName + ".directive"],
+    ["ui.router", "ngTable", "ui.bootstrap", "angulartics", "angulartics.google.analytics", appName + ".controller", appName + ".service", appName + ".directive"],
     ($stateProvider:ng.ui.IStateProvider, $locationProvider:ng.ILocationProvider)=> {
       $stateProvider
         .state('/', {
