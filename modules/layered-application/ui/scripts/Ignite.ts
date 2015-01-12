@@ -4,6 +4,7 @@
 ///<reference path='Model.ts' />
 ///<reference path='Service.ts' />
 ///<reference path='Controller.ts' />
+///<reference path='Directive.ts' />
 
 console.log("ignite!");
 
@@ -76,55 +77,12 @@ module App {
   ;
 
   // モジュールの定義。directiveに関するモジュール。
-  angular.module(
-    appName + ".directive",
-    [],
-    ()=> {
-      false;
-    }
-  )
-    .directive("tgFileBind", ()=> {
-      return (scope:any, elm:any, attrs:any) => {
-        elm.bind("change", (evt:any) => {
-          scope.$apply((scope:any)=> {
-            scope[attrs.name] = evt.target.files;
-          });
-        });
-      };
-    })
-    .directive("tgContenteditable", ($parse:ng.IParseService)=> {
-      return {
-        require: "ngModel",
-        link: (scope:any, elm:any, attrs:any, ctrl:ng.INgModelController) => {
-          var value = $parse(attrs.ngModel)(scope);
-
-          elm.attr("contenteditable", "");
-          // view -> model
-          var viewToModel = () => {
-            scope.$apply(()=> {
-              ctrl.$setViewValue(elm.html());
-            });
-          };
-          elm.bind("blur", viewToModel);
-          elm.bind("keyup", viewToModel);
-          elm.bind("keydown", viewToModel);
-
-          // model -> view
-          ctrl.$render = () => {
-            elm.html(ctrl.$viewValue);
-          };
-
-          // load init value from DOM
-          if (value) {
-            ctrl.$setViewValue(value);
-            ctrl.$render();
-          } else {
-            ctrl.$setViewValue(elm.html());
-          }
-        }
-      };
-    })
+  angular.module(appName + ".directive", [], () => {
+    false;
+  })
+    .directive("adDirective", () => new Directive.AdDirective())
   ;
+
 
   // モジュールの定義。filterに関するモジュール。
   angular.module(
