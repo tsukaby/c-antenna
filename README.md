@@ -50,3 +50,6 @@ my.cnf
 
 圧縮するテーブルには`ROW_FORMAT=COMPRESSED`を付ける
 
+### Update
+
+    sbt dependencyUpdates
