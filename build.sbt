@@ -14,6 +14,12 @@ resolvers += "Akka-Quartz Repo" at "http://repo.theatr.us"
 
 scalikejdbcSettings
 
+lazy val json4sVersion = "3.2.11"
+
+lazy val scalikejdbcVersion = "2.2.4"
+
+lazy val scalikejdbcPlayVersion = "2.3.5"
+
 lazy val commonSettings = Seq(
   version := "0.0.2",
   organization := "com.tsukaby",
@@ -32,24 +38,22 @@ lazy val layeredInfrastructure = (project in file("modules/layered-infrastructur
   .settings(
     name := "layered-infrastructure",
     libraryDependencies ++= Seq(
-      "mysql" % "mysql-connector-java" % "5.1.33",
-      "org.scalikejdbc" %% "scalikejdbc" % "2.2.+",
-      "org.scalikejdbc" %% "scalikejdbc-config" % "2.2.+",
-      "org.scalikejdbc" %% "scalikejdbc-play-plugin" % "2.3.4",
-      "org.scalikejdbc" %% "scalikejdbc-play-fixture-plugin" % "2.3.4",
-      "org.scalikejdbc" %% "scalikejdbc-test" % "2.2.+" % "test",
-      "com.h2database" % "h2" % "1.4.181" % "test",
+      "mysql" % "mysql-connector-java" % "5.1.34",
+      "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
+      "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
+      "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
+      "com.h2database" % "h2" % "1.4.185" % "test",
       "ch.qos.logback" % "logback-classic" % "1.1.2",
       "com.rometools" % "rome" % "1.5.0", //RSS
-      "redis.clients" % "jedis" % "2.6.0", //Redis
+      "redis.clients" % "jedis" % "2.6.2", //Redis
       "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
       "com.github.detro" % "phantomjsdriver" % "1.2.0" exclude("org.seleniumhq.selenium", "jetty-repacked"), // 画面キャプチャ用
       "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
-      "com.typesafe.akka" %% "akka-actor" % "2.3.6", // batch用
-      "io.spray" %% "spray-client" % "1.3.1", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
+      "com.typesafe.akka" %% "akka-actor" % "2.3.9", // batch用
+      "io.spray" %% "spray-client" % "1.3.2", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
       "org.scalaz" %% "scalaz-core" % "7.0.6", // より良い構文のため
       "us.theatr" %% "akka-quartz" % "0.3.0", // cron形式でジョブ登録・実行するためのもの
-      "com.github.nscala-time" %% "nscala-time" % "1.4.0", // 日付用
+      "com.github.nscala-time" %% "nscala-time" % "1.8.0", // 日付用
       "org.apache.xmlrpc" % "xmlrpc-common" % "3.1.3", //XML RPC
       "org.apache.xmlrpc" % "xmlrpc-client" % "3.1.3", //XML RPC
       "xml-apis" % "xml-apis" % "2.0.2", //XML RPC
@@ -67,8 +71,6 @@ lazy val layeredDomain = (project in file("modules/layered-domain"))
   )
   .settings(commonSettings: _*)
 
-lazy val json4sVersion = "3.2.10"
-
 lazy val layeredApplication = (project in file("modules/layered-application"))
   .enablePlugins(PlayScala)
   .dependsOn(
@@ -83,16 +85,15 @@ lazy val layeredApplication = (project in file("modules/layered-application"))
       "com.tsukaby.c_antenna.db.entity._"
     ),
     libraryDependencies ++= Seq(
-      "mysql" % "mysql-connector-java" % "5.1.33",
-      "org.scalikejdbc" %% "scalikejdbc" % "2.2.+",
-      "org.scalikejdbc" %% "scalikejdbc-config" % "2.2.+",
-      "org.scalikejdbc" %% "scalikejdbc-play-plugin" % "2.3.4",
-      "org.scalikejdbc" %% "scalikejdbc-play-fixture-plugin" % "2.3.4",
-      "org.scalikejdbc" %% "scalikejdbc-test" % "2.2.+" % "test",
+      "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
+      "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
+      "org.scalikejdbc" %% "scalikejdbc-play-plugin" % scalikejdbcPlayVersion,
+      "org.scalikejdbc" %% "scalikejdbc-play-fixture-plugin" % scalikejdbcPlayVersion,
+      "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
       "org.json4s" %% "json4s-native" % json4sVersion,
       "org.json4s" %% "json4s-ext" % json4sVersion,
-      "com.github.tototoshi" %% "play-json4s-native" % "0.3.0",
-      "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.0" % "test"
+      "com.github.tototoshi" %% "play-json4s-native" % "0.3.1",
+      "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.1" % "test"
     ),
     doc in Compile <<= target.map(_ / "none"),    // QueryPathBinderを使う為に以下をroutesにインポート
     playRunHooks <+= baseDirectory.map(base => Grunt(base)),
