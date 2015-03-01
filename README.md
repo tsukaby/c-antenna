@@ -53,3 +53,9 @@ my.cnf
 ### Update
 
     sbt dependencyUpdates
+
+    npm install -g david
+    david update
+    
+    npm install -g tsd
+    tsd update -so

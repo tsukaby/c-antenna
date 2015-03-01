@@ -53,14 +53,20 @@ object SiteSummaryMapper extends SQLSyntaxSupport[SiteSummaryMapper] {
     withSQL(select(sqls"count(1)").from(SiteSummaryMapper as ssm)).map(rs => rs.long(1)).single.apply().get
   }
           
+  def findBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Option[SiteSummaryMapper] = {
+    withSQL {
+      select.from(SiteSummaryMapper as ssm).where.append(sqls"${where}")
+    }.map(SiteSummaryMapper(ssm.resultName)).single.apply()
+  }
+      
   def findAllBy(where: SQLSyntax)(implicit session: DBSession = autoSession): List[SiteSummaryMapper] = {
-    withSQL { 
+    withSQL {
       select.from(SiteSummaryMapper as ssm).where.append(sqls"${where}")
     }.map(SiteSummaryMapper(ssm.resultName)).list.apply()
   }
       
   def countBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Long = {
-    withSQL { 
+    withSQL {
       select(sqls"count(1)").from(SiteSummaryMapper as ssm).where.append(sqls"${where}")
     }.map(_.long(1)).single.apply().get
   }
