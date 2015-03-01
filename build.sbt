@@ -98,7 +98,7 @@ lazy val layeredApplication = (project in file("modules/layered-application"))
     doc in Compile <<= target.map(_ / "none"),    // QueryPathBinderを使う為に以下をroutesにインポート
     playRunHooks <+= baseDirectory.map(base => Grunt(base)),
     unmanagedResourceDirectories in Assets += baseDirectory.value / "ui",
-    excludeFilter in Assets := "*.ts" || "scss" || "*.map" || "test" || "typings",
+    excludeFilter in Assets := "*.ts" || "scss" || "test" || "typings",
     name := "layered-application"
   )
 
