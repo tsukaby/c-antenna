@@ -53,3 +53,6 @@ my.cnf
 ### Update
 
     sbt dependencyUpdates
+
+    npm install david -g
+    david update
