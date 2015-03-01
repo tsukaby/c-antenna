@@ -4,14 +4,6 @@ import sbt.Keys._
 
 playRunHooks <+= baseDirectory.map(base => Grunt(base))
 
-resolvers += "Maven Central Server" at "http://repo1.maven.org/maven2"
-
-resolvers += "ATILIKA dependencies" at "http://www.atilika.org/nexus/content/repositories/atilika"
-
-resolvers += "Sedis Repo" at "http://pk11-scratch.googlecode.com/svn/trunk"
-
-resolvers += "Akka-Quartz Repo" at "http://repo.theatr.us"
-
 scalikejdbcSettings
 
 lazy val json4sVersion = "3.2.11"
@@ -31,7 +23,13 @@ lazy val commonSettings = Seq(
   assemblyMergeStrategy in assembly := {
     case "META-INF/MANIFEST.MF" => MergeStrategy.discard
     case x => MergeStrategy.first
-  }
+  },
+  resolvers ++= Seq(
+    "Maven Central Server" at "http://repo1.maven.org/maven2",
+    "ATILIKA dependencies" at "http://www.atilika.org/nexus/content/repositories/atilika",
+    "Sedis Repo" at "http://pk11-scratch.googlecode.com/svn/trunk",
+    "Akka-Quartz Repo" at "http://repo.theatr.us"
+  )
 )
 
 lazy val layeredInfrastructure = (project in file("modules/layered-infrastructure"))
