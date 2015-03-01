@@ -15,9 +15,9 @@ resolvers += "Akka-Quartz Repo" at "http://repo.theatr.us"
 scalikejdbcSettings
 
 lazy val commonSettings = Seq(
-  version := "1.0",
+  version := "0.0.2",
   organization := "com.tsukaby",
-  scalaVersion in ThisBuild := "2.11.4",
+  scalaVersion in ThisBuild := "2.11.5",
   scalacOptions += "-feature",
   javaOptions in Test += "-Dconfig.file=conf/test.conf",
   test in assembly := {},
