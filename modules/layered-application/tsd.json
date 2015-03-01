@@ -6,22 +6,22 @@
   "bundle": "ui/typings/bundle.d.ts",
   "installed": {
     "jquery/jquery.d.ts": {
-      "commit": "9d2478b8a80febe1d89a5d35cdf6051d121f5437"
+      "commit": "3882d337bb0808cde9fe4c08012508a48c135482"
     },
     "angularjs/angular.d.ts": {
-      "commit": "9d2478b8a80febe1d89a5d35cdf6051d121f5437"
+      "commit": "3882d337bb0808cde9fe4c08012508a48c135482"
     },
     "angular-ui/angular-ui-router.d.ts": {
-      "commit": "9d2478b8a80febe1d89a5d35cdf6051d121f5437"
+      "commit": "3882d337bb0808cde9fe4c08012508a48c135482"
     },
     "mocha/mocha.d.ts": {
-      "commit": "9d2478b8a80febe1d89a5d35cdf6051d121f5437"
+      "commit": "3882d337bb0808cde9fe4c08012508a48c135482"
     },
     "assert/assert.d.ts": {
-      "commit": "9d2478b8a80febe1d89a5d35cdf6051d121f5437"
+      "commit": "3882d337bb0808cde9fe4c08012508a48c135482"
     },
     "angularjs/angular-mocks.d.ts": {
-      "commit": "9d2478b8a80febe1d89a5d35cdf6051d121f5437"
+      "commit": "3882d337bb0808cde9fe4c08012508a48c135482"
     }
   }
 }
