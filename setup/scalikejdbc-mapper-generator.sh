@@ -3,8 +3,7 @@
 cd modules/layered-infrastructure
 
 # table
-sbt "scalikejdbc-gen-force ARTICLE ArticleMapper"
-sbt "scalikejdbc-gen-force SITE SiteMapper"
+sbt "scalikejdbc-gen-all-force"
 
 # view
 sbt "scalikejdbc-gen-force SITE_SUMMARY SiteSummaryMapper"
