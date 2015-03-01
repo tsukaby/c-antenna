@@ -58,14 +58,20 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     withSQL(select(sqls"count(1)").from(SiteMapper as sm)).map(rs => rs.long(1)).single.apply().get
   }
           
+  def findBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Option[SiteMapper] = {
+    withSQL {
+      select.from(SiteMapper as sm).where.append(sqls"${where}")
+    }.map(SiteMapper(sm.resultName)).single.apply()
+  }
+      
   def findAllBy(where: SQLSyntax)(implicit session: DBSession = autoSession): List[SiteMapper] = {
-    withSQL { 
+    withSQL {
       select.from(SiteMapper as sm).where.append(sqls"${where}")
     }.map(SiteMapper(sm.resultName)).list.apply()
   }
       
   def countBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Long = {
-    withSQL { 
+    withSQL {
       select(sqls"count(1)").from(SiteMapper as sm).where.append(sqls"${where}")
     }.map(_.long(1)).single.apply().get
   }
