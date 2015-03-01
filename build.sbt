@@ -31,11 +31,6 @@ lazy val commonSettings = Seq(
 lazy val layeredInfrastructure = (project in file("modules/layered-infrastructure"))
   .settings(
     name := "layered-infrastructure",
-    version := "1.0",
-    organization := "com.tsukaby",
-    scalaVersion in ThisBuild := "2.11.4",
-    scalacOptions += "-feature",
-    javaOptions in Test += "-Dconfig.file=test.conf",
     libraryDependencies ++= Seq(
       "mysql" % "mysql-connector-java" % "5.1.33",
       "org.scalikejdbc" %% "scalikejdbc" % "2.2.+",
