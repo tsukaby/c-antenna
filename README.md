@@ -50,3 +50,12 @@ my.cnf
 
 圧縮するテーブルには`ROW_FORMAT=COMPRESSED`を付ける
 
+### Update
+
+    sbt dependencyUpdates
+
+    npm install -g david
+    david update
+    
+    npm install -g tsd
+    tsd update -so

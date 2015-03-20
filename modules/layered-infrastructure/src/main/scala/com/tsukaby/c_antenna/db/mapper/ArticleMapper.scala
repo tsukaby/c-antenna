@@ -54,14 +54,20 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     withSQL(select(sqls"count(1)").from(ArticleMapper as am)).map(rs => rs.long(1)).single.apply().get
   }
           
+  def findBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Option[ArticleMapper] = {
+    withSQL {
+      select.from(ArticleMapper as am).where.append(sqls"${where}")
+    }.map(ArticleMapper(am.resultName)).single.apply()
+  }
+      
   def findAllBy(where: SQLSyntax)(implicit session: DBSession = autoSession): List[ArticleMapper] = {
-    withSQL { 
+    withSQL {
       select.from(ArticleMapper as am).where.append(sqls"${where}")
     }.map(ArticleMapper(am.resultName)).list.apply()
   }
       
   def countBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Long = {
-    withSQL { 
+    withSQL {
       select(sqls"count(1)").from(ArticleMapper as am).where.append(sqls"${where}")
     }.map(_.long(1)).single.apply().get
   }
