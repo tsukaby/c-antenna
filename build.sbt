@@ -8,14 +8,14 @@ scalikejdbcSettings
 
 lazy val json4sVersion = "3.2.11"
 
-lazy val scalikejdbcVersion = "2.2.4"
+lazy val scalikejdbcVersion = "2.2.5"
 
-lazy val scalikejdbcPlayVersion = "2.3.5"
+lazy val scalikejdbcPlayVersion = "2.3.6"
 
 lazy val commonSettings = Seq(
   version := "0.0.3",
   organization := "com.tsukaby",
-  scalaVersion in ThisBuild := "2.11.5",
+  scalaVersion in ThisBuild := "2.11.6",
   scalacOptions += "-feature",
   javaOptions in Test += "-Dconfig.file=conf/test.conf",
   test in assembly := {},
@@ -40,7 +40,7 @@ lazy val layeredInfrastructure = (project in file("modules/layered-infrastructur
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
-      "com.h2database" % "h2" % "1.4.185" % "test",
+      "com.h2database" % "h2" % "1.4.186" % "test",
       "ch.qos.logback" % "logback-classic" % "1.1.2",
       "com.rometools" % "rome" % "1.5.0", //RSS
       "redis.clients" % "jedis" % "2.6.2", //Redis

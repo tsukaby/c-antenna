@@ -28,7 +28,7 @@
     "grunt-tslint": "^2.0.0",
     "grunt-typedoc": "^0.2.1",
     "grunt-wiredep": "^2.0.0",
-    "http-server": "^0.7.4",
+    "http-server": "^0.8.0",
     "karma-chrome-launcher": "^0.1.4",
     "karma-coverage": "^0.2.6",
     "karma-junit-reporter": "^0.2.2",
