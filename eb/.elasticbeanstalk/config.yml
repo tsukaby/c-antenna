@@ -1,0 +1,10 @@
+branch-defaults:
+  default:
+    environment: prod-c-antenna
+global:
+  application_name: c-antenna
+  default_ec2_keyname: aws
+  default_platform: 64bit Amazon Linux 2015.03 v1.3.1 running Docker 1.5.0
+  default_region: ap-northeast-1
+  profile: null
+  sc: git

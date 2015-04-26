@@ -1,0 +1,23 @@
+EnvironmentConfigurationMetadata:
+  Description: Configuration created from the EB CLI using "eb config save".
+  DateModified: '1429350923000'
+  DateCreated: '1429350923000'
+AWSConfigurationTemplateVersion: 1.1.0.0
+EnvironmentTier:
+  Name: WebServer
+  Type: Standard
+SolutionStack: 64bit Amazon Linux 2015.03 v1.3.1 running Docker 1.5.0
+OptionSettings:
+  aws:ec2:vpc:
+    VPCId: vpc-82c4d8e0
+    AssociatePublicIpAddress: true
+    Subnets: subnet-57b9b823
+  aws:autoscaling:launchconfiguration:
+    IamInstanceProfile: aws-elasticbeanstalk-ec2-role
+    SecurityGroups: sg-abc623ce
+    EC2KeyName: aws
+    InstanceType: t2.micro
+  aws:elasticbeanstalk:environment:
+    EnvironmentType: SingleInstance
+  aws:elasticbeanstalk:sns:topics:
+    Notification Endpoint: ''
