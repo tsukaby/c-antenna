@@ -6,11 +6,12 @@ CREATE TABLE article (
   tag         VARCHAR(1024)         DEFAULT NULL,
   click_count BIGINT(20)   NOT NULL DEFAULT 0,
   created_at  DATETIME     NOT NULL,
-  PRIMARY KEY (id),
-  INDEX article_url_index(url),
-  INDEX article_site_id_index(site_id)
+  PRIMARY KEY (id)
 )
   ROW_FORMAT = DYNAMIC;
+
+CREATE INDEX article_url_index ON article(url);
+CREATE INDEX article_site_id_index ON article(site_id);
 
 CREATE TABLE site (
   id                    BIGINT(20)   NOT NULL AUTO_INCREMENT,
