@@ -21,9 +21,9 @@ case class ArticleMapper(
 
 object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
 
-  override val tableName = "ARTICLE"
+  override val tableName = "article"
 
-  override val columns = Seq("ID", "SITE_ID", "URL", "TITLE", "TAG", "CLICK_COUNT", "CREATED_AT")
+  override val columns = Seq("id", "site_id", "url", "title", "tag", "click_count", "created_at")
 
   def apply(am: SyntaxProvider[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = apply(am.resultName)(rs)
   def apply(am: ResultName[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = new ArticleMapper(

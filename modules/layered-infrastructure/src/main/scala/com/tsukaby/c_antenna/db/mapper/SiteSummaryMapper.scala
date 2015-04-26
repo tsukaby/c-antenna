@@ -20,9 +20,9 @@ case class SiteSummaryMapper(
 
 object SiteSummaryMapper extends SQLSyntaxSupport[SiteSummaryMapper] {
 
-  override val tableName = "SITE_SUMMARY"
+  override val tableName = "site_summary"
 
-  override val columns = Seq("ID", "NAME", "URL", "THUMBNAIL", "ARTICLE_COUNT", "CLICK_COUNT", "HATEBU_COUNT")
+  override val columns = Seq("id", "name", "url", "thumbnail", "article_count", "click_count", "hatebu_count")
 
   def apply(ssm: SyntaxProvider[SiteSummaryMapper])(rs: WrappedResultSet): SiteSummaryMapper = apply(ssm.resultName)(rs)
   def apply(ssm: ResultName[SiteSummaryMapper])(rs: WrappedResultSet): SiteSummaryMapper = new SiteSummaryMapper(

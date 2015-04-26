@@ -23,9 +23,9 @@ case class SiteMapper(
 
 object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
 
-  override val tableName = "SITE"
+  override val tableName = "site"
 
-  override val columns = Seq("ID", "NAME", "URL", "RSS_URL", "THUMBNAIL", "SCRAPING_CSS_SELECTOR", "CLICK_COUNT", "HATEBU_COUNT", "CRAWLED_AT")
+  override val columns = Seq("id", "name", "url", "rss_url", "thumbnail", "scraping_css_selector", "click_count", "hatebu_count", "crawled_at")
 
   def apply(sm: SyntaxProvider[SiteMapper])(rs: WrappedResultSet): SiteMapper = apply(sm.resultName)(rs)
   def apply(sm: ResultName[SiteMapper])(rs: WrappedResultSet): SiteMapper = new SiteMapper(
