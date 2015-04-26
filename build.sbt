@@ -91,7 +91,8 @@ lazy val layeredApplication = (project in file("modules/layered-application"))
       "org.json4s" %% "json4s-native" % json4sVersion,
       "org.json4s" %% "json4s-ext" % json4sVersion,
       "com.github.tototoshi" %% "play-json4s-native" % "0.3.1",
-      "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.1" % "test"
+      "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.1" % "test",
+      "com.github.tototoshi" %% "play-flyway" % "1.2.0"
     ),
     doc in Compile <<= target.map(_ / "none"),    // QueryPathBinderを使う為に以下をroutesにインポート
     playRunHooks <+= baseDirectory.map(base => Grunt(base)),
