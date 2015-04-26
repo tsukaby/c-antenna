@@ -8,14 +8,14 @@ scalikejdbcSettings
 
 lazy val json4sVersion = "3.2.11"
 
-lazy val scalikejdbcVersion = "2.2.4"
+lazy val scalikejdbcVersion = "2.2.5"
 
-lazy val scalikejdbcPlayVersion = "2.3.5"
+lazy val scalikejdbcPlayVersion = "2.3.6"
 
 lazy val commonSettings = Seq(
-  version := "0.0.3",
+  version := "0.0.4",
   organization := "com.tsukaby",
-  scalaVersion in ThisBuild := "2.11.5",
+  scalaVersion in ThisBuild := "2.11.6",
   scalacOptions += "-feature",
   javaOptions in Test += "-Dconfig.file=conf/test.conf",
   test in assembly := {},
@@ -40,7 +40,7 @@ lazy val layeredInfrastructure = (project in file("modules/layered-infrastructur
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
-      "com.h2database" % "h2" % "1.4.185" % "test",
+      "com.h2database" % "h2" % "1.4.186" % "test",
       "ch.qos.logback" % "logback-classic" % "1.1.2",
       "com.rometools" % "rome" % "1.5.0", //RSS
       "redis.clients" % "jedis" % "2.6.2", //Redis
@@ -91,7 +91,8 @@ lazy val layeredApplication = (project in file("modules/layered-application"))
       "org.json4s" %% "json4s-native" % json4sVersion,
       "org.json4s" %% "json4s-ext" % json4sVersion,
       "com.github.tototoshi" %% "play-json4s-native" % "0.3.1",
-      "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.1" % "test"
+      "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.1" % "test",
+      "com.github.tototoshi" %% "play-flyway" % "1.2.0"
     ),
     doc in Compile <<= target.map(_ / "none"),    // QueryPathBinderを使う為に以下をroutesにインポート
     playRunHooks <+= baseDirectory.map(base => Grunt(base)),
