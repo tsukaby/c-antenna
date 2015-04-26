@@ -13,7 +13,7 @@ lazy val scalikejdbcVersion = "2.2.5"
 lazy val scalikejdbcPlayVersion = "2.3.6"
 
 lazy val commonSettings = Seq(
-  version := "0.0.3",
+  version := "0.0.4",
   organization := "com.tsukaby",
   scalaVersion in ThisBuild := "2.11.6",
   scalacOptions += "-feature",
