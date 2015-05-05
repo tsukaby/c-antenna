@@ -1,10 +1,8 @@
 package com.tsukaby.c_antenna.service
 
-import java.io.{Reader, InputStreamReader, BufferedReader}
 import java.net.URL
 
 import com.rometools.rome.feed.synd.SyndEntry
-import com.rometools.rome.io.SyndFeedInput
 import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao, SiteSummaryDao}
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
@@ -16,7 +14,9 @@ import scalikejdbc.{AutoSession, DBSession}
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
+import scala.concurrent.Future
 import scalaz.Scalaz._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SiteService extends BaseService {
 
@@ -66,40 +66,37 @@ trait SiteService extends BaseService {
    * @param site クロール対象サイト
    * @param session DBセッション
    */
-  def crawl(site: SiteMapper)(implicit session: DBSession = AutoSession): Unit = {
+  def crawl(site: SiteMapper)(implicit session: DBSession = AutoSession): Future[Unit] = {
 
     Logger.info(s"サイト情報を更新します。${site.name}")
 
-    rssDao.getByUrl(site.rssUrl) match {
-      case Some(feed) =>
-        // サイト情報更新
-        feed.getEntries.asScala.par foreach {
-          // RSS記事URL更新
-          case (entry: SyndEntry) =>
+    rssDao.getByUrl(site.rssUrl).map { feed =>
+      // サイト情報更新
+      feed.getEntries.asScala.par foreach {
+        // RSS記事URL更新
+        case (entry: SyndEntry) =>
 
-            if (new DateTime(entry.getPublishedDate).isBefore(new DateTime().plusHours(1))) {
-              // RSS記事の日付が現在日時+1時間より前に作成されたものであればDB格納
-              // +1は多少未来の投稿時間でも許容する為。
-              // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
+          if (new DateTime(entry.getPublishedDate).isBefore(new DateTime().plusHours(1))) {
+            // RSS記事の日付が現在日時+1時間より前に作成されたものであればDB格納
+            // +1は多少未来の投稿時間でも許容する為。
+            // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
 
-              if (entry.getLink != null && articleDao.countByUrl(entry.getLink) == 0) {
-                //まだ記事が無い場合
-                // 記事を解析してタグを取得
-                //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
-                val tmp = Seq[(String, Int)]()
-                val tags = if (tmp.length == 0) {
-                  None
-                } else {
-                  Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
-                }
-                // DB登録
-                articleDao.create(site.id, entry.getLink, entry.getTitle, tags, 0, new DateTime(entry.getPublishedDate))
+            if (entry.getLink != null && articleDao.countByUrl(entry.getLink) == 0) {
+              //まだ記事が無い場合
+              // 記事を解析してタグを取得
+              //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
+              val tmp = Seq[(String, Int)]()
+              val tags = if (tmp.length == 0) {
+                None
+              } else {
+                Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
               }
+              // DB登録
+              articleDao.create(site.id, entry.getLink, entry.getTitle, tags, 0, new DateTime(entry.getPublishedDate))
             }
-        }
-      case None =>
+          }
+      }
     }
-
   }
 
   private def getTags(articleUrl: String, cssSelector: String): Seq[(String, Int)] = {
@@ -115,16 +112,13 @@ trait SiteService extends BaseService {
   }
 
   /**
-   * 全てのサイトのRSSを取得し、サイト名を最新の状態にします。
+   * サイトのRSSを取得し、サイト名を最新の状態にします。
+   *
+   * @param site サイト名更新対象サイト
    */
-  def refreshSiteName(implicit session: DBSession = AutoSession): Unit = {
-    siteDao.getAll foreach { x =>
-
-      rssDao.getByUrl(x.rssUrl) match {
-        case Some(feed) =>
-          x.copy(name = feed.getTitle).save()
-        case None =>
-      }
+  def refreshSiteName(site: SiteMapper)(implicit session: DBSession = AutoSession): Future[Unit] = {
+    rssDao.getByUrl(site.rssUrl).map { feed =>
+      site.copy(name = feed.getTitle).save()
     }
   }
 

@@ -2,12 +2,6 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Debug
-GET         /debug/runRssCrawl                 com.tsukaby.c_antenna.controller.DebugController.runRssCrawl
-GET         /debug/refreshSiteName             com.tsukaby.c_antenna.controller.DebugController.refreshSiteName
-GET         /debug/refreshRanking              com.tsukaby.c_antenna.controller.DebugController.refreshRanking
-GET         /debug/refreshHatebuRanking        com.tsukaby.c_antenna.controller.DebugController.refreshHatebuRanking
-
 # Site
 GET         /api/sites                         com.tsukaby.c_antenna.controller.SiteController.showAll(condition: SimpleSearchCondition)
 

@@ -1,58 +1,85 @@
 package com.tsukaby.c_antenna.batch
 
-import akka.actor.{ActorRef, Actor, ReceiveTimeout}
+import akka.actor.{Actor, ReceiveTimeout}
 import com.tsukaby.c_antenna.actor.BaseActor
+import com.tsukaby.c_antenna.dao.SiteDao
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.service._
 import com.tsukaby.c_antenna.util.TimeUtil
 import scalikejdbc._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * サイトのRSSクロールを行います。
  */
-class RssCrawlActor extends BaseActor {
+case class RssCrawlActor() extends BaseActor {
 
-  context.setReceiveTimeout(1 minute)
+  context.setReceiveTimeout(5 minute)
 
   def receive: Actor.Receive = {
     case ReceiveTimeout =>
       log.info("timeout")
       context.stop(self)
-    case site: SiteMapper =>
-      val f = Future {
-        SiteService.crawl(site)
+    case all: RssCrawlActor.Protocol.CrawlAll =>
+      SiteDao.getAll.foreach { x =>
+        self ! x
       }
-
-      Await.ready(f, 60 seconds)
-      context.stop(self)
+    case site: SiteMapper =>
+      val f = SiteService.crawl(site)
+      val wrapper = RssCrawlActor.Protocol.FutureAwait(f, site)
+      self ! wrapper
+    case wrapper: RssCrawlActor.Protocol.FutureAwait[_] =>
+      if (!wrapper.f.isCompleted) {
+        context.system.scheduler.scheduleOnce(10 seconds, self, wrapper)
+      } else {
+        log.info(s"Crawl completed! site = ${wrapper.site.name}")
+      }
   }
 
 }
 
-class SiteThumbnailActor extends BaseActor {
+object RssCrawlActor {
+  object Protocol {
+    case class FutureAwait[T](f: Future[T], site: SiteMapper)
+    case class CrawlAll()
+  }
+}
+
+case class SiteThumbnailActor() extends BaseActor {
   def receive: Actor.Receive = {
-    case e: String =>
+    case all: SiteThumbnailActor.Protocol.RefreshAll =>
       val result = TimeUtil.time(SiteService.refreshSiteThumbnail())
       log.info(s"サイトのサムネイルを最新状態にしました。 (${result._2.toSeconds} sec)")
   }
 }
 
-class HatebuActor extends BaseActor {
+object SiteThumbnailActor {
+  object Protocol {
+    case class RefreshAll()
+  }
+}
+
+case class HatebuActor() extends BaseActor {
   def receive: Actor.Receive = {
-    case e: String =>
+    case all: HatebuActor.Protocol.RefreshAll =>
       val result = TimeUtil.time(SiteService.refreshSiteRank())
       log.info(s"サイトのランキングを最新状態にしました。 (${result._2.toSeconds} sec)")
   }
 }
 
-class RankingActor extends BaseActor {
+object HatebuActor {
+  object Protocol{
+    case class RefreshAll()
+  }
+}
+
+case class RankingActor() extends BaseActor {
   def receive: Actor.Receive = {
-    case e: String =>
+    case all: RankingActor.Protocol.RefreshAll =>
       val result = DB localTx { session =>
         TimeUtil.time(ClickLogService.refreshRanking())
       }
@@ -60,10 +87,30 @@ class RankingActor extends BaseActor {
   }
 }
 
-class SiteNameActor extends BaseActor {
+object RankingActor {
+  object Protocol {
+    case class RefreshAll()
+  }
+}
+
+case class SiteNameActor() extends BaseActor {
   def receive: Actor.Receive = {
-    case e: String =>
-      val result = TimeUtil.time(SiteService.refreshSiteName())
+    case all: SiteNameActor.Protocol.RefreshAll =>
+      val result = TimeUtil.time {
+        val futures = SiteDao.getAll.map { x =>
+          SiteService.refreshSiteName(x)
+        }
+
+        val f = Future.sequence(futures)
+        Await.ready(f, Duration.Inf)
+      }
+
       log.info(s"サイト名を最新状態にしました。 (${result._2.toSeconds} sec)")
+  }
+}
+
+object SiteNameActor {
+  object Protocol {
+    case class RefreshAll()
   }
 }

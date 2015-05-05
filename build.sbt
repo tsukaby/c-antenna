@@ -39,13 +39,14 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
       "com.h2database" % "h2" % "1.4.186" % "test",
-      "ch.qos.logback" % "logback-classic" % "1.1.2",
+      "ch.qos.logback" % "logback-classic" % "1.0.13",
       "com.rometools" % "rome" % "1.5.0", //RSS
       "redis.clients" % "jedis" % "2.6.2", //Redis
       "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
       "com.github.detro" % "phantomjsdriver" % "1.2.0" exclude("org.seleniumhq.selenium", "jetty-repacked"), // 画面キャプチャ用
       "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
       "com.typesafe.akka" %% "akka-actor" % "2.3.9", // batch用
+      "com.typesafe.akka" %% "akka-slf4j" % "2.3.9",
       "io.spray" %% "spray-client" % "1.3.2", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
       "org.scalaz" %% "scalaz-core" % "7.0.6", // より良い構文のため
       "us.theatr" %% "akka-quartz" % "0.3.0", // cron形式でジョブ登録・実行するためのもの
@@ -118,7 +119,6 @@ lazy val batch = (project in file("modules/batch"))
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
-      "ch.qos.logback" % "logback-classic" % "1.0.13",
       "org.json4s" %% "json4s-native" % json4sVersion,
       "org.json4s" %% "json4s-ext" % json4sVersion,
       "com.github.tototoshi" %% "play-json4s-native" % "0.3.1",
