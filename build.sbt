@@ -2,8 +2,6 @@ import play.PlayScala
 import play.PlayImport.PlayKeys._
 import sbt.Keys._
 
-playRunHooks <+= baseDirectory.map(base => Grunt(base))
-
 scalikejdbcSettings
 
 lazy val json4sVersion = "3.2.11"
@@ -32,22 +30,23 @@ lazy val commonSettings = Seq(
   )
 )
 
-lazy val layeredInfrastructure = (project in file("modules/layered-infrastructure"))
+lazy val infrastructure = (project in file("modules/infrastructure"))
   .settings(
-    name := "layered-infrastructure",
+    name := "infrastructure",
     libraryDependencies ++= Seq(
       "mysql" % "mysql-connector-java" % "5.1.34",
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
       "com.h2database" % "h2" % "1.4.186" % "test",
-      "ch.qos.logback" % "logback-classic" % "1.1.2",
+      "ch.qos.logback" % "logback-classic" % "1.0.13",
       "com.rometools" % "rome" % "1.5.0", //RSS
       "redis.clients" % "jedis" % "2.6.2", //Redis
       "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
       "com.github.detro" % "phantomjsdriver" % "1.2.0" exclude("org.seleniumhq.selenium", "jetty-repacked"), // 画面キャプチャ用
       "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
       "com.typesafe.akka" %% "akka-actor" % "2.3.9", // batch用
+      "com.typesafe.akka" %% "akka-slf4j" % "2.3.9",
       "io.spray" %% "spray-client" % "1.3.2", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
       "org.scalaz" %% "scalaz-core" % "7.0.6", // より良い構文のため
       "us.theatr" %% "akka-quartz" % "0.3.0", // cron形式でジョブ登録・実行するためのもの
@@ -62,18 +61,18 @@ lazy val layeredInfrastructure = (project in file("modules/layered-infrastructur
   )
   .settings(commonSettings: _*)
 
-lazy val layeredDomain = (project in file("modules/layered-domain"))
-  .dependsOn(layeredInfrastructure % "test->test;test->compile;compile->compile")
+lazy val domain = (project in file("modules/domain"))
+  .dependsOn(infrastructure % "test->test;test->compile;compile->compile")
   .settings(
-    name := "layered-domain"
+    name := "domain"
   )
   .settings(commonSettings: _*)
 
-lazy val layeredApplication = (project in file("modules/layered-application"))
+lazy val web = (project in file("modules/web"))
   .enablePlugins(PlayScala)
   .dependsOn(
-    layeredDomain % "test->test;test->compile;compile->compile",
-    layeredInfrastructure % "test->test;compile->compile")
+    domain % "test->test;test->compile;compile->compile",
+    infrastructure % "test->test;compile->compile")
   .settings(commonSettings: _*)
   .settings(
     // QueryPathBinderを使う為に以下をroutesにインポート
@@ -95,19 +94,42 @@ lazy val layeredApplication = (project in file("modules/layered-application"))
       "com.github.tototoshi" %% "play-flyway" % "1.2.0"
     ),
     doc in Compile <<= target.map(_ / "none"),    // QueryPathBinderを使う為に以下をroutesにインポート
-    playRunHooks <+= baseDirectory.map(base => Grunt(base)),
+    //playRunHooks <+= baseDirectory.map(base => Grunt(base)),
     unmanagedResourceDirectories in Assets += baseDirectory.value / "ui",
     excludeFilter in Assets := "*.ts" || "scss" || "test" || "typings",
-    name := "layered-application"
+    name := "web"
   )
 
 lazy val root = (project in file("."))
-  .aggregate(layeredApplication, layeredDomain, layeredInfrastructure)
-  .dependsOn(layeredApplication, layeredDomain, layeredInfrastructure)
+  .aggregate(web, domain, infrastructure)
+  .dependsOn(web, domain, infrastructure)
   .enablePlugins(PlayScala)
   .settings(commonSettings: _*)
   .settings(
-    name := "c-antenna",
+    name := "c-antenna"
+  )
+
+lazy val batch = (project in file("modules/batch"))
+  .dependsOn(
+    domain % "test->test;test->compile;compile->compile",
+    infrastructure % "test->test;compile->compile")
+  .settings(commonSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
+      "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
+      "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
+      "org.json4s" %% "json4s-native" % json4sVersion,
+      "org.json4s" %% "json4s-ext" % json4sVersion,
+      "com.github.tototoshi" %% "play-json4s-native" % "0.3.1",
+      "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.1" % "test",
+      "com.github.tototoshi" %% "play-flyway" % "1.2.0"
+    ),
+    name := "batch"
+  )
+  .settings(commonSettings: _*)
+  .settings(
+    name := "c-antenna-batch",
     mainClass in assembly := Some("com.tsukaby.c_antenna.Main"),
     assemblyOutputPath in assembly := file("./c-antenna-batch.jar")
   )
