@@ -26,8 +26,8 @@ node_modules
 typings
 .sass-cache
 .tscache
-/modules/layered-application/ui/**/*.css
-/modules/layered-application/ui/**/*.js
-/modules/layered-application/ui/**/*.map
+/modules/web/ui/**/*.css
+/modules/web/ui/**/*.js
+/modules/web/ui/**/*.map
 tscommand-*.tmp.txt
 test-results.xml
