@@ -71,8 +71,8 @@ trait WebScrapingService extends BaseService {
     val img = Image(fis).scaleToWidth(400).resizeTo(400, 100, Position.TopLeft).writer(Format.JPEG).withCompression(80)
 
     fis.close()
-    driverTmp.close()
 
+    driverTmp.quit()
 
     val baos = new ByteArrayOutputStream()
     img.write(baos)
