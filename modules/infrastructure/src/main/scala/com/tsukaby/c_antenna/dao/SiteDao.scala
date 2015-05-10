@@ -1,7 +1,7 @@
 package com.tsukaby.c_antenna.dao
 
 import com.tsukaby.c_antenna.cache.VolatilityCache
-import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
+import com.tsukaby.c_antenna.db.entity.{SortOrder, SimpleSearchCondition}
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import scalikejdbc._
 
@@ -43,7 +43,7 @@ trait SiteDao {
    * @return ページ一覧
    */
   def getByCondition(condition: SimpleSearchCondition): Seq[SiteMapper] = {
-    val sql = createSql(condition)
+    val sql = createSql(condition, withPaging = true)
 
     SiteMapper.findAllBy(sql).toSeq
   }
@@ -57,6 +57,20 @@ trait SiteDao {
       SiteMapper.countAll()
     }
   }
+
+  /**
+   * 検索条件に合うサイト数を取得します。
+   * @param condition 検索条件
+   * @return サイト数
+   */
+  def countByCondition(condition: SimpleSearchCondition): Long = {
+    VolatilityCache.getOrElse[Long](s"countByCondition:${condition.toString}", 300) {
+      val sql = createSql(condition, withPaging = false)
+
+      SiteMapper.countBy(sql)
+    }
+  }
+
 
   /**
    * サイトを更新します。
@@ -80,11 +94,37 @@ trait SiteDao {
     VolatilityCache.remove(s"siteAllCount")
   }
 
-  // TODO 共通かできたら考える 多分引数変わるから無理
-  private def createSql(condition: SimpleSearchCondition): SQLSyntax = {
-    val page = condition.page.getOrElse(1)
-    val count = condition.count.getOrElse(10)
-    sqls.eq(sqls"1", 1).limit(count).offset((page - 1) * count)
+  /**
+   * 引数の条件に従ってSQLを作成します。
+   * @param condition 検索条件・ソート条件・ページング条件
+   * @param withPaging ページングの有無
+   * @return SQLの一部
+   */
+  private def createSql(condition: SimpleSearchCondition, withPaging: Boolean): SQLSyntax = {
+
+    // where
+    var sql = sqls.eq(sqls"1", 1)
+
+    // order by
+    sql = condition.sort match {
+      case Some(x) =>
+        if (x.order == SortOrder.Asc) {
+          sql.orderBy(sm.column(x.key)).asc
+        } else {
+          sql.orderBy(sm.column(x.key)).desc
+        }
+      case None =>
+        sql.orderBy(sm.hatebuCount).desc
+    }
+
+    // paging
+    if (withPaging) {
+      val page = condition.page.getOrElse(1)
+      val count = condition.count.getOrElse(10)
+      sql = sql.limit(count).offset((page - 1) * count)
+    }
+
+    sql
   }
 
 }

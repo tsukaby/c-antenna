@@ -1,7 +1,7 @@
 package com.tsukaby.c_antenna.entity
 
 import com.tsukaby.c_antenna.dao.{ArticleDao, SiteDao}
-import com.tsukaby.c_antenna.db.mapper.{ArticleMapper, SiteMapper, SiteSummaryMapper}
+import com.tsukaby.c_antenna.db.mapper.{ArticleMapper, SiteMapper}
 import org.apache.commons.codec.binary.Base64
 
 import scala.language.implicitConversions
@@ -19,18 +19,6 @@ object ImplicitConverter {
 
   implicit def dbSitesToSites(sites: Seq[SiteMapper]): Seq[Site] = {
     sites map (x => dbSitesToSites(x, ArticleDao.getLatelyBySiteId(x.id)))
-  }
-
-  implicit def dbSiteMappersToSites(siteSummaryMapper: SiteSummaryMapper, articleMappers: Seq[ArticleMapper]): Site = {
-    Site(
-      siteSummaryMapper.id,
-      siteSummaryMapper.name,
-      siteSummaryMapper.url,
-      dbArticlesToArticles(articleMappers))
-  }
-
-  implicit def dbSiteMappersToSites(sites: Seq[SiteSummaryMapper]): Seq[Site] = {
-    sites map (x => dbSiteMappersToSites(x, ArticleDao.getLatelyBySiteId(x.id)))
   }
 
   implicit def dbSiteToOptionSite(siteMapper: SiteMapper): Option[Site] = {

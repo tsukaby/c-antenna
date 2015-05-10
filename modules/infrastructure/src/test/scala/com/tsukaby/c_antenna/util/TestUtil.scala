@@ -1,7 +1,8 @@
 package com.tsukaby.c_antenna.util
 
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
-import com.tsukaby.c_antenna.db.mapper.{SiteMapper, SiteSummaryMapper, ArticleMapper}
+import com.tsukaby.c_antenna.db.mapper.{SiteMapper, ArticleMapper}
+
 import org.joda.time.DateTime
 
 import scalaz.Scalaz._
@@ -23,7 +24,4 @@ object TestUtil {
     SiteMapper(1L, "site_name", "http://", "http://rss", Array[Byte]().some, "css_selector", 1L, 1L, DateTime.now)
   }
 
-  def getBaseSiteSummaryMapper = {
-    SiteSummaryMapper(1L, "site_name", "http://", Array[Byte]().some, 1L, 1L, 1L)
-  }
 }

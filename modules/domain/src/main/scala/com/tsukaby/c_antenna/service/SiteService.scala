@@ -3,7 +3,7 @@ package com.tsukaby.c_antenna.service
 import java.net.URL
 
 import com.rometools.rome.feed.synd.SyndEntry
-import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao, SiteSummaryDao}
+import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao}
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
@@ -20,7 +20,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SiteService extends BaseService {
 
-  val siteSummaryDao: SiteSummaryDao = SiteSummaryDao
   val siteDao: SiteDao = SiteDao
   val rssDao: RssDao = RssDao
   val articleDao: ArticleDao = ArticleDao
@@ -31,12 +30,11 @@ trait SiteService extends BaseService {
    * @return サイトの一覧
    */
   def getByCondition(condition: SimpleSearchCondition)(implicit session: DBSession = AutoSession): SitePage = {
-    val sites = siteSummaryDao.getByCondition(condition)
-    val count = siteSummaryDao.countByCondition(condition)
+    val sites = siteDao.getByCondition(condition)
+    val count = siteDao.countByCondition(condition)
 
     SitePage(sites, count)
   }
-
 
   /**
    * 全てのサイトの情報を取得します。
