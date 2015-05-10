@@ -6,9 +6,11 @@ scalikejdbcSettings
 
 lazy val json4sVersion = "3.2.11"
 
-lazy val scalikejdbcVersion = "2.2.5"
+lazy val scalikejdbcVersion = "2.2.6"
 
 lazy val scalikejdbcPlayVersion = "2.3.6"
+
+lazy val akkaVersion = "2.3.10"
 
 lazy val commonSettings = Seq(
   version := "0.0.4",
@@ -34,23 +36,23 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
   .settings(
     name := "infrastructure",
     libraryDependencies ++= Seq(
-      "mysql" % "mysql-connector-java" % "5.1.34",
+      "mysql" % "mysql-connector-java" % "5.1.35",
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
-      "com.h2database" % "h2" % "1.4.186" % "test",
-      "ch.qos.logback" % "logback-classic" % "1.0.13",
+      "com.h2database" % "h2" % "1.4.187" % "test",
+      "ch.qos.logback" % "logback-classic" % "1.1.3",
       "com.rometools" % "rome" % "1.5.0", //RSS
       "redis.clients" % "jedis" % "2.6.2", //Redis
       "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
       "com.github.detro" % "phantomjsdriver" % "1.2.0" exclude("org.seleniumhq.selenium", "jetty-repacked"), // 画面キャプチャ用
       "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
-      "com.typesafe.akka" %% "akka-actor" % "2.3.9", // batch用
-      "com.typesafe.akka" %% "akka-slf4j" % "2.3.9",
-      "io.spray" %% "spray-client" % "1.3.2", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
+      "com.typesafe.akka" %% "akka-actor" % akkaVersion, // batch用
+      "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+      "io.spray" %% "spray-client" % "1.3.3", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
       "org.scalaz" %% "scalaz-core" % "7.0.6", // より良い構文のため
       "us.theatr" %% "akka-quartz" % "0.3.0", // cron形式でジョブ登録・実行するためのもの
-      "com.github.nscala-time" %% "nscala-time" % "1.8.0", // 日付用
+      "com.github.nscala-time" %% "nscala-time" % "2.0.0", // 日付用
       "org.apache.xmlrpc" % "xmlrpc-common" % "3.1.3", //XML RPC
       "org.apache.xmlrpc" % "xmlrpc-client" % "3.1.3", //XML RPC
       "xml-apis" % "xml-apis" % "2.0.2", //XML RPC
@@ -82,16 +84,14 @@ lazy val web = (project in file("modules/web"))
       "com.tsukaby.c_antenna.db.entity._"
     ),
     libraryDependencies ++= Seq(
-      "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-play-plugin" % scalikejdbcPlayVersion,
       "org.scalikejdbc" %% "scalikejdbc-play-fixture-plugin" % scalikejdbcPlayVersion,
-      "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
       "org.json4s" %% "json4s-native" % json4sVersion,
       "org.json4s" %% "json4s-ext" % json4sVersion,
       "com.github.tototoshi" %% "play-json4s-native" % "0.3.1",
       "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.1" % "test",
-      "com.github.tototoshi" %% "play-flyway" % "1.2.0"
+      "com.github.tototoshi" %% "play-flyway" % "1.2.1"
     ),
     doc in Compile <<= target.map(_ / "none"),    // QueryPathBinderを使う為に以下をroutesにインポート
     //playRunHooks <+= baseDirectory.map(base => Grunt(base)),
@@ -116,14 +116,8 @@ lazy val batch = (project in file("modules/batch"))
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
-      "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
-      "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
       "org.json4s" %% "json4s-native" % json4sVersion,
-      "org.json4s" %% "json4s-ext" % json4sVersion,
-      "com.github.tototoshi" %% "play-json4s-native" % "0.3.1",
-      "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.1" % "test",
-      "com.github.tototoshi" %% "play-flyway" % "1.2.0"
+      "org.json4s" %% "json4s-ext" % json4sVersion
     ),
     name := "batch"
   )
