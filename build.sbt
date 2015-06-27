@@ -1,4 +1,3 @@
-import play.PlayScala
 import play.PlayImport.PlayKeys._
 import sbt.Keys._
 
@@ -6,16 +5,16 @@ scalikejdbcSettings
 
 lazy val json4sVersion = "3.2.11"
 
-lazy val scalikejdbcVersion = "2.2.6"
+lazy val scalikejdbcVersion = "2.2.7"
 
 lazy val scalikejdbcPlayVersion = "2.3.6"
 
-lazy val akkaVersion = "2.3.10"
+lazy val akkaVersion = "2.3.11"
 
 lazy val commonSettings = Seq(
   version := "0.0.4",
   organization := "com.tsukaby",
-  scalaVersion in ThisBuild := "2.11.6",
+  scalaVersion in ThisBuild := "2.11.7",
   scalacOptions += "-feature",
   javaOptions in Test += "-Dconfig.file=conf/test.conf",
   test in assembly := {},
@@ -28,8 +27,13 @@ lazy val commonSettings = Seq(
     "Maven Central Server" at "http://repo1.maven.org/maven2",
     "ATILIKA dependencies" at "http://www.atilika.org/nexus/content/repositories/atilika",
     "Sedis Repo" at "http://pk11-scratch.googlecode.com/svn/trunk",
-    "Akka-Quartz Repo" at "http://repo.theatr.us"
-  )
+    "Akka-Quartz Repo" at "http://repo.theatr.us",
+    "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
+  ),
+  libraryDependencies ++= Seq(
+    specs2 % Test
+  ),
+  checksums in update := Nil
 )
 
 lazy val infrastructure = (project in file("modules/infrastructure"))
@@ -40,6 +44,9 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
+      "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.4.0",
+      "org.scalikejdbc" %% "scalikejdbc-play-fixture" % "2.4.0",
+      "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "2.4.0",
       "com.h2database" % "h2" % "1.4.187" % "test",
       "ch.qos.logback" % "logback-classic" % "1.1.3",
       "com.rometools" % "rome" % "1.5.0", //RSS
@@ -56,9 +63,9 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "org.apache.xmlrpc" % "xmlrpc-common" % "3.1.3", //XML RPC
       "org.apache.xmlrpc" % "xmlrpc-client" % "3.1.3", //XML RPC
       "xml-apis" % "xml-apis" % "2.0.2", //XML RPC
-      "com.sksamuel.scrimage" %% "scrimage-core" % "1.4.2",
-      "org.specs2" %% "specs2-core" % "2.3.13" % "test",
-      "org.specs2" %% "specs2-mock" % "2.3.13" % "test"
+      "com.sksamuel.scrimage" %% "scrimage-core" % "2.0.1",
+      "com.sksamuel.scrimage" %% "scrimage-io" % "2.0.1",
+      "com.sksamuel.scrimage" %% "scrimage-filters" % "2.0.1"
     )
   )
   .settings(commonSettings: _*)
@@ -89,13 +96,12 @@ lazy val web = (project in file("modules/web"))
       "org.scalikejdbc" %% "scalikejdbc-play-fixture-plugin" % scalikejdbcPlayVersion,
       "org.json4s" %% "json4s-native" % json4sVersion,
       "org.json4s" %% "json4s-ext" % json4sVersion,
-      "com.github.tototoshi" %% "play-json4s-native" % "0.3.1",
-      "com.github.tototoshi" %% "play-json4s-test-native" % "0.3.1" % "test",
-      "com.github.tototoshi" %% "play-flyway" % "1.2.1"
+      "com.github.tototoshi" %% "play-json4s-native" % "0.4.0",
+      "com.github.tototoshi" %% "play-json4s-test-native" % "0.4.0" % "test",
+      "org.flywaydb" %% "flyway-play" % "2.0.1"
     ),
     doc in Compile <<= target.map(_ / "none"),    // QueryPathBinderを使う為に以下をroutesにインポート
     //playRunHooks <+= baseDirectory.map(base => Grunt(base)),
-    unmanagedResourceDirectories in Assets += baseDirectory.value / "ui",
     excludeFilter in Assets := "*.ts" || "scss" || "test" || "typings",
     name := "web"
   )

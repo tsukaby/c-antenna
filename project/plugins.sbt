@@ -6,7 +6,7 @@ libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.35"
 )
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.9")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.1")
 
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
 

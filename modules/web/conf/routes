@@ -15,7 +15,7 @@ GET         /api/articles                      com.tsukaby.c_antenna.controller.
 POST        /api/click_log                     com.tsukaby.c_antenna.controller.ClickLogController.clickLog
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /                                  controllers.Assets.at(path="/public", file="index.html")
-GET         /latest                            controllers.Assets.at(path="/public", file="index.html")
-GET         /article_ranking                   controllers.Assets.at(path="/public", file="index.html")
-GET         /*file                             controllers.Assets.at(path="/public", file)
+GET         /                                  controllers.Assets.versioned(path="/public", file="index.html")
+GET         /latest                            controllers.Assets.versioned(path="/public", file="index.html")
+GET         /article_ranking                   controllers.Assets.versioned(path="/public", file="index.html")
+GET         /*file                             controllers.Assets.versioned(path="/public", file)

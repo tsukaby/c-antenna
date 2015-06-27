@@ -16,6 +16,7 @@ dist
 /RUNNING_PID
 /.settings
 /public
+/modules/web/public
 /application-debug.log
 *.log
 /*.jar
