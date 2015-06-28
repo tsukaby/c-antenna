@@ -153,6 +153,22 @@ trait SiteService extends BaseService {
       }
     }
   }
+
+  /**
+   * サイトのサムネイルを更新します。
+   */
+  def refreshSiteThumbnailBySiteId(siteId: Long)(implicit session: DBSession = AutoSession): Unit = {
+    println("Start refresh thumbs = " + siteId)
+    siteDao.getById(siteId).foreach { x =>
+      println(x)
+      if (x.thumbnail.isEmpty) {
+        // サムネ未登録の場合、登録
+        val image = WebScrapingService.getImage(x.url)
+        println(x.name)
+        siteDao.update(x.copy(thumbnail = image.some))
+      }
+    }
+  }
 }
 
 object SiteService extends SiteService

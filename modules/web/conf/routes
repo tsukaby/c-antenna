@@ -3,19 +3,25 @@
 # ~~~~
 
 # Site
-GET         /api/sites                         com.tsukaby.c_antenna.controller.SiteController.showAll(condition: SimpleSearchCondition)
+GET         /api/sites                                         com.tsukaby.c_antenna.controller.SiteController.showAll(condition: SimpleSearchCondition)
 
-GET         /api/images/siteThumbs/:id         com.tsukaby.c_antenna.controller.SiteController.showThumbs(id: Long)
+GET         /api/images/siteThumbs/:id                         com.tsukaby.c_antenna.controller.SiteController.showThumbs(id: Long)
 
 # Article
-GET         /api/articles                      com.tsukaby.c_antenna.controller.ArticleController.showAll(condition: SimpleSearchCondition)
+GET         /api/articles                                      com.tsukaby.c_antenna.controller.ArticleController.showAll(condition: SimpleSearchCondition)
 
 
 # Click
-POST        /api/click_log                     com.tsukaby.c_antenna.controller.ClickLogController.clickLog
+POST        /api/click_log                                     com.tsukaby.c_antenna.controller.ClickLogController.clickLog
+
+# Management
+GET         /management/refresh_site_thumbnails                com.tsukaby.c_antenna.controller.OperationController.refreshSiteThumbnailAll
+GET         /management/refresh_site_thumbnails/:siteId        com.tsukaby.c_antenna.controller.OperationController.refreshSiteThumbnail(siteId: Long)
+GET         /management/crawl_rss                              com.tsukaby.c_antenna.controller.OperationController.crawlRssAll
+GET         /management/crawl_rss/:siteId                      com.tsukaby.c_antenna.controller.OperationController.crawlRss(siteId: Long)
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /                                  controllers.Assets.versioned(path="/public", file="index.html")
-GET         /latest                            controllers.Assets.versioned(path="/public", file="index.html")
-GET         /article_ranking                   controllers.Assets.versioned(path="/public", file="index.html")
-GET         /*file                             controllers.Assets.versioned(path="/public", file)
+GET         /                                                  controllers.Assets.versioned(path="/public", file="index.html")
+GET         /latest                                            controllers.Assets.versioned(path="/public", file="index.html")
+GET         /article_ranking                                   controllers.Assets.versioned(path="/public", file="index.html")
+GET         /*file                                             controllers.Assets.versioned(path="/public", file)
