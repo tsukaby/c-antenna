@@ -6,8 +6,6 @@ import com.tsukaby.c_antenna.db.entity.{SimpleSearchCondition, Sort, SortOrder}
 import org.joda.time.format.ISODateTimeFormat
 import play.api.mvc.QueryStringBindable
 
-import scalaz.Scalaz._
-
 /**
  * routerのフェーズで利用するobject変換用定義
  */
@@ -17,53 +15,53 @@ object Implicits {
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, SimpleSearchCondition]] = {
       val page = params.get("page") match {
         case Some(x) => x.headOption match {
-          case Some(x) => x.toInt.some
-          case None => 1.some
+          case Some(x) => Some(x.toInt)
+          case None => Some(1)
         }
-        case None => 1.some
+        case None => Some(1)
       }
 
       val count = params.get("count") match {
         case Some(x) => x.headOption match {
-          case Some(x) => x.toInt.some
-          case None => 10.some
+          case Some(x) => Some(x.toInt)
+          case None => Some(10)
         }
-        case None => 10.some
+        case None => Some(10)
       }
 
       val startDateTime = params.get("startDateTime") match {
         case Some(x) => x.headOption match {
-          case Some(x) => ISODateTimeFormat.dateTime().parseDateTime(x).some
-          case None => none
+          case Some(x) => Some(ISODateTimeFormat.dateTime().parseDateTime(x))
+          case None => None
         }
-        case None => none
+        case None => None
       }
 
       val endDateTime = params.get("endDateTime") match {
         case Some(x) => x.headOption match {
-          case Some(x) => ISODateTimeFormat.dateTime().parseDateTime(x).some
-          case None => none
+          case Some(x) => Some(ISODateTimeFormat.dateTime().parseDateTime(x))
+          case None => None
         }
-        case None => none
+        case None => None
       }
 
       val sortKey = params.get("sort[key]") match {
-        case Some(x) => x.head.some
-        case None => none
+        case Some(x) => Some(x.head)
+        case None => None
       }
 
       val sortOrder = params.get("sort[order]") match {
-        case Some(x) => SortOrder.valueOf(x.head.toInt).some
-        case None => none
+        case Some(x) => Some(SortOrder.valueOf(x.head.toInt))
+        case None => None
       }
 
       val sort = if (sortKey.isDefined && sortOrder.isDefined) {
-        Sort(sortKey.get, sortOrder.get).some
+        Some(Sort(sortKey.get, sortOrder.get))
       } else {
-        none
+        None
       }
 
-      Right(SimpleSearchCondition(page, count, startDateTime, endDateTime, sort)).some
+      Some(Right(SimpleSearchCondition(page, count, startDateTime, endDateTime, sort)))
     }
 
     override def unbind(key: String, value: SimpleSearchCondition): String = {

@@ -9,7 +9,6 @@ import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.{By, Dimension, OutputType}
 
 import scala.collection.JavaConverters._
-import scalaz.Scalaz._
 
 /**
  * Webスクレイピング処理を行うクラスです。
@@ -92,24 +91,24 @@ trait WebScrapingService extends BaseService {
     // その他のURLの場合はHTMLをパースして返す
 
     if (url.contains("yahoo.co.jp")) {
-      (url + "rss.xml").some
+      Some(url + "rss.xml")
     } else if (url.contains("seesaa.net")) {
-      (url + "index20.rdf").some
+      Some(url + "index20.rdf")
     } else if (url.contains("ameba.jp")) {
-      (url + "rss.html").some
+      Some(url + "rss.html")
     } else if (url.contains("fc2.")) {
-      (url + "?xml").some
+      Some(url + "?xml")
     } else if (url.contains("blogspot.com")) {
-      (url + "feeds/posts/default?alt=rss").some
+      Some(url + "feeds/posts/default?alt=rss")
     } else if (url.contains("livedoor") || url.contains("ldblog") || url.contains("doorblog")) {
-      (url + "index.rdf").some
+      Some(url + "index.rdf")
     } else {
       driver.get(url)
 
       // head内のlinkにapplication/rss+xmlがあれば、それがRSS URLなのでそれを返す
       driver.findElementByTagName("head").findElements(By.tagName("link")).asScala.find(_.getAttribute("type") == "application/rss+xml") match {
-        case Some(x) => x.getAttribute("href").some
-        case None => none
+        case Some(x) => Some(x.getAttribute("href"))
+        case None => None
       }
     }
   }

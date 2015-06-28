@@ -15,7 +15,6 @@ import scalikejdbc.{AutoSession, DBSession}
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
-import scalaz.Scalaz._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SiteService extends BaseService {
@@ -149,7 +148,7 @@ trait SiteService extends BaseService {
         // サムネ未登録の場合、登録
         val image = WebScrapingService.getImage(x.url)
         println(x.name)
-        siteDao.update(x.copy(thumbnail = image.some))
+        siteDao.update(x.copy(thumbnail = Some(image)))
       }
     }
   }
@@ -165,7 +164,7 @@ trait SiteService extends BaseService {
         // サムネ未登録の場合、登録
         val image = WebScrapingService.getImage(x.url)
         println(x.name)
-        siteDao.update(x.copy(thumbnail = image.some))
+        siteDao.update(x.copy(thumbnail = Some(image)))
       }
     }
   }

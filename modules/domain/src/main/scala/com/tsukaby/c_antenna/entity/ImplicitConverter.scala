@@ -5,7 +5,6 @@ import com.tsukaby.c_antenna.db.mapper.{ArticleMapper, SiteMapper}
 import org.apache.commons.codec.binary.Base64
 
 import scala.language.implicitConversions
-import scalaz.Scalaz._
 
 object ImplicitConverter {
 
@@ -22,7 +21,7 @@ object ImplicitConverter {
   }
 
   implicit def dbSiteToOptionSite(siteMapper: SiteMapper): Option[Site] = {
-    Site(siteMapper.id, siteMapper.name, siteMapper.url, Seq()).some
+    Some(Site(siteMapper.id, siteMapper.name, siteMapper.url, Seq()))
   }
 
   implicit def dbArticleToArticle(articleMapper: ArticleMapper): Article = {
@@ -53,8 +52,8 @@ object ImplicitConverter {
 
   implicit def bytesToBase64String(src: Option[Array[Byte]]): Option[String] = {
     src match {
-      case Some(x) => Base64.encodeBase64String(x).some
-      case None => none
+      case Some(x) => Some(Base64.encodeBase64String(x))
+      case None => None
     }
 
   }

@@ -6,8 +6,6 @@ import com.tsukaby.c_antenna.db.mapper.ArticleMapper
 import org.joda.time.DateTime
 import scalikejdbc._
 
-import scalaz.Scalaz._
-
 /**
  * 記事に関する操作を行います。
  */
@@ -127,8 +125,8 @@ trait ArticleDao {
    * @param article 更新や削除によって作られたオブジェクト
    */
   def refreshCache(article: ArticleMapper): Unit = {
-    VolatilityCache.set(s"article:${article.id}", article.some, expireSeconds)
-    VolatilityCache.set(s"article:${article.url}", article.some, expireSeconds)
+    VolatilityCache.set(s"article:${article.id}", Some(article), expireSeconds)
+    VolatilityCache.set(s"article:${article.url}", Some(article), expireSeconds)
     VolatilityCache.set(s"articleCount:${article.url}", 1L, expireSeconds)
   }
 
