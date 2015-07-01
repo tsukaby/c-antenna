@@ -234,7 +234,8 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('setup', ['clean', 'bower', 'tsd', 'wiredep']);
-  grunt.registerTask('default', ['clean:clientCss', 'clean:clientScript', 'clean:play', 'ts:clientMain', 'tslint', 'compass:dev', 'copy:public']);
+  grunt.registerTask('default', ['build']);
+  grunt.registerTask('build', ['clean:clientCss', 'clean:clientScript', 'clean:play', 'ts:clientMain', 'tslint', 'compass:dev', 'copy:public']);
   grunt.registerTask('test', ['clean:clientScript', 'ts:clientMain', 'ts:clientTest', 'tslint', 'espower', 'karma']);
   grunt.registerTask('docs', ['typedoc']);
   grunt.registerTask('serve', ['connect:dev', 'open:server', 'esteWatch']);
