@@ -31,6 +31,13 @@ lazy val commonSettings = Seq(
     "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
   ),
   libraryDependencies ++= Seq(
+    "io.kamon" %% "kamon-core" % "0.4.0",
+    "io.kamon" %% "kamon-scala" % "0.4.0",
+    "io.kamon" %% "kamon-akka" % "0.4.0",
+    "io.kamon" %% "kamon-statsd" % "0.4.0",
+    "io.kamon" %% "kamon-datadog" % "0.4.0",
+    "io.kamon" %% "kamon-play" % "0.4.0",
+    "io.kamon" % "sigar-loader" % "1.6.5-rev001"
     specs2 % Test
   ),
   checksums in update := Nil
