@@ -16,8 +16,9 @@ climate : [![Code Climate](https://codeclimate.com/github/tsukaby/c-antenna/badg
 
 ### Install
 
-    cd modules/layered-application
+    cd modules/web
     npm install
+    bower install
     grunt setup
     grunt
     cd ../../
@@ -29,12 +30,13 @@ climate : [![Code Climate](https://codeclimate.com/github/tsukaby/c-antenna/badg
 ### Test
 
     sbt test
-    cd modules/layered-application
+    cd modules/web
     grunt test
 
 ### Deploy
 
-    ./setup/deploy_to_server.sh
+Run the jenkins job.  
+[c-antenna-packaging](http://jenkins.tsukaby.com/job/c-antenna-packaging/)
 
 ### memo
 
