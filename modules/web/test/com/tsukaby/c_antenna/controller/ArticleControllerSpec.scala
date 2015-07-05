@@ -2,10 +2,10 @@ package com.tsukaby.c_antenna.controller
 
 import com.github.tototoshi.play2.json4s.test.native.Helpers._
 import com.tsukaby.c_antenna.entity.ArticlePage
-import com.tsukaby.c_antenna.service.ArticleService
 import com.tsukaby.c_antenna.entity.TestUtil._
+import com.tsukaby.c_antenna.service.ArticleService
 import play.api.http.MimeTypes
-import play.api.test.{FakeRequest, WithApplication}
+import play.api.test.FakeRequest
 
 class ArticleControllerSpec extends BaseControllerSpecification {
 
@@ -13,7 +13,7 @@ class ArticleControllerSpec extends BaseControllerSpecification {
 
   s"$TargetClass#getByCondition" should {
 
-    "記事一覧が取得できること" in new WithApplication {
+    "記事一覧が取得できること" in {
       val targetClass = new ArticleController {
         override val articleService = {
           val articleService = mock[ArticleService]

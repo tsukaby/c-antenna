@@ -4,10 +4,8 @@ import com.github.tototoshi.play2.json4s.test.native.Helpers._
 import com.tsukaby.c_antenna.entity.SitePage
 import com.tsukaby.c_antenna.entity.TestUtil._
 import com.tsukaby.c_antenna.service.{SiteService, ThumbnailService}
-import play.api.mvc.Result
-import play.api.test.{FakeRequest, WithApplication}
+import play.api.test.FakeRequest
 
-import scala.concurrent.Future
 import scalaz.Scalaz._
 
 class SiteControllerSpec extends BaseControllerSpecification {
@@ -16,7 +14,7 @@ class SiteControllerSpec extends BaseControllerSpecification {
 
   s"$TargetClass#showAll" should {
 
-    "サイト一覧が取得できること" in new WithApplication {
+    "サイト一覧が取得できること" in {
 
       val targetClass = new SiteController {
         override val siteService = {
@@ -38,7 +36,7 @@ class SiteControllerSpec extends BaseControllerSpecification {
 
   s"$TargetClass#showThumbs" should {
 
-    "サイトのサムネイルが取得できること" in new WithApplication {
+    "サイトのサムネイルが取得できること" in {
 
       val targetClass = new SiteController {
         override val thumbnailService = {

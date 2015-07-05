@@ -11,6 +11,8 @@ lazy val scalikejdbcPlayVersion = "2.3.6"
 
 lazy val akkaVersion = "2.3.11"
 
+lazy val scrimageVersion = "2.0.2"
+
 lazy val commonSettings = Seq(
   version := "0.0.4",
   organization := "com.tsukaby",
@@ -47,7 +49,7 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
   .settings(
     name := "infrastructure",
     libraryDependencies ++= Seq(
-      "mysql" % "mysql-connector-java" % "5.1.35",
+      "mysql" % "mysql-connector-java" % "5.1.36",
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % "test",
@@ -56,7 +58,7 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "org.scalikejdbc" %% "scalikejdbc-play-dbapi-adapter" % "2.4.0",
       "com.h2database" % "h2" % "1.4.187" % "test",
       "ch.qos.logback" % "logback-classic" % "1.1.3",
-      "com.rometools" % "rome" % "1.5.0", //RSS
+      "com.rometools" % "rome" % "1.5.1", //RSS
       "redis.clients" % "jedis" % "2.6.2", //Redis
       "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
       "com.github.detro" % "phantomjsdriver" % "1.2.0" exclude("org.seleniumhq.selenium", "jetty-repacked"), // 画面キャプチャ用
@@ -69,9 +71,9 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "org.apache.xmlrpc" % "xmlrpc-common" % "3.1.3", //XML RPC
       "org.apache.xmlrpc" % "xmlrpc-client" % "3.1.3", //XML RPC
       "xml-apis" % "xml-apis" % "2.0.2", //XML RPC
-      "com.sksamuel.scrimage" %% "scrimage-core" % "2.0.1",
-      "com.sksamuel.scrimage" %% "scrimage-io" % "2.0.1",
-      "com.sksamuel.scrimage" %% "scrimage-filters" % "2.0.1"
+      "com.sksamuel.scrimage" %% "scrimage-core" % scrimageVersion,
+      "com.sksamuel.scrimage" %% "scrimage-io" % scrimageVersion,
+      "com.sksamuel.scrimage" %% "scrimage-filters" % scrimageVersion
     )
   )
   .settings(commonSettings: _*)
