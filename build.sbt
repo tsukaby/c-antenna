@@ -38,7 +38,7 @@ lazy val commonSettings = Seq(
     "io.kamon" %% "kamon-akka" % "0.4.0",
     "io.kamon" %% "kamon-statsd" % "0.4.0",
     "io.kamon" %% "kamon-datadog" % "0.4.0",
-    "io.kamon" %% "kamon-play" % "0.4.0",
+    // "io.kamon" %% "kamon-play" % "0.4.0", It depend play_ws 2.3.8.
     "io.kamon" % "sigar-loader" % "1.6.5-rev001",
     specs2 % Test
   ),
