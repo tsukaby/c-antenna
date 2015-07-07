@@ -4,14 +4,14 @@ import scalikejdbc._
 import org.joda.time.{DateTime}
 
 case class SiteMapper(
-  id: Long, 
-  name: String, 
-  url: String, 
-  rssUrl: String, 
-  thumbnail: Option[Array[Byte]] = None, 
-  scrapingCssSelector: String, 
-  clickCount: Long, 
-  hatebuCount: Long, 
+  id: Long,
+  name: String,
+  url: String,
+  rssUrl: String,
+  thumbnail: Option[Array[Byte]] = None,
+  scrapingCssSelector: String,
+  clickCount: Long,
+  hatebuCount: Long,
   crawledAt: DateTime) {
 
   def save()(implicit session: DBSession = SiteMapper.autoSession): SiteMapper = SiteMapper.save(this)(session)
@@ -19,7 +19,7 @@ case class SiteMapper(
   def destroy()(implicit session: DBSession = SiteMapper.autoSession): Unit = SiteMapper.destroy(this)(session)
 
 }
-      
+
 
 object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
 
@@ -39,7 +39,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     hatebuCount = rs.get(sm.hatebuCount),
     crawledAt = rs.get(sm.crawledAt)
   )
-      
+
   val sm = SiteMapper.syntax("sm")
 
   override val autoSession = AutoSession
@@ -49,33 +49,33 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
       select.from(SiteMapper as sm).where.eq(sm.id, id)
     }.map(SiteMapper(sm.resultName)).single.apply()
   }
-          
+
   def findAll()(implicit session: DBSession = autoSession): List[SiteMapper] = {
     withSQL(select.from(SiteMapper as sm)).map(SiteMapper(sm.resultName)).list.apply()
   }
-          
+
   def countAll()(implicit session: DBSession = autoSession): Long = {
-    withSQL(select(sqls"count(1)").from(SiteMapper as sm)).map(rs => rs.long(1)).single.apply().get
+    withSQL(select(sqls.count).from(SiteMapper as sm)).map(rs => rs.long(1)).single.apply().get
   }
-          
+
   def findBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Option[SiteMapper] = {
     withSQL {
-      select.from(SiteMapper as sm).where.append(sqls"${where}")
+      select.from(SiteMapper as sm).where.append(where)
     }.map(SiteMapper(sm.resultName)).single.apply()
   }
-      
+
   def findAllBy(where: SQLSyntax)(implicit session: DBSession = autoSession): List[SiteMapper] = {
     withSQL {
-      select.from(SiteMapper as sm).where.append(sqls"${where}")
+      select.from(SiteMapper as sm).where.append(where)
     }.map(SiteMapper(sm.resultName)).list.apply()
   }
-      
+
   def countBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Long = {
     withSQL {
-      select(sqls"count(1)").from(SiteMapper as sm).where.append(sqls"${where}")
+      select(sqls.count).from(SiteMapper as sm).where.append(where)
     }.map(_.long(1)).single.apply().get
   }
-      
+
   def create(
     name: String,
     url: String,
@@ -108,7 +108,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     }.updateAndReturnGeneratedKey.apply()
 
     SiteMapper(
-      id = generatedKey, 
+      id = generatedKey,
       name = name,
       url = url,
       rssUrl = rssUrl,
@@ -135,9 +135,9 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     }.update.apply()
     entity
   }
-        
+
   def destroy(entity: SiteMapper)(implicit session: DBSession = autoSession): Unit = {
     withSQL { delete.from(SiteMapper).where.eq(column.id, entity.id) }.update.apply()
   }
-        
+
 }

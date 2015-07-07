@@ -4,12 +4,13 @@ import scalikejdbc._
 import org.joda.time.{DateTime}
 
 case class ArticleMapper(
-  id: Long, 
-  siteId: Long, 
-  url: String, 
-  title: String, 
-  tag: Option[String] = None, 
-  clickCount: Long, 
+  id: Long,
+  siteId: Long,
+  url: String,
+  eyeCatchUrl: Option[String] = None,
+  title: String,
+  tag: Option[String] = None,
+  clickCount: Long,
   createdAt: DateTime) {
 
   def save()(implicit session: DBSession = ArticleMapper.autoSession): ArticleMapper = ArticleMapper.save(this)(session)
@@ -17,25 +18,26 @@ case class ArticleMapper(
   def destroy()(implicit session: DBSession = ArticleMapper.autoSession): Unit = ArticleMapper.destroy(this)(session)
 
 }
-      
+
 
 object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
 
   override val tableName = "article"
 
-  override val columns = Seq("id", "site_id", "url", "title", "tag", "click_count", "created_at")
+  override val columns = Seq("id", "site_id", "url", "eye_catch_url", "title", "tag", "click_count", "created_at")
 
   def apply(am: SyntaxProvider[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = apply(am.resultName)(rs)
   def apply(am: ResultName[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = new ArticleMapper(
     id = rs.get(am.id),
     siteId = rs.get(am.siteId),
     url = rs.get(am.url),
+    eyeCatchUrl = rs.get(am.eyeCatchUrl),
     title = rs.get(am.title),
     tag = rs.get(am.tag),
     clickCount = rs.get(am.clickCount),
     createdAt = rs.get(am.createdAt)
   )
-      
+
   val am = ArticleMapper.syntax("am")
 
   override val autoSession = AutoSession
@@ -45,36 +47,37 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
       select.from(ArticleMapper as am).where.eq(am.id, id)
     }.map(ArticleMapper(am.resultName)).single.apply()
   }
-          
+
   def findAll()(implicit session: DBSession = autoSession): List[ArticleMapper] = {
     withSQL(select.from(ArticleMapper as am)).map(ArticleMapper(am.resultName)).list.apply()
   }
-          
+
   def countAll()(implicit session: DBSession = autoSession): Long = {
-    withSQL(select(sqls"count(1)").from(ArticleMapper as am)).map(rs => rs.long(1)).single.apply().get
+    withSQL(select(sqls.count).from(ArticleMapper as am)).map(rs => rs.long(1)).single.apply().get
   }
-          
+
   def findBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Option[ArticleMapper] = {
     withSQL {
-      select.from(ArticleMapper as am).where.append(sqls"${where}")
+      select.from(ArticleMapper as am).where.append(where)
     }.map(ArticleMapper(am.resultName)).single.apply()
   }
-      
+
   def findAllBy(where: SQLSyntax)(implicit session: DBSession = autoSession): List[ArticleMapper] = {
     withSQL {
-      select.from(ArticleMapper as am).where.append(sqls"${where}")
+      select.from(ArticleMapper as am).where.append(where)
     }.map(ArticleMapper(am.resultName)).list.apply()
   }
-      
+
   def countBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Long = {
     withSQL {
-      select(sqls"count(1)").from(ArticleMapper as am).where.append(sqls"${where}")
+      select(sqls.count).from(ArticleMapper as am).where.append(where)
     }.map(_.long(1)).single.apply().get
   }
-      
+
   def create(
     siteId: Long,
     url: String,
+    eyeCatchUrl: Option[String] = None,
     title: String,
     tag: Option[String] = None,
     clickCount: Long,
@@ -83,6 +86,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
       insert.into(ArticleMapper).columns(
         column.siteId,
         column.url,
+        column.eyeCatchUrl,
         column.title,
         column.tag,
         column.clickCount,
@@ -90,6 +94,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
       ).values(
         siteId,
         url,
+        eyeCatchUrl,
         title,
         tag,
         clickCount,
@@ -98,9 +103,10 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     }.updateAndReturnGeneratedKey.apply()
 
     ArticleMapper(
-      id = generatedKey, 
+      id = generatedKey,
       siteId = siteId,
       url = url,
+      eyeCatchUrl = eyeCatchUrl,
       title = title,
       tag = tag,
       clickCount = clickCount,
@@ -113,6 +119,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.id -> entity.id,
         column.siteId -> entity.siteId,
         column.url -> entity.url,
+        column.eyeCatchUrl -> entity.eyeCatchUrl,
         column.title -> entity.title,
         column.tag -> entity.tag,
         column.clickCount -> entity.clickCount,
@@ -121,9 +128,9 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     }.update.apply()
     entity
   }
-        
+
   def destroy(entity: ArticleMapper)(implicit session: DBSession = autoSession): Unit = {
     withSQL { delete.from(ArticleMapper).where.eq(column.id, entity.id) }.update.apply()
   }
-        
+
 }

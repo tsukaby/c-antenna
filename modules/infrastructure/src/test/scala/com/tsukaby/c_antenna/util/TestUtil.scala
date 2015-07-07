@@ -17,7 +17,7 @@ object TestUtil {
   }
 
   def getBaseArticleMapper: ArticleMapper = {
-    ArticleMapper(1, 1, "http://example.com", "title", "tag".some, 1, DateTime.now)
+    ArticleMapper(1, 1, "http://example.com", Some("http://example.com/foo.jpg"), "title", "tag".some, 1, DateTime.now)
   }
 
   def getBaseSiteMapper: SiteMapper = {

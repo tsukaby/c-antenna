@@ -83,13 +83,27 @@ trait SiteService extends BaseService {
               // 記事を解析してタグを取得
               //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
               val tmp = Seq[(String, Int)]()
-              val tags = if (tmp.length == 0) {
+              val tags = if (tmp.isEmpty) {
                 None
               } else {
                 Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
               }
+
+              val content = entry.getContents.headOption.map(_.getValue).getOrElse("")
+              val reg = """src=\".*?[jpg|jpeg|png|gif|bmp]\"""".r
+              val rm = reg.findFirstMatchIn(content)
+              val eyeCatchUrl = rm.map(x => x.toString().substring(5, x.toString().length - 1))
+
               // DB登録
-              articleDao.create(site.id, entry.getLink, entry.getTitle, tags, 0, new DateTime(entry.getPublishedDate))
+              articleDao.create(
+                siteId = site.id,
+                url = entry.getLink,
+                eyeCatchUrl = eyeCatchUrl,
+                title = entry.getTitle,
+                tags = tags,
+                clickCount = 0,
+                createdAt = new DateTime(entry.getPublishedDate)
+              )
             }
           }
       }

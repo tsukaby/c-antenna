@@ -52,6 +52,11 @@ my.cnf
 
 圧縮するテーブルには`ROW_FORMAT=COMPRESSED`を付ける
 
+### Update dao
+
+    cd modules/infrastructure
+    sbt scalikejdbc-gen-all-force
+
 ### Update
 
     sbt dependencyUpdates

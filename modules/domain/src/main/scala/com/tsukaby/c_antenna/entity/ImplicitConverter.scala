@@ -39,6 +39,7 @@ object ImplicitConverter {
       articleMapper.id,
       articleMapper.siteId,
       articleMapper.url,
+      articleMapper.eyeCatchUrl,
       articleMapper.title,
       tags,
       siteName,

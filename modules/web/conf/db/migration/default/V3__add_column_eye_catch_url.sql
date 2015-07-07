@@ -1,0 +1,1 @@
+ALTER TABLE article ADD eye_catch_url VARCHAR(700) NULL AFTER url;

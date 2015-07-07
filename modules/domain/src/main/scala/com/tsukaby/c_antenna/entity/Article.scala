@@ -9,6 +9,7 @@ case class Article(
                     id: Long,
                     siteId: Long,
                     url: String,
+                    eyeCatchUrl: Option[String],
                     title: String,
                     tags: Seq[String],
                     siteName: String,
