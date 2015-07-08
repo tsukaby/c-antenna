@@ -102,7 +102,7 @@ trait SiteService extends BaseService {
                 title = entry.getTitle,
                 tags = tags,
                 clickCount = 0,
-                createdAt = new DateTime(entry.getPublishedDate)
+                publishedAt = new DateTime(entry.getPublishedDate)
               )
             }
           }

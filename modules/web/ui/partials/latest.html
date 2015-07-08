@@ -2,7 +2,7 @@
   <table ng-table="tableParams" class="table">
     <tr ng-repeat="article in $data">
       <td data-title="'日時'" class="text-center" style="width: 120px;">
-        {{article.createdAt | date : 'MM/dd HH:mm'}}
+        {{article.publishedAt | date : 'MM/dd HH:mm'}}
       </td>
       <td data-title="'クリック'" class="text-center" style="width: 120px;">{{article.clickCount}}
         <progressbar max="10" value="article.clickCount" style="margin-bottom: 0px;"></progressbar>

@@ -13,5 +13,5 @@ case class Article(
                     title: String,
                     tags: Seq[String],
                     siteName: String,
-                    createdAt: DateTime,
-                    clickCount: Long)
+                    clickCount: Long,
+                    publishedAt: DateTime)
