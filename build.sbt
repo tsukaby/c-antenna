@@ -22,6 +22,7 @@ lazy val commonSettings = Seq(
   test in assembly := {},
   doc in Compile <<= target.map(_ / "none"),
   assemblyMergeStrategy in assembly := {
+    case n if n.startsWith("reference.conf") => MergeStrategy.concat
     case "META-INF/MANIFEST.MF" => MergeStrategy.discard
     case x => MergeStrategy.first
   },
