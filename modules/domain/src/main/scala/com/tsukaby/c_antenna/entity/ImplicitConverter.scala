@@ -43,8 +43,9 @@ object ImplicitConverter {
       articleMapper.title,
       tags,
       siteName,
-      articleMapper.createdAt,
-      articleMapper.clickCount)
+      articleMapper.clickCount,
+      articleMapper.publishedAt
+    )
   }
 
   implicit def dbArticlesToArticles(articleMappers: Seq[ArticleMapper]): Seq[Article] = {

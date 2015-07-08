@@ -26,8 +26,8 @@ module Model {
     thumbnail:string;
     tags:string;
     siteName:string;
-    createdAt:Date;
     clickCount:number;
+    publishedAt:Date;
   }
 
   /**
