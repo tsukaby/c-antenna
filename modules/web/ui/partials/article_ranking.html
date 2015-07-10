@@ -1,6 +1,9 @@
 <div class="container">
   <table ng-table="tableParams" class="table">
     <tr ng-repeat="article in $data">
+      <td data-title="'サムネ'" class="text-center" style="width: 120px;">
+        <img ng-src="{{article.eyeCatchUrl}}">
+      </td>
       <td data-title="'日時'" class="text-center" style="width: 120px;">
         {{article.publishedAt | date : 'MM/dd HH:mm'}}
       </td>

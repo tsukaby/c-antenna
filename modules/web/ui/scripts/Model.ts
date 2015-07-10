@@ -22,6 +22,7 @@ module Model {
     id:number;
     siteId:number;
     url:string;
+    eyeCatchUrl:string;
     title:string;
     thumbnail:string;
     tags:string;
