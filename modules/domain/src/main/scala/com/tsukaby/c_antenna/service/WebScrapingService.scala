@@ -1,6 +1,7 @@
 package com.tsukaby.c_antenna.service
 
 import java.io.{ByteArrayOutputStream, FileInputStream}
+import java.util.logging.Level
 
 import com.sksamuel.scrimage.nio.JpegWriter
 import com.sksamuel.scrimage.{Format, Image, Position}
@@ -58,7 +59,9 @@ trait WebScrapingService extends BaseService {
    * @return サムネイル画像のバイナリ
    */
   def getImage(url: String): Array[Byte] = {
-    implicit val driverTmp = new PhantomJSDriver()
+    val dcap = DesiredCapabilities.phantomjs()
+    dcap.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, Array("--webdriver-loglevel=NONE"))
+    implicit val driverTmp = new PhantomJSDriver(dcap)
     driverTmp.get(url)
     driverTmp.manage().window().setSize(new Dimension(1024, 768))
     val file = driverTmp.getScreenshotAs(OutputType.FILE)
