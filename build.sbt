@@ -74,7 +74,8 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "xml-apis" % "xml-apis" % "2.0.2", //XML RPC
       "com.sksamuel.scrimage" %% "scrimage-core" % scrimageVersion,
       "com.sksamuel.scrimage" %% "scrimage-io" % scrimageVersion,
-      "com.sksamuel.scrimage" %% "scrimage-filters" % scrimageVersion
+      "com.sksamuel.scrimage" %% "scrimage-filters" % scrimageVersion,
+      "org.apache.xmlgraphics" % "batik-transcoder" % "1.8" // ClassNotFoundException org.apache.batik.transcoder.TranscoderException
     )
   )
   .settings(commonSettings: _*)
