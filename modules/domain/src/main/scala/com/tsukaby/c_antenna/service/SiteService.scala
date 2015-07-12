@@ -157,7 +157,7 @@ trait SiteService extends BaseService {
    * サイトのサムネイルを更新します。
    */
   def refreshSiteThumbnail(implicit session: DBSession = AutoSession): Unit = {
-    siteDao.getAll.par foreach { x =>
+    siteDao.getAll foreach { x =>
       if (x.thumbnail.isEmpty) {
         // サムネ未登録の場合、登録
         val image = WebScrapingService.getImage(x.url)

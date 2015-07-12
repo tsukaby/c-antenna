@@ -11,9 +11,7 @@ case class ArticleMapper(
   title: String,
   tag: Option[String] = None,
   clickCount: Long,
-  publishedAt: DateTime,
-  createdAt: Option[DateTime] = None,
-  updatedAt: Option[DateTime] = None) {
+  publishedAt: DateTime) {
 
   def save()(implicit session: DBSession = ArticleMapper.autoSession): ArticleMapper = ArticleMapper.save(this)(session)
 
@@ -26,7 +24,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
 
   override val tableName = "article"
 
-  override val columns = Seq("id", "site_id", "url", "eye_catch_url", "title", "tag", "click_count", "published_at", "created_at", "updated_at")
+  override val columns = Seq("id", "site_id", "url", "eye_catch_url", "title", "tag", "click_count", "published_at")
 
   def apply(am: SyntaxProvider[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = apply(am.resultName)(rs)
   def apply(am: ResultName[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = new ArticleMapper(
@@ -37,9 +35,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     title = rs.get(am.title),
     tag = rs.get(am.tag),
     clickCount = rs.get(am.clickCount),
-    publishedAt = rs.get(am.publishedAt),
-    createdAt = rs.get(am.createdAt),
-    updatedAt = rs.get(am.updatedAt)
+    publishedAt = rs.get(am.publishedAt)
   )
 
   val am = ArticleMapper.syntax("am")
@@ -85,9 +81,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     title: String,
     tag: Option[String] = None,
     clickCount: Long,
-    publishedAt: DateTime,
-    createdAt: Option[DateTime] = None,
-    updatedAt: Option[DateTime] = None)(implicit session: DBSession = autoSession): ArticleMapper = {
+    publishedAt: DateTime)(implicit session: DBSession = autoSession): ArticleMapper = {
     val generatedKey = withSQL {
       insert.into(ArticleMapper).columns(
         column.siteId,
@@ -96,9 +90,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.title,
         column.tag,
         column.clickCount,
-        column.publishedAt,
-        column.createdAt,
-        column.updatedAt
+        column.publishedAt
       ).values(
         siteId,
         url,
@@ -106,9 +98,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         title,
         tag,
         clickCount,
-        publishedAt,
-        createdAt,
-        updatedAt
+        publishedAt
       )
     }.updateAndReturnGeneratedKey.apply()
 
@@ -120,9 +110,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
       title = title,
       tag = tag,
       clickCount = clickCount,
-      publishedAt = publishedAt,
-      createdAt = createdAt,
-      updatedAt = updatedAt)
+      publishedAt = publishedAt)
   }
 
   def save(entity: ArticleMapper)(implicit session: DBSession = autoSession): ArticleMapper = {
@@ -135,9 +123,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.title -> entity.title,
         column.tag -> entity.tag,
         column.clickCount -> entity.clickCount,
-        column.publishedAt -> entity.publishedAt,
-        column.createdAt -> entity.createdAt,
-        column.updatedAt -> entity.updatedAt
+        column.publishedAt -> entity.publishedAt
       ).where.eq(column.id, entity.id)
     }.update.apply()
     entity

@@ -105,7 +105,7 @@ trait ArticleDao {
    */
   def getLatelyBySiteId(siteId: Long): Seq[ArticleMapper] = {
     VolatilityCache.getOrElse[Seq[ArticleMapper]](s"latelyBySiteId:$siteId", expireSeconds) {
-      ArticleMapper.findAllBy(sqls.eq(am.siteId, siteId).orderBy(am.createdAt).desc.limit(5)).toSeq
+      ArticleMapper.findAllBy(sqls.eq(am.siteId, siteId).orderBy(am.publishedAt).desc.limit(5)).toSeq
     }
   }
 
@@ -143,7 +143,7 @@ trait ArticleDao {
 
     // where
     sql = condition.startDateTime match {
-      case Some(x) => sql.and.gt(am.createdAt, x)
+      case Some(x) => sql.and.gt(am.publishedAt, x)
       case None => sql
     }
 
@@ -156,7 +156,7 @@ trait ArticleDao {
           sql.orderBy(am.column(x.key)).desc
         }
       case None =>
-        sql.orderBy(am.createdAt).desc
+        sql.orderBy(am.publishedAt).desc
     }
 
     // paging
