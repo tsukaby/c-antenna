@@ -1,7 +1,10 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <a analytics-on ng-href="{{site.url}}" target="_blank"
-       ng-mousedown="clickLogService.postClickLogSite(site)">{{site.name}}</a>
+       ng-mousedown="clickLogService.postClickLogSite(site)"
+       style="width: 100%; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+      {{site.name}}
+    </a>
   </div>
   <div class="panel-body">
     <div class="text-center">
