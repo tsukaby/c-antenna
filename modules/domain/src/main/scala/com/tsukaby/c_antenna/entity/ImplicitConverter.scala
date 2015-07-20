@@ -25,11 +25,6 @@ object ImplicitConverter {
   }
 
   implicit def dbArticleToArticle(articleMapper: ArticleMapper): Article = {
-    val tags = articleMapper.tag match {
-      case Some(x) => x.split(" ").toSeq
-      case None => Seq()
-    }
-
     val siteName = SiteDao.getById(articleMapper.siteId) match {
       case Some(x) => x.name
       case None => ""
@@ -41,7 +36,7 @@ object ImplicitConverter {
       articleMapper.url,
       articleMapper.eyeCatchUrl,
       articleMapper.title,
-      tags,
+      articleMapper.tag.map(_.split(" ").toSeq).getOrElse(Nil),
       siteName,
       articleMapper.clickCount,
       articleMapper.publishedAt

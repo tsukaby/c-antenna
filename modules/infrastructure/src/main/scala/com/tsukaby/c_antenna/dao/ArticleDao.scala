@@ -64,9 +64,10 @@ trait ArticleDao {
    * @return 最新記事の一覧
    */
   def getByCondition(condition: SimpleSearchCondition): Seq[ArticleMapper] = DB readOnly { session =>
-    val sql = createSql(condition, withPaging = true)
-    // cache keyが難しいので一旦キャッシュは保留
-    ArticleMapper.findAllBy(sql).toSeq
+    VolatilityCache.getOrElse[Seq[ArticleMapper]](s"article:$condition", 300) {
+      val sql = createSql(condition, withPaging = true)
+      ArticleMapper.findAllBy(sql).toSeq
+    }
   }
 
   /**
@@ -93,8 +94,10 @@ trait ArticleDao {
    * @return 件数
    */
   def countByCondition(condition: SimpleSearchCondition): Long = DB readOnly { session =>
-    val sql = createSql(condition, withPaging = false)
-    ArticleMapper.countBy(sql)
+    VolatilityCache.getOrElse[Long](s"articleCount:$condition", 300) {
+      val sql = createSql(condition, withPaging = false)
+      ArticleMapper.countBy(sql)
+    }
   }
 
   /**
