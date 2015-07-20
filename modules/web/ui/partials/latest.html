@@ -1,33 +1,33 @@
-<div class="container">
-  <table ng-table="tableParams" class="table">
-    <tr ng-repeat="article in $data">
-      <td data-title="'サムネ'" class="text-center" style="width: 120px;">
+<div class="container grid js-masonry">
+  <div class="row" masonry='{ "transitionDuration" : "0.4s", "itemSelector": ".grid-item"}'>
+    <div class="grid-item col-md-3 col-sm-4 col-xs-12" masonry-tile ng-repeat="article in articles">
+      <div class="thumbnail">
         <a analytics-on ng-href="{{article.url}}"
            target="_blank"
            title="{{article.url}}"
            ng-mousedown="clickLogService.postClickLogArticle(article)">
-          <img height="60px" ng-src="{{article.eyeCatchUrl}}">
+          <img ng-src="{{article.eyeCatchUrl}}">
         </a>
-      </td>
-      <td data-title="'日時'" class="text-center" style="width: 120px;">
-        {{article.publishedAt | date : 'MM/dd HH:mm'}}
-      </td>
-      <!--
-      <td data-title="'クリック'" class="text-center" style="width: 120px;">{{article.clickCount}}
-        <progressbar max="10" value="article.clickCount" style="margin-bottom: 0px;"></progressbar>
-      </td>
-      -->
-      <td data-title="'タイトル'" style="width:500px;">
-        <a analytics-on ng-href="{{article.url}}"
-           target="_blank"
-           title="{{article.url}}"
-           ng-mousedown="clickLogService.postClickLogArticle(article)">{{article.title}}</a>
-      </td>
-      <td data-title="'サイト'">
-        <a analytics-on ng-href="{{article.url}}" target="_blank"
-           ng-mousedown="clickLogService.postClickLogArticle(article)">{{article.siteName}}</a>
-      </td>
-    </tr>
-  </table>
 
+        <div>
+          <a analytics-on ng-href="{{article.url}}"
+             target="_blank"
+             title="{{article.url}}"
+             ng-mousedown="clickLogService.postClickLogArticle(article)">
+            {{article.title}}
+          </a>
+        </div>
+        <div>
+          <span>{{article.publishedAt | date : 'yyyy/MM/dd HH:mm'}}</span>
+          <span>{{article.siteName}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 text-center">
+      <pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm"
+                  boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChanged()"></pagination>
+    </div>
+  </div>
 </div>

@@ -38,6 +38,8 @@ module Model {
     page:number;
     count:number;
 
+    hasEyeCatch:boolean;
+
     // 期間範囲指定
     startDateTime:string;
     endDateTime:string;

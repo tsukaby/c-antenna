@@ -7,56 +7,60 @@ module LatestControllerModule {
   "use strict";
 
   export interface IScope extends ng.IScope {
-    tableParams: any;
-
     // 検索結果
-    data:Model.Page<Model.Article>;
+    articles:Array<Model.Article>;
+    totalItems:number;
+
+    currentPage: number;
+
+    maxSize:number;
 
     // 検索条件 ページング条件
     condition:Model.SimpleSearchCondition;
 
     clickLogService:Service.ClickLogService;
+
+    // ページ変更時の処理 再検索
+    pageChanged: Function;
+
+    // 検索処理
+    loadData: () => void;
   }
 
   export class LatestController {
 
     constructor(public $scope:IScope,
                 private $http:ng.IHttpService,
-                private ngTableParams:any,
-                private $timeout:ng.ITimeoutService,
                 private clickLogService:Service.ClickLogService) {
 
       $scope.clickLogService = clickLogService;
 
-      $scope.data = new Model.Page<Model.Article>();
+      $scope.articles = [];
+      $scope.totalItems = 0;
+      $scope.currentPage = 1;
 
       $scope.condition = new Model.SimpleSearchCondition();
       $scope.condition.page = 1;
       $scope.condition.count = 20;
+      $scope.condition.hasEyeCatch = true;
 
-      $scope.tableParams = new ngTableParams({
-        page: 1, //初期ページ
-        count: 20 //初期件数
-      }, {
-        total: $scope.data.total, // length of data
-        getData: function ($defer:any, params:any) {
+      $scope.maxSize = 10;
 
-          // 検索条件が変更された場合
-          $scope.condition.page = Number(params.url().page);
-          $scope.condition.count = Number(params.url().count);
+      $scope.loadData = () => {
+        $http.get("/api/articles?" + $.param($scope.condition)).success((data:Model.Page<Model.Article>) => {
+          this.$scope.articles = data.items;
+          this.$scope.totalItems = data.total;
+        });
+      };
 
-          $http.get("/api/articles?" + $.param($scope.condition)).success((data:Model.Page<Model.Article>) => {
-            $scope.data = data;
+      $scope.pageChanged = function () {
+        $scope.condition.page = $scope.currentPage;
+        this.loadData();
+      };
 
-            $timeout(() => {
-              // 最大件数更新
-              params.total(data.total);
-              // データ更新
-              $defer.resolve(data.items);
-            }, 500);
-          });
-        }
-      });
+      // 初期データロード
+      $scope.loadData();
+
     }
   }
 }

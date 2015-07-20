@@ -146,6 +146,10 @@ trait ArticleDao {
       case Some(x) => sql.and.gt(am.publishedAt, x)
       case None => sql
     }
+    sql = condition.hasEyeCatch match {
+      case true => sql.and.isNotNull(am.eyeCatchUrl)
+      case false => sql
+    }
 
     // order by
     sql = condition.sort match {
