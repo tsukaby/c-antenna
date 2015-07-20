@@ -29,6 +29,14 @@ object Implicits {
         case None => Some(10)
       }
 
+      val hasEyeCatch = params.get("hasEyeCatch") match {
+        case Some(x) => x.headOption match {
+          case Some("true") => true
+          case _ => false
+        }
+        case None => false
+      }
+
       val startDateTime = params.get("startDateTime") match {
         case Some(x) => x.headOption match {
           case Some(x) => Some(ISODateTimeFormat.dateTime().parseDateTime(x))
@@ -61,11 +69,17 @@ object Implicits {
         None
       }
 
-      Some(Right(SimpleSearchCondition(page, count, startDateTime, endDateTime, sort)))
+      Some(Right(SimpleSearchCondition(
+        page = page,
+        count = count,
+        hasEyeCatch = hasEyeCatch,
+        startDateTime = startDateTime,
+        endDateTime = endDateTime,
+        sort = sort)))
     }
 
     override def unbind(key: String, value: SimpleSearchCondition): String = {
-      URLEncoder.encode(key, "utf-8") + "=" + "page=" + URLEncoder.encode(value.page.toString, "utf-8") + "&" + "count=" + URLEncoder.encode(value.page.toString, "utf-8")
+      URLEncoder.encode(key, "utf-8") + "=" + "page=" + URLEncoder.encode(value.page.toString, "utf-8") + "&" + "count=" + URLEncoder.encode(value.page.toString, "utf-8") + s"&eyeCatchOnly=${value.hasEyeCatch}"
     }
   }
 

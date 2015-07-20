@@ -32,7 +32,7 @@ module.exports = function (grunt) {
       },
       clientMain: {
         src: ['<%= opt.client.tsMain %>/Ignite.ts'],
-        out: '<%= opt.client.jsMainOut %>/Ignite.js'
+        out: '<%= opt.client.jsMainOut %>/c-antenna.js'
       },
       clientTest: {
         src: ['<%= opt.client.tsTest %>/IgniteSpec.ts'],

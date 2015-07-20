@@ -1,6 +1,7 @@
 ///<reference path='../../typings/angularjs/angular.d.ts' />
 
 ///<reference path='../Model.ts' />
+///<reference path='../Service.ts' />
 
 module TopControllerModule {
   "use strict";
