@@ -12,7 +12,6 @@ module TopControllerModule {
     totalItems: number;
     currentPage: number;
 
-    maxSize:number;
     bigTotalItems:number;
     bigCurrentPage:number;
 
@@ -48,8 +47,6 @@ module TopControllerModule {
         $scope.condition.page = $scope.currentPage;
         this.loadData();
       };
-
-      $scope.maxSize = 10;
 
       $scope.loadData = () => {
         this.$http.get("/api/sites?" + $.param(this.$scope.condition)).success((data:Model.Page<Model.Site>) => {
