@@ -1,4 +1,5 @@
 ///<reference path='../../typings/angularjs/angular.d.ts' />
+///<reference path='../../typings/angular-ui/angular-ui-router.d.ts' />
 
 ///<reference path='../Model.ts' />
 ///<reference path='../Service.ts' />
@@ -31,25 +32,26 @@ module TopControllerModule {
 
     constructor(public $scope:IScope,
                 private $http:ng.IHttpService,
+                private $state:ng.ui.IStateService,
+                private $stateParams:ng.ui.IStateParamsService,
                 private clickLogService:Service.ClickLogService) {
 
       $scope.clickLogService = clickLogService;
 
       $scope.condition = new Model.SimpleSearchCondition();
-      $scope.condition.page = 1;
+      $scope.condition.page = $stateParams["page"] ? Number($stateParams["page"]) : 1;
       $scope.condition.count = 9;
       $scope.condition.sort = new Model.Sort("HATEBU_COUNT", Model.SortOrder.Desc);
 
       $scope.totalItems = 0;
-      $scope.currentPage = 1;
 
       $scope.pageChanged = function () {
-        $scope.condition.page = $scope.currentPage;
-        this.loadData();
+        $state.go("/", {page: $scope.currentPage}, {reload: false});
       };
 
       $scope.loadData = () => {
         this.$http.get("/api/sites?" + $.param(this.$scope.condition)).success((data:Model.Page<Model.Site>) => {
+          this.$scope.currentPage = $stateParams["page"] ? Number($stateParams["page"]) : 1;
           this.$scope.sites = data.items;
           this.$scope.totalItems = data.total;
         });

@@ -1,4 +1,5 @@
 ///<reference path='../../typings/angularjs/angular.d.ts' />
+///<reference path='../../typings/angular-ui/angular-ui-router.d.ts' />
 
 ///<reference path='../Model.ts' />
 ///<reference path='../Service.ts' />
@@ -29,29 +30,30 @@ module LatestControllerModule {
 
     constructor(public $scope:IScope,
                 private $http:ng.IHttpService,
+                private $state:ng.ui.IStateService,
+                private $stateParams:ng.ui.IStateParamsService,
                 private clickLogService:Service.ClickLogService) {
 
       $scope.clickLogService = clickLogService;
 
       $scope.articles = [];
       $scope.totalItems = 0;
-      $scope.currentPage = 1;
 
       $scope.condition = new Model.SimpleSearchCondition();
-      $scope.condition.page = 1;
+      $scope.condition.page = $stateParams["page"] ? $stateParams["page"] : 1;
       $scope.condition.count = 20;
       $scope.condition.hasEyeCatch = true;
 
       $scope.loadData = () => {
         $http.get("/api/articles?" + $.param($scope.condition)).success((data:Model.Page<Model.Article>) => {
+          $scope.currentPage = $stateParams["page"] ? $stateParams["page"] : 1;
           this.$scope.articles = data.items;
           this.$scope.totalItems = data.total;
         });
       };
 
       $scope.pageChanged = function () {
-        $scope.condition.page = $scope.currentPage;
-        this.loadData();
+        $state.go("latest", {page: $scope.currentPage});
       };
 
       // 初期データロード

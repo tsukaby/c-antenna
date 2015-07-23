@@ -33,12 +33,12 @@ module App {
     ($stateProvider:ng.ui.IStateProvider, $locationProvider:ng.ILocationProvider)=> {
       $stateProvider
         .state('/', {
-          url: "/",
+          url: "/?page",
           templateUrl: "partials/top.html",
           controller: "TopController"
         })
         .state('latest', {
-          url: "/latest",
+          url: "/latest?page",
           templateUrl: "partials/latest.html",
           controller: "LatestController"
         })

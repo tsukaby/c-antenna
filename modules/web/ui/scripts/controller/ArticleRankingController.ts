@@ -1,5 +1,6 @@
 ///<reference path='../../typings/angularjs/angular.d.ts' />
 
+///<reference path='../service/ClickLogServiceModule.ts' />
 ///<reference path='../Model.ts' />
 
 module ArticleRankingControllerModule {
