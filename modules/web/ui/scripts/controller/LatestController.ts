@@ -13,8 +13,6 @@ module LatestControllerModule {
 
     currentPage: number;
 
-    maxSize:number;
-
     // 検索条件 ページング条件
     condition:Model.SimpleSearchCondition;
 
@@ -43,8 +41,6 @@ module LatestControllerModule {
       $scope.condition.page = 1;
       $scope.condition.count = 20;
       $scope.condition.hasEyeCatch = true;
-
-      $scope.maxSize = 10;
 
       $scope.loadData = () => {
         $http.get("/api/articles?" + $.param($scope.condition)).success((data:Model.Page<Model.Article>) => {

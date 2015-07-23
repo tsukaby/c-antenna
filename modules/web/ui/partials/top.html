@@ -5,9 +5,13 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-12 text-center">
-      <pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm"
-                  boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChanged()"></pagination>
+    <div class="col-sm-12 text-center hidden-xs">
+      <pagination total-items="totalItems" ng-model="currentPage" max-size="10" class="pagination-sm"
+                  rotate="false" num-pages="numPages" ng-change="pageChanged()"></pagination>
+    </div>
+    <div class="col-sm-12 text-center visible-xs-block">
+      <pagination total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm"
+                  rotate="false" num-pages="numPages" ng-change="pageChanged()"></pagination>
     </div>
   </div>
 </div>
