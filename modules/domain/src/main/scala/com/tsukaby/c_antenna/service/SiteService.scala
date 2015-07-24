@@ -100,6 +100,7 @@ trait SiteService extends BaseService {
                 url = entry.getLink,
                 eyeCatchUrl = eyeCatchUrl,
                 title = entry.getTitle,
+                description = Some(entry.getDescription.getValue),
                 tags = tags,
                 clickCount = 0,
                 publishedAt = new DateTime(entry.getPublishedDate)

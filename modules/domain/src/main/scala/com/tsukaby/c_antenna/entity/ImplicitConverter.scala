@@ -31,15 +31,16 @@ object ImplicitConverter {
     }
 
     Article(
-      articleMapper.id,
-      articleMapper.siteId,
-      articleMapper.url,
-      articleMapper.eyeCatchUrl,
-      articleMapper.title,
-      articleMapper.tag.map(_.split(" ").toSeq).getOrElse(Nil),
-      siteName,
-      articleMapper.clickCount,
-      articleMapper.publishedAt
+      id = articleMapper.id,
+      siteId = articleMapper.siteId,
+      url = articleMapper.url,
+      eyeCatchUrl = articleMapper.eyeCatchUrl,
+      title = articleMapper.title,
+      description = articleMapper.description,
+      tags = articleMapper.tag.map(_.split(" ").toSeq).getOrElse(Nil),
+      siteName = siteName,
+      clickCount = articleMapper.clickCount,
+      publishedAt = articleMapper.publishedAt
     )
   }
 

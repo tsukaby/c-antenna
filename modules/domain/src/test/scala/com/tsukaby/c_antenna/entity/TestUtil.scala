@@ -20,11 +20,11 @@ object TestUtil {
   }
 
   def getBaseArticle: Article = {
-    Article(1, 1, "http://example.com", Some("http://example.com/foo.jpg"), "title", Seq("tag"), "site_name", 1, DateTime.now)
+    Article(1, 1, "http://example.com", Some("http://example.com/foo.jpg"), "title", Some("description"), Seq("tag"), "site_name", 1, DateTime.now)
   }
 
   def getBaseArticleMapper: ArticleMapper = {
-    ArticleMapper(1, 1, "http://example.com", Some("http://example.com/foo.jpg"), "title", "tag".some, 1, DateTime.now)
+    ArticleMapper(1, 1, "http://example.com", Some("http://example.com/foo.jpg"), "title", Some("description"), "tag".some, 1, DateTime.now)
   }
 
   def getBaseSite: Site = {

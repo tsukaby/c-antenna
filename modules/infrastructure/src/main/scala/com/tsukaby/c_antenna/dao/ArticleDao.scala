@@ -27,8 +27,8 @@ trait ArticleDao {
    * @param publishedAt 記事作成日時
    * @return 作成された記事
    */
-  def create(siteId: Long, url: String, eyeCatchUrl: Option[String], title: String, tags: Option[String], clickCount: Long, publishedAt: DateTime): ArticleMapper = {
-    val createdArticle = ArticleMapper.create(siteId, url, eyeCatchUrl, title, tags, clickCount, publishedAt)
+  def create(siteId: Long, url: String, eyeCatchUrl: Option[String], title: String, description: Option[String], tags: Option[String], clickCount: Long, publishedAt: DateTime): ArticleMapper = {
+    val createdArticle = ArticleMapper.create(siteId, url, eyeCatchUrl, title, description, tags, clickCount, publishedAt)
 
     refreshCache(createdArticle)
 
