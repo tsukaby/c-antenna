@@ -11,7 +11,7 @@ case class Article(
   url: String,
   eyeCatchUrl: Option[String],
   title: String,
-  description: String,
+  description: Option[String],
   tags: Seq[String],
   siteName: String,
   clickCount: Long,

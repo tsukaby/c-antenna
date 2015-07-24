@@ -9,6 +9,7 @@ case class ArticleMapper(
   url: String,
   eyeCatchUrl: Option[String] = None,
   title: String,
+  description: Option[String] = None,
   tag: Option[String] = None,
   clickCount: Long,
   publishedAt: DateTime) {
@@ -24,7 +25,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
 
   override val tableName = "article"
 
-  override val columns = Seq("id", "site_id", "url", "eye_catch_url", "title", "tag", "click_count", "published_at")
+  override val columns = Seq("id", "site_id", "url", "eye_catch_url", "title", "description", "tag", "click_count", "published_at")
 
   def apply(am: SyntaxProvider[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = apply(am.resultName)(rs)
   def apply(am: ResultName[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = new ArticleMapper(
@@ -33,6 +34,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     url = rs.get(am.url),
     eyeCatchUrl = rs.get(am.eyeCatchUrl),
     title = rs.get(am.title),
+    description = rs.get(am.description),
     tag = rs.get(am.tag),
     clickCount = rs.get(am.clickCount),
     publishedAt = rs.get(am.publishedAt)
@@ -79,6 +81,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     url: String,
     eyeCatchUrl: Option[String] = None,
     title: String,
+    description: Option[String] = None,
     tag: Option[String] = None,
     clickCount: Long,
     publishedAt: DateTime)(implicit session: DBSession = autoSession): ArticleMapper = {
@@ -88,6 +91,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.url,
         column.eyeCatchUrl,
         column.title,
+        column.description,
         column.tag,
         column.clickCount,
         column.publishedAt
@@ -96,6 +100,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         url,
         eyeCatchUrl,
         title,
+        description,
         tag,
         clickCount,
         publishedAt
@@ -108,6 +113,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
       url = url,
       eyeCatchUrl = eyeCatchUrl,
       title = title,
+      description = description,
       tag = tag,
       clickCount = clickCount,
       publishedAt = publishedAt)
@@ -121,6 +127,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.url -> entity.url,
         column.eyeCatchUrl -> entity.eyeCatchUrl,
         column.title -> entity.title,
+        column.description -> entity.description,
         column.tag -> entity.tag,
         column.clickCount -> entity.clickCount,
         column.publishedAt -> entity.publishedAt

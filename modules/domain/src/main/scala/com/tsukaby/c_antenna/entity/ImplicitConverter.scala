@@ -36,7 +36,7 @@ object ImplicitConverter {
       url = articleMapper.url,
       eyeCatchUrl = articleMapper.eyeCatchUrl,
       title = articleMapper.title,
-      description = "", //TODO
+      description = articleMapper.description,
       tags = articleMapper.tag.map(_.split(" ").toSeq).getOrElse(Nil),
       siteName = siteName,
       clickCount = articleMapper.clickCount,
