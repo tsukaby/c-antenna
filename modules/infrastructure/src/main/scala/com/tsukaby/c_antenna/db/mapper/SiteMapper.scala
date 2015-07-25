@@ -8,7 +8,7 @@ case class SiteMapper(
   name: String,
   url: String,
   rssUrl: String,
-  thumbnail: Option[Array[Byte]] = None,
+  thumbnailUrl: Option[String] = None,
   scrapingCssSelector: String,
   clickCount: Long,
   hatebuCount: Long,
@@ -25,7 +25,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
 
   override val tableName = "site"
 
-  override val columns = Seq("id", "name", "url", "rss_url", "thumbnail", "scraping_css_selector", "click_count", "hatebu_count", "crawled_at")
+  override val columns = Seq("id", "name", "url", "rss_url", "thumbnail_url", "scraping_css_selector", "click_count", "hatebu_count", "crawled_at")
 
   def apply(sm: SyntaxProvider[SiteMapper])(rs: WrappedResultSet): SiteMapper = apply(sm.resultName)(rs)
   def apply(sm: ResultName[SiteMapper])(rs: WrappedResultSet): SiteMapper = new SiteMapper(
@@ -33,7 +33,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     name = rs.get(sm.name),
     url = rs.get(sm.url),
     rssUrl = rs.get(sm.rssUrl),
-    thumbnail = rs.get(sm.thumbnail),
+    thumbnailUrl = rs.get(sm.thumbnailUrl),
     scrapingCssSelector = rs.get(sm.scrapingCssSelector),
     clickCount = rs.get(sm.clickCount),
     hatebuCount = rs.get(sm.hatebuCount),
@@ -80,7 +80,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     name: String,
     url: String,
     rssUrl: String,
-    thumbnail: Option[Array[Byte]] = None,
+    thumbnailUrl: Option[String] = None,
     scrapingCssSelector: String,
     clickCount: Long,
     hatebuCount: Long,
@@ -90,7 +90,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         column.name,
         column.url,
         column.rssUrl,
-        column.thumbnail,
+        column.thumbnailUrl,
         column.scrapingCssSelector,
         column.clickCount,
         column.hatebuCount,
@@ -99,7 +99,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         name,
         url,
         rssUrl,
-        thumbnail,
+        thumbnailUrl,
         scrapingCssSelector,
         clickCount,
         hatebuCount,
@@ -112,7 +112,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
       name = name,
       url = url,
       rssUrl = rssUrl,
-      thumbnail = thumbnail,
+      thumbnailUrl = thumbnailUrl,
       scrapingCssSelector = scrapingCssSelector,
       clickCount = clickCount,
       hatebuCount = hatebuCount,
@@ -126,7 +126,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         column.name -> entity.name,
         column.url -> entity.url,
         column.rssUrl -> entity.rssUrl,
-        column.thumbnail -> entity.thumbnail,
+        column.thumbnailUrl -> entity.thumbnailUrl,
         column.scrapingCssSelector -> entity.scrapingCssSelector,
         column.clickCount -> entity.clickCount,
         column.hatebuCount -> entity.hatebuCount,

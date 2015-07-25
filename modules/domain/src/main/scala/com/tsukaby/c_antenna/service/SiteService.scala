@@ -1,5 +1,6 @@
 package com.tsukaby.c_antenna.service
 
+import java.io.FileOutputStream
 import java.net.URL
 
 import com.rometools.rome.feed.synd.SyndEntry
@@ -14,8 +15,8 @@ import scalikejdbc.{AutoSession, DBSession}
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait SiteService extends BaseService {
 
@@ -159,23 +160,13 @@ trait SiteService extends BaseService {
    */
   def refreshSiteThumbnail(implicit session: DBSession = AutoSession): Unit = {
     siteDao.getAll foreach { x =>
-      if (x.thumbnail.isEmpty) {
-        // サムネ未登録の場合、登録
-        val image = WebScrapingService.getImage(x.url)
-        println(x.name)
-        siteDao.update(x.copy(thumbnail = Some(image)))
+      val image: Array[Byte] = WebScrapingService.getImage(x.url)
+      val out = new FileOutputStream(s"${x.id}.jpg")
+      try {
+        out.write(image)
+      } finally {
+        out.close()
       }
-    }
-  }
-
-  /**
-   * サイトのサムネイルを更新します。
-   */
-  def refreshSiteThumbnailBySiteId(siteId: Long)(implicit session: DBSession = AutoSession): Unit = {
-    siteDao.getById(siteId).foreach { x =>
-      val image = WebScrapingService.getImage(x.url)
-      println(x.name)
-      siteDao.update(x.copy(thumbnail = Some(image)))
     }
   }
 }

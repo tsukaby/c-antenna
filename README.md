@@ -27,6 +27,10 @@ climate : [![Code Climate](https://codeclimate.com/github/tsukaby/c-antenna/badg
 
     sbt run
 
+#### Batch
+    
+    sbt batch/run
+    
 ### Test
 
     sbt test

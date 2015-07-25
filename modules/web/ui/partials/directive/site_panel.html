@@ -10,7 +10,7 @@
     <div class="text-center">
       <a analytics-on ng-href="{{site.url}}" target="_blank"
          ng-mousedown="clickLogService.postClickLogSite(site)">
-        <img ng-src="/api/images/siteThumbs/{{site.id}}" alt="{{site.name}}" class="article-thumb-img">
+        <img ng-src="{{site.thumbnailUrl}}" alt="{{site.name}}" class="article-thumb-img">
       </a>
     </div>
     <ul style="list-style: none">

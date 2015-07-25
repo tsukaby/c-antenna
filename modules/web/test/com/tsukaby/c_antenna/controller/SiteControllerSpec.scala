@@ -3,10 +3,8 @@ package com.tsukaby.c_antenna.controller
 import com.github.tototoshi.play2.json4s.test.native.Helpers._
 import com.tsukaby.c_antenna.entity.SitePage
 import com.tsukaby.c_antenna.entity.TestUtil._
-import com.tsukaby.c_antenna.service.{SiteService, ThumbnailService}
+import com.tsukaby.c_antenna.service.SiteService
 import play.api.test.FakeRequest
-
-import scalaz.Scalaz._
 
 class SiteControllerSpec extends BaseControllerSpecification {
 
@@ -31,25 +29,6 @@ class SiteControllerSpec extends BaseControllerSpecification {
       status(res) must be equalTo OK
       contentType(res) must beSome("application/json")
       page.items.size must be greaterThan 0
-    }
-  }
-
-  s"$TargetClass#showThumbs" should {
-
-    "サイトのサムネイルが取得できること" in {
-
-      val targetClass = new SiteController {
-        override val thumbnailService = {
-          val thumbnailService = mock[ThumbnailService]
-          thumbnailService.getSiteThumbnail(1L) returns Array[Byte]().some
-          thumbnailService
-        }
-      }
-
-      val res = targetClass.showThumbs(1L)(FakeRequest())
-
-      status(res) must be equalTo OK
-      contentType(res) must beSome("image/jpeg")
     }
   }
 

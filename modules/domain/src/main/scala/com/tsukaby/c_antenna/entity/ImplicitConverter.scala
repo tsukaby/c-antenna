@@ -10,10 +10,11 @@ object ImplicitConverter {
 
   implicit def dbSitesToSites(siteMapper: SiteMapper, articleMappers: Seq[ArticleMapper]): Site = {
     Site(
-      siteMapper.id,
-      siteMapper.name,
-      siteMapper.url,
-      dbArticlesToArticles(articleMappers))
+      id = siteMapper.id,
+      name = siteMapper.name,
+      url = siteMapper.url,
+      thumbnailUrl = siteMapper.thumbnailUrl,
+      recentArticles = dbArticlesToArticles(articleMappers))
   }
 
   implicit def dbSitesToSites(sites: Seq[SiteMapper]): Seq[Site] = {
@@ -21,7 +22,12 @@ object ImplicitConverter {
   }
 
   implicit def dbSiteToOptionSite(siteMapper: SiteMapper): Option[Site] = {
-    Some(Site(siteMapper.id, siteMapper.name, siteMapper.url, Seq()))
+    Some(Site(
+      id = siteMapper.id,
+      name = siteMapper.name,
+      url = siteMapper.url,
+      thumbnailUrl = siteMapper.thumbnailUrl,
+      recentArticles = Seq()))
   }
 
   implicit def dbArticleToArticle(articleMapper: ArticleMapper): Article = {
