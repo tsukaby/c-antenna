@@ -36,10 +36,6 @@ trait OperationController extends BaseController with Json4s {
     Ok("")
   }
 
-  def refreshSiteThumbnail(siteId: Long) = Action {
-    siteService.refreshSiteThumbnailBySiteId(siteId)
-    Ok("")
-  }
 }
 
 object OperationController extends OperationController

@@ -28,10 +28,10 @@ object TestUtil {
   }
 
   def getBaseSite: Site = {
-    Site(1, "site_name", "http://", Seq(getBaseArticle))
+    Site(1, "site_name", "http://", Some("http://example.com/1.jpg"), Seq(getBaseArticle))
   }
 
   def getBaseSiteMapper: SiteMapper = {
-    SiteMapper(1L, "site_name", "http://", "http://rss", Array[Byte]().some, "css_selector", 1L, 1L, DateTime.now)
+    SiteMapper(1L, "site_name", "http://", "http://rss", Some("http://example.com/1.jpg"), "css_selector", 1L, 1L, DateTime.now)
   }
 }

@@ -1,10 +1,9 @@
 package com.tsukaby.c_antenna.service
 
-import java.io.{ByteArrayOutputStream, FileInputStream}
-import java.util.logging.Level
+import java.io.FileInputStream
 
 import com.sksamuel.scrimage.nio.JpegWriter
-import com.sksamuel.scrimage.{Format, Image, Position}
+import com.sksamuel.scrimage.{Image, Position}
 import org.openqa.selenium.phantomjs.{PhantomJSDriver, PhantomJSDriverService}
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.{By, Dimension, OutputType}
@@ -72,7 +71,7 @@ trait WebScrapingService extends BaseService {
     // 縦を100にして保存
     //val img = Image(fis).scaleToWidth(400).resizeTo(400, 100, Position.TopLeft)
     implicit val writer = JpegWriter.apply(compression = 80, progressive = true)
-    val img = Image(fis).scaleToWidth(400).resizeTo(400, 100, Position.TopLeft).stream
+    val img = Image(fis).scaleToWidth(600).resizeTo(600, 150, Position.TopLeft).stream
 
     fis.close()
     driverTmp.quit()

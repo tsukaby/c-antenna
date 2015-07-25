@@ -5,18 +5,14 @@
 # Site
 GET         /api/sites                                         com.tsukaby.c_antenna.controller.SiteController.showAll(condition: SimpleSearchCondition)
 
-GET         /api/images/siteThumbs/:id                         com.tsukaby.c_antenna.controller.SiteController.showThumbs(id: Long)
-
 # Article
 GET         /api/articles                                      com.tsukaby.c_antenna.controller.ArticleController.showAll(condition: SimpleSearchCondition)
-
 
 # Click
 POST        /api/click_log                                     com.tsukaby.c_antenna.controller.ClickLogController.clickLog
 
 # Management
 GET         /management/refresh_site_thumbnails                com.tsukaby.c_antenna.controller.OperationController.refreshSiteThumbnailAll
-GET         /management/refresh_site_thumbnails/:siteId        com.tsukaby.c_antenna.controller.OperationController.refreshSiteThumbnail(siteId: Long)
 GET         /management/crawl_rss                              com.tsukaby.c_antenna.controller.OperationController.crawlRssAll
 GET         /management/crawl_rss/:siteId                      com.tsukaby.c_antenna.controller.OperationController.crawlRss(siteId: Long)
 
