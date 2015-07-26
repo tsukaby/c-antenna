@@ -8,5 +8,8 @@ case class Site(
   name: String,
   url: String,
   thumbnailUrl: Option[String],
+  clickCount: Long,
+  hatebuCount: Long,
+  tweetCount: Long,
   recentArticles: Seq[Article]
 )

@@ -16,5 +16,6 @@ case class Article(
   siteName: String,
   clickCount: Long,
   hatebuCount: Long,
+  tweetCount: Long,
   publishedAt: DateTime
 )
