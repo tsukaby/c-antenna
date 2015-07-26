@@ -46,6 +46,7 @@ object ImplicitConverter {
       tags = articleMapper.tag.map(_.split(" ").toSeq).getOrElse(Nil),
       siteName = siteName,
       clickCount = articleMapper.clickCount,
+      hatebuCount = articleMapper.hatebuCount,
       publishedAt = articleMapper.publishedAt
     )
   }

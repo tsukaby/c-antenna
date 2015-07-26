@@ -24,11 +24,30 @@ trait ArticleDao {
    * @param title タイトル
    * @param tags タグ
    * @param clickCount クリック数
+   * @param hatebuCount はてぶ数
    * @param publishedAt 記事作成日時
    * @return 作成された記事
    */
-  def create(siteId: Long, url: String, eyeCatchUrl: Option[String], title: String, description: Option[String], tags: Option[String], clickCount: Long, publishedAt: DateTime): ArticleMapper = {
-    val createdArticle = ArticleMapper.create(siteId, url, eyeCatchUrl, title, description, tags, clickCount, publishedAt)
+  def create(
+    siteId: Long,
+    url: String,
+    eyeCatchUrl: Option[String],
+    title: String,
+    description: Option[String],
+    tags: Option[String],
+    clickCount: Long,
+    hatebuCount: Long,
+    publishedAt: DateTime): ArticleMapper = {
+    val createdArticle = ArticleMapper.create(
+      siteId,
+      url,
+      eyeCatchUrl,
+      title,
+      description,
+      tags,
+      clickCount,
+      hatebuCount,
+      publishedAt)
 
     refreshCache(createdArticle)
 
@@ -68,6 +87,10 @@ trait ArticleDao {
       val sql = createSql(condition, withPaging = true)
       ArticleMapper.findAllBy(sql).toSeq
     }
+  }
+
+  def getAll: Seq[ArticleMapper] = DB readOnly { session =>
+    ArticleMapper.findAll()
   }
 
   /**
@@ -147,6 +170,10 @@ trait ArticleDao {
     // where
     sql = condition.startDateTime match {
       case Some(x) => sql.and.gt(am.publishedAt, x)
+      case None => sql
+    }
+    sql = condition.endDateTime match {
+      case Some(x) => sql.and.lt(am.publishedAt, x)
       case None => sql
     }
     sql = condition.hasEyeCatch match {

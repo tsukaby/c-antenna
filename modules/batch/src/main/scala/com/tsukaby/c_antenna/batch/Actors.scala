@@ -65,15 +65,23 @@ object SiteThumbnailActor {
 
 case class HatebuActor() extends BaseActor {
   def receive: Actor.Receive = {
-    case all: HatebuActor.Protocol.RefreshAll =>
+    case all: HatebuActor.Protocol.RefreshAllSite =>
       val result = TimeUtil.time(SiteService.refreshSiteRank())
       log.info(s"サイトのランキングを最新状態にしました。 (${result._2.toSeconds} sec)")
+    case all: HatebuActor.Protocol.RefreshAllArticle =>
+      val result = TimeUtil.time(ArticleService.refreshArticleRank())
+      log.info(s"記事のランキングを最新状態にしました。 (${result._2.toSeconds} sec)")
+    case x: HatebuActor.Protocol.RefreshRecentArticle =>
+      val result = TimeUtil.time(ArticleService.refreshRecentArticleRank())
+      log.info(s"最近の記事のランキングを最新状態にしました。 (${result._2.toSeconds} sec)")
   }
 }
 
 object HatebuActor {
   object Protocol{
-    case class RefreshAll()
+    case class RefreshAllSite()
+    case class RefreshAllArticle()
+    case class RefreshRecentArticle()
   }
 }
 

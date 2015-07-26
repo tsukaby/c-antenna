@@ -15,5 +15,6 @@ case class Article(
   tags: Seq[String],
   siteName: String,
   clickCount: Long,
+  hatebuCount: Long,
   publishedAt: DateTime
 )

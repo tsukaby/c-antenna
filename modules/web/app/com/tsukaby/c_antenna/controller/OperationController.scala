@@ -2,7 +2,7 @@ package com.tsukaby.c_antenna.controller
 
 import com.github.tototoshi.play2.json4s.native.Json4s
 import com.tsukaby.c_antenna.dao.SiteDao
-import com.tsukaby.c_antenna.service.SiteService
+import com.tsukaby.c_antenna.service.{ArticleService, SiteService}
 import play.api.mvc.Action
 
 
@@ -13,6 +13,7 @@ trait OperationController extends BaseController with Json4s {
 
   val siteDao: SiteDao = SiteDao
   val siteService: SiteService = SiteService
+  val articleService: ArticleService = ArticleService
 
   def crawlRssAll = Action {
     siteDao.getAll foreach { site =>
@@ -33,6 +34,11 @@ trait OperationController extends BaseController with Json4s {
 
   def refreshSiteThumbnailAll = Action {
     siteService.refreshSiteThumbnail
+    Ok("")
+  }
+
+  def refreshArticleRankings = Action {
+    articleService.refreshArticleRank
     Ok("")
   }
 

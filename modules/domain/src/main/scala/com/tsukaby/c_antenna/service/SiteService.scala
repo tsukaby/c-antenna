@@ -104,6 +104,7 @@ trait SiteService extends BaseService {
                 description = Some(entry.getDescription.getValue),
                 tags = tags,
                 clickCount = 0,
+                hatebuCount = 0,
                 publishedAt = new DateTime(entry.getPublishedDate)
               )
             }

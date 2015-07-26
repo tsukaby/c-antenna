@@ -12,6 +12,7 @@ case class ArticleMapper(
   description: Option[String] = None,
   tag: Option[String] = None,
   clickCount: Long,
+  hatebuCount: Long,
   publishedAt: DateTime) {
 
   def save()(implicit session: DBSession = ArticleMapper.autoSession): ArticleMapper = ArticleMapper.save(this)(session)
@@ -25,7 +26,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
 
   override val tableName = "article"
 
-  override val columns = Seq("id", "site_id", "url", "eye_catch_url", "title", "description", "tag", "click_count", "published_at")
+  override val columns = Seq("id", "site_id", "url", "eye_catch_url", "title", "description", "tag", "click_count", "hatebu_count", "published_at")
 
   def apply(am: SyntaxProvider[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = apply(am.resultName)(rs)
   def apply(am: ResultName[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = new ArticleMapper(
@@ -37,6 +38,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     description = rs.get(am.description),
     tag = rs.get(am.tag),
     clickCount = rs.get(am.clickCount),
+    hatebuCount = rs.get(am.hatebuCount),
     publishedAt = rs.get(am.publishedAt)
   )
 
@@ -84,6 +86,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     description: Option[String] = None,
     tag: Option[String] = None,
     clickCount: Long,
+    hatebuCount: Long,
     publishedAt: DateTime)(implicit session: DBSession = autoSession): ArticleMapper = {
     val generatedKey = withSQL {
       insert.into(ArticleMapper).columns(
@@ -94,6 +97,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.description,
         column.tag,
         column.clickCount,
+        column.hatebuCount,
         column.publishedAt
       ).values(
         siteId,
@@ -103,6 +107,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         description,
         tag,
         clickCount,
+        hatebuCount,
         publishedAt
       )
     }.updateAndReturnGeneratedKey.apply()
@@ -116,6 +121,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
       description = description,
       tag = tag,
       clickCount = clickCount,
+      hatebuCount = hatebuCount,
       publishedAt = publishedAt)
   }
 
@@ -130,6 +136,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.description -> entity.description,
         column.tag -> entity.tag,
         column.clickCount -> entity.clickCount,
+        column.hatebuCount -> entity.hatebuCount,
         column.publishedAt -> entity.publishedAt
       ).where.eq(column.id, entity.id)
     }.update.apply()
