@@ -41,6 +41,8 @@ lazy val commonSettings = Seq(
     "io.kamon" %% "kamon-datadog" % "0.4.0",
     // "io.kamon" %% "kamon-play" % "0.4.0", It depend play_ws 2.3.8.
     "io.kamon" % "sigar-loader" % "1.6.5-rev001",
+    "org.json4s" %% "json4s-native" % json4sVersion,
+    "org.json4s" %% "json4s-ext" % json4sVersion,
     specs2 % Test
   ),
   checksums in update := Nil
@@ -67,6 +69,7 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "com.typesafe.akka" %% "akka-actor" % akkaVersion, // batch用
       "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
       "io.spray" %% "spray-client" % "1.3.3", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
+      "net.databinder.dispatch" %% "dispatch-core" % "0.11.3", // HTTPクライアント
       "us.theatr" %% "akka-quartz" % "0.3.0", // cron形式でジョブ登録・実行するためのもの
       "com.github.nscala-time" %% "nscala-time" % "2.0.0", // 日付用
       "org.apache.xmlrpc" % "xmlrpc-common" % "3.1.3", //XML RPC
@@ -104,8 +107,6 @@ lazy val web = (project in file("modules/web"))
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
       "org.scalikejdbc" %% "scalikejdbc-play-plugin" % scalikejdbcPlayVersion,
       "org.scalikejdbc" %% "scalikejdbc-play-fixture-plugin" % scalikejdbcPlayVersion,
-      "org.json4s" %% "json4s-native" % json4sVersion,
-      "org.json4s" %% "json4s-ext" % json4sVersion,
       "com.github.tototoshi" %% "play-json4s-native" % "0.4.0",
       "com.github.tototoshi" %% "play-json4s-test-native" % "0.4.0" % "test",
       "org.flywaydb" %% "flyway-play" % "2.0.1"
@@ -131,10 +132,6 @@ lazy val batch = (project in file("modules/batch"))
     infrastructure % "test->test;compile->compile")
   .settings(commonSettings: _*)
   .settings(
-    libraryDependencies ++= Seq(
-      "org.json4s" %% "json4s-native" % json4sVersion,
-      "org.json4s" %% "json4s-ext" % json4sVersion
-    ),
     name := "batch"
   )
   .settings(commonSettings: _*)
