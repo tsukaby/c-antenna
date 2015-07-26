@@ -13,6 +13,8 @@ module Model {
     url:string;
     thumbnail:string;
     clickCount:number;
+    hatebuCount:number;
+    tweetCount:number;
   }
 
   /**
@@ -28,6 +30,8 @@ module Model {
     tags:string;
     siteName:string;
     clickCount:number;
+    hatebuCount:number;
+    tweetCount:number;
     publishedAt:Date;
   }
 
