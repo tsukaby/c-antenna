@@ -40,7 +40,7 @@ trait ArticleService extends BaseService {
       page = None,
       count = None,
       hasEyeCatch = false,
-      startDateTime = Some(now.minusMonths(1)),
+      startDateTime = Some(now.minusWeeks(1)),
       endDateTime = Some(now),
       sort = None)
     articleDao.getByCondition(condition) foreach { article =>

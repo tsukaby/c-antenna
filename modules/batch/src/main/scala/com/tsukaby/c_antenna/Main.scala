@@ -35,7 +35,7 @@ object Main {
     quartzActor ! AddCronSchedule(system.actorOf(Props[HatebuActor]), "0 30 5 1 * ?", HatebuActor.Protocol.RefreshAllArticle())
 
     // 最近の記事ランキングを最新に保つバッチ実行登録
-    quartzActor ! AddCronSchedule(system.actorOf(Props[HatebuActor]), "0 30 12 * * ?", HatebuActor.Protocol.RefreshRecentArticle())
+    quartzActor ! AddCronSchedule(system.actorOf(Props[HatebuActor]), "0 10 * * * ?", HatebuActor.Protocol.RefreshRecentArticle())
 
   }
 
