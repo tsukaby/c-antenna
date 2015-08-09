@@ -171,6 +171,10 @@ trait ArticleDao {
     var sql = sqls.eq(sqls"1", 1)
 
     // where
+    sql = condition.maxId match {
+      case Some(x) => sql.and.le(am.id, x)
+      case None => sql
+    }
     sql = condition.startDateTime match {
       case Some(x) => sql.and.gt(am.publishedAt, x)
       case None => sql

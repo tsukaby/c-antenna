@@ -38,7 +38,7 @@ module App {
           controller: "TopController"
         })
         .state('latest', {
-          url: "/latest?page",
+          url: "/latest?page&maxId",
           templateUrl: "partials/latest.html",
           controller: "LatestController"
         })

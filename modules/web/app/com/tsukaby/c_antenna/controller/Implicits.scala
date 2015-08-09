@@ -29,6 +29,11 @@ object Implicits {
         case None => Some(10)
       }
 
+      val maxId = params.get("maxId").flatMap(_.headOption) match {
+        case Some("") | None => None
+        case Some(x) => Some(x.toLong)
+      }
+
       val hasEyeCatch = params.get("hasEyeCatch") match {
         case Some(x) => x.headOption match {
           case Some("true") => true
@@ -72,6 +77,7 @@ object Implicits {
       Some(Right(SimpleSearchCondition(
         page = page,
         count = count,
+        maxId = maxId,
         hasEyeCatch = hasEyeCatch,
         startDateTime = startDateTime,
         endDateTime = endDateTime,

@@ -41,6 +41,7 @@ module Model {
   export class SimpleSearchCondition {
     page:number;
     count:number;
+    maxId:number;
 
     hasEyeCatch:boolean;
 

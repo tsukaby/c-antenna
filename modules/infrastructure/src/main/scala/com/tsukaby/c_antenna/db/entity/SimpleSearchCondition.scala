@@ -8,6 +8,7 @@ import org.joda.time.DateTime
 case class SimpleSearchCondition(
   page: Option[Int], // ページ番号 1-origin
   count: Option[Int], // 取得する件数
+  maxId: Option[Long], // 取得するデータ群の最大ID 相対位置のズレ防止
 
   hasEyeCatch: Boolean,
 

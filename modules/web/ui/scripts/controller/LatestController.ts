@@ -13,6 +13,7 @@ module LatestControllerModule {
     totalItems:number;
 
     currentPage: number;
+    maxId: number;
 
     // 検索条件 ページング条件
     condition:Model.SimpleSearchCondition;
@@ -43,17 +44,41 @@ module LatestControllerModule {
       $scope.condition.page = $stateParams["page"] ? $stateParams["page"] : 1;
       $scope.condition.count = 20;
       $scope.condition.hasEyeCatch = true;
+      if (!!$stateParams["maxId"]) {
+        $scope.maxId = $stateParams["maxId"];
+      }
+      if ($scope.condition.page !== 1 && !!$stateParams["maxId"]) {
+        $scope.condition.maxId = $stateParams["maxId"];
+      }
+
+      // State check
+      if ($scope.condition.page !== 1 && !$scope.condition.maxId) {
+        $state.go("latest", {}, {inherit: false});
+        return;
+      }
 
       $scope.loadData = () => {
         $http.get("/api/articles?" + $.param($scope.condition)).success((data:Model.Page<Model.Article>) => {
           $scope.currentPage = $stateParams["page"] ? $stateParams["page"] : 1;
           this.$scope.articles = data.items;
           this.$scope.totalItems = data.total;
+
+          if (!this.$scope.maxId) {
+            this.$scope.maxId = data.items[0].id;
+          }
+
         });
       };
 
       $scope.pageChanged = function () {
-        $state.go("latest", {page: $scope.currentPage});
+        var params:any = {
+          page: $scope.currentPage
+        };
+        if (params.page !== 1) {
+          params.maxId = $scope.maxId;
+        }
+
+        $state.go("latest", params, {inherit: false});
       };
 
       // 初期データロード

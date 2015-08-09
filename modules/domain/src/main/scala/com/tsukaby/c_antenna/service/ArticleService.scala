@@ -39,6 +39,7 @@ trait ArticleService extends BaseService {
     val condition = SimpleSearchCondition(
       page = None,
       count = None,
+      maxId = None,
       hasEyeCatch = false,
       startDateTime = Some(now.minusWeeks(1)),
       endDateTime = Some(now),
