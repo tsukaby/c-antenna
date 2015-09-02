@@ -39,7 +39,7 @@ lazy val commonSettings = Seq(
     "io.kamon" %% "kamon-akka" % "0.5.1",
     "io.kamon" %% "kamon-statsd" % "0.5.1",
     "io.kamon" %% "kamon-datadog" % "0.5.1",
-    "io.kamon" %% "kamon-play" % "0.5.1",
+    "io.kamon" %% "kamon-play-24" % "0.5.1",
     "io.kamon" % "sigar-loader" % "1.6.6-rev002",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-ext" % json4sVersion,
