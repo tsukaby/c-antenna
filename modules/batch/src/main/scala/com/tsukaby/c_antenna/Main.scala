@@ -2,15 +2,18 @@ package com.tsukaby.c_antenna
 
 import akka.actor.{ActorSystem, Props}
 import com.tsukaby.c_antenna.batch.{RssCrawlActor, HatebuActor, RankingActor, SiteNameActor}
+import kamon.Kamon
 import scalikejdbc.config.DBs
 import us.theatr.akka.quartz.{AddCronSchedule, QuartzActor}
 
 import scala.language.postfixOps
 
 object Main {
-  val system = ActorSystem("mySystem")
+  val system = ActorSystem("c-antenna-batch")
 
   def main(args: Array[String]): Unit = {
+    Kamon.start()
+
     DBs.setupAll()
 
     startCron()
@@ -20,7 +23,7 @@ object Main {
     val quartzActor = system.actorOf(Props[QuartzActor])
 
     // クリックのランキングを保存するバッチ実行登録
-    quartzActor ! AddCronSchedule(system.actorOf(Props[RankingActor]), "0 */5 * * * ?", RankingActor.Protocol.RefreshAll)
+    quartzActor ! AddCronSchedule(system.actorOf(Props[RankingActor]), "0 */5 * * * ?", RankingActor.Protocol.RefreshAll())
 
     // RSSを収集するバッチ実行登録
     quartzActor ! AddCronSchedule(system.actorOf(Props[RssCrawlActor]), "0 */3 * * * ?", RssCrawlActor.Protocol.CrawlAll())
