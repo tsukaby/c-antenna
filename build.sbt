@@ -34,13 +34,13 @@ lazy val commonSettings = Seq(
     "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
   ),
   libraryDependencies ++= Seq(
-    "io.kamon" %% "kamon-core" % "0.4.0",
-    "io.kamon" %% "kamon-scala" % "0.4.0",
-    "io.kamon" %% "kamon-akka" % "0.4.0",
-    "io.kamon" %% "kamon-statsd" % "0.4.0",
-    "io.kamon" %% "kamon-datadog" % "0.4.0",
-    // "io.kamon" %% "kamon-play" % "0.4.0", It depend play_ws 2.3.8.
-    "io.kamon" % "sigar-loader" % "1.6.5-rev001",
+    "io.kamon" %% "kamon-core" % "0.5.1",
+    "io.kamon" %% "kamon-scala" % "0.5.1",
+    "io.kamon" %% "kamon-akka" % "0.5.1",
+    "io.kamon" %% "kamon-statsd" % "0.5.1",
+    "io.kamon" %% "kamon-datadog" % "0.5.1",
+    "io.kamon" %% "kamon-play" % "0.5.1",
+    "io.kamon" % "sigar-loader" % "1.6.6-rev002",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-ext" % json4sVersion,
     specs2 % Test

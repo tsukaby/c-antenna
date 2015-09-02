@@ -32,3 +32,5 @@ typings
 /modules/web/ui/**/*.map
 tscommand-*.tmp.txt
 test-results.xml
+
+native
