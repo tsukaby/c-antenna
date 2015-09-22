@@ -18,7 +18,7 @@ addSbtPlugin("org.scalikejdbc" %% "scalikejdbc-mapper-generator" % "2.2.4")
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.8")
 
 // For sbt run
-addSbtPlugin("com.typesafe.sbt" % "sbt-aspectj" % "0.10.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-aspectj" % "0.10.3")
 
 // For play
 addSbtPlugin("io.kamon" % "aspectj-play-runner" % "0.1.2")
