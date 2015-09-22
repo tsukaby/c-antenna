@@ -13,6 +13,8 @@ lazy val akkaVersion = "2.3.11"
 
 lazy val scrimageVersion = "2.0.2"
 
+lazy val kamonVersion = "0.5.1"
+
 lazy val commonSettings = Seq(
   version := "0.0.4",
   organization := "com.tsukaby",
@@ -34,12 +36,12 @@ lazy val commonSettings = Seq(
     "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
   ),
   libraryDependencies ++= Seq(
-    "io.kamon" %% "kamon-core" % "0.5.1",
-    "io.kamon" %% "kamon-scala" % "0.5.1",
-    "io.kamon" %% "kamon-akka" % "0.5.1",
-    "io.kamon" %% "kamon-statsd" % "0.5.1",
-    "io.kamon" %% "kamon-datadog" % "0.5.1",
-    "io.kamon" %% "kamon-play-24" % "0.5.1",
+    "io.kamon" %% "kamon-core" % kamonVersion,
+    "io.kamon" %% "kamon-scala" % kamonVersion,
+    "io.kamon" %% "kamon-akka" % kamonVersion,
+    "io.kamon" %% "kamon-statsd" % kamonVersion,
+    "io.kamon" %% "kamon-datadog" % kamonVersion,
+    "io.kamon" %% "kamon-play-24" % kamonVersion,
     "io.kamon" % "sigar-loader" % "1.6.6-rev002",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-ext" % json4sVersion,
