@@ -28,6 +28,10 @@ lazy val commonSettings = Seq(
     case "META-INF/MANIFEST.MF" => MergeStrategy.discard
     case x => MergeStrategy.first
   },
+  checksums in update := Nil
+)
+
+lazy val commonDependencies = Seq(
   resolvers ++= Seq(
     "Maven Central Server" at "http://repo1.maven.org/maven2",
     "ATILIKA dependencies" at "http://www.atilika.org/nexus/content/repositories/atilika",
@@ -46,11 +50,12 @@ lazy val commonSettings = Seq(
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-ext" % json4sVersion,
     specs2 % Test
-  ),
-  checksums in update := Nil
+  )
 )
 
 lazy val infrastructure = (project in file("modules/infrastructure"))
+  .settings(commonSettings: _*)
+  .settings(commonDependencies: _*)
   .settings(
     name := "infrastructure",
     libraryDependencies ++= Seq(
@@ -83,7 +88,6 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "org.apache.xmlgraphics" % "batik-transcoder" % "1.8" // ClassNotFoundException org.apache.batik.transcoder.TranscoderException
     )
   )
-  .settings(commonSettings: _*)
 
 lazy val domain = (project in file("modules/domain"))
   .dependsOn(infrastructure % "test->test;test->compile;compile->compile")
@@ -134,11 +138,20 @@ lazy val batch = (project in file("modules/batch"))
     infrastructure % "test->test;compile->compile")
   .settings(commonSettings: _*)
   .settings(
-    name := "batch"
-  )
-  .settings(commonSettings: _*)
-  .settings(
     name := "c-antenna-batch",
     mainClass in assembly := Some("com.tsukaby.c_antenna.Main"),
     assemblyOutputPath in assembly := file("./c-antenna-batch.jar")
+  )
+
+lazy val lambda = (project in file("modules/lambda"))
+  .settings(commonSettings: _*)
+  .settings(
+    name := "c-antenna-lambda",
+    libraryDependencies ++= Seq(
+      "org.json4s" %% "json4s-native" % json4sVersion,
+      "org.json4s" %% "json4s-ext" % json4sVersion,
+      "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
+      "org.specs2" % "specs2_2.11" % "3.3.1" % "test"
+    ),
+    assemblyOutputPath in assembly := file("./c-antenna-lambda.jar")
   )
