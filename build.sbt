@@ -85,7 +85,8 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "com.sksamuel.scrimage" %% "scrimage-core" % scrimageVersion,
       "com.sksamuel.scrimage" %% "scrimage-io" % scrimageVersion,
       "com.sksamuel.scrimage" %% "scrimage-filters" % scrimageVersion,
-      "org.apache.xmlgraphics" % "batik-transcoder" % "1.8" // ClassNotFoundException org.apache.batik.transcoder.TranscoderException
+      "org.apache.xmlgraphics" % "batik-transcoder" % "1.8", // ClassNotFoundException org.apache.batik.transcoder.TranscoderException
+      "com.amazonaws" % "aws-java-sdk" % "1.10.20"
     )
   )
 

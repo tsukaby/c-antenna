@@ -114,18 +114,6 @@ trait SiteService extends BaseService {
     }
   }
 
-  private def getTags(articleUrl: String, cssSelector: String): Seq[(String, Int)] = {
-    val str = WebScrapingService.getText(articleUrl, cssSelector)
-
-    str match {
-      case Some(x) =>
-        // 上位10個のみ対象記事のタグとして認める
-        MorphologicalService.getTags(x).take(10)
-      case None =>
-        Seq()
-    }
-  }
-
   /**
    * サイトのRSSを取得し、サイト名を最新の状態にします。
    *
