@@ -9,17 +9,17 @@ import us.theatr.akka.quartz.{AddCronSchedule, QuartzActor}
 import scala.language.postfixOps
 
 object Main {
-  val system = ActorSystem("c-antenna-batch")
 
   def main(args: Array[String]): Unit = {
     Kamon.start()
 
     DBs.setupAll()
 
-    startCron()
+    val system = ActorSystem("c-antenna-batch")
+    startCron(system)
   }
 
-  private def startCron() = {
+  private def startCron(system: ActorSystem) = {
     val quartzActor = system.actorOf(Props[QuartzActor])
 
     // クリックのランキングを保存するバッチ実行登録

@@ -9,6 +9,7 @@ import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{Site, SitePage}
+import com.tsukaby.c_antenna.lambda.{AnalyzeRequest, ClassificationRequest, LambdaInvoker}
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
 import scalikejdbc.{AutoSession, DBSession}
@@ -80,15 +81,12 @@ trait SiteService extends BaseService {
             // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
 
             if (entry.getLink != null && articleDao.countByUrl(entry.getLink) == 0) {
-              //まだ記事が無い場合
+              // まだ記事が無い場合
               // 記事を解析してタグを取得
-              //val tmp = getTags(item.getLink.toString, site.scrapingCssSelector)
-              val tmp = Seq[(String, Int)]()
-              val tags = if (tmp.isEmpty) {
-                None
-              } else {
-                Option(tmp map (x => x._1) reduceLeft (_ + " " + _))
-              }
+              val tags = LambdaInvoker().analyzeMorphological(new AnalyzeRequest(entry.getDescription.getValue)).tags
+              Logger.info(s"tags = ${tags.mkString(",")}")
+              val category = LambdaInvoker().classifyCategory(new ClassificationRequest(tags)).category
+              Logger.info(s"category = $category")
 
               val content = entry.getContents.headOption.map(_.getValue).getOrElse("")
               val reg = """src=\".*?[jpg|jpeg|png|gif|bmp]\"""".r
@@ -102,7 +100,7 @@ trait SiteService extends BaseService {
                 eyeCatchUrl = eyeCatchUrl,
                 title = entry.getTitle,
                 description = Some(entry.getDescription.getValue),
-                tags = tags,
+                tags = None,
                 clickCount = 0,
                 hatebuCount = 0,
                 tweetCount = 0,
