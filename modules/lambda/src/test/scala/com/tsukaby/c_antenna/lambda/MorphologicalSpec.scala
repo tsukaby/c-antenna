@@ -1,6 +1,7 @@
+package com.tsukaby.c_antenna.lambda
+
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 
-import com.tsukaby.c_antenna.lambda.Morphological
 import org.specs2.mutable.Specification
 
 class MorphologicalSpec extends Specification {
