@@ -15,7 +15,7 @@ case class ClassificationResponse(category: String)
 class CategoryClassification {
   implicit val formats = DefaultFormats
 
-  def analyze(input: InputStream, output: OutputStream): Unit = {
+  def classify(input: InputStream, output: OutputStream): Unit = {
     val req = parse(Source.fromInputStream(input)(Codec.UTF8).mkString).extract[ClassificationRequest]
     val response = ClassificationResponse(CategoryClassificationService.classify(req.words))
     val responseStr = Serialization.write(response)

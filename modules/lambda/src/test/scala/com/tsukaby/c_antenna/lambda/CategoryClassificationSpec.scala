@@ -19,7 +19,7 @@ class CategoryClassificationSpec extends Specification {
             """.stripMargin
           val in = new ByteArrayInputStream(request.getBytes("UTF-8"))
           val out = new ByteArrayOutputStream()
-          target.analyze(in, out)
+          target.classify(in, out)
 
           val expected = """{"category":"technology"}"""
           val actual = new String(out.toByteArray, "UTF-8")
