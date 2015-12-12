@@ -152,6 +152,7 @@ lazy val lambda = (project in file("modules/lambda"))
       "org.json4s" %% "json4s-native" % json4sVersion,
       "org.json4s" %% "json4s-ext" % json4sVersion,
       "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
+      "com.tsukaby" %% "naive-bayes-classifier-scala" % "0.1.0",
       "org.specs2" %% "specs2-core" % "3.6.4" % "test"
     ),
     assemblyOutputPath in assembly := file("./c-antenna-lambda.jar")
