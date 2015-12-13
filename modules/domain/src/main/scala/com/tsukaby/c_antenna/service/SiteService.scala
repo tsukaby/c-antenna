@@ -90,7 +90,7 @@ trait SiteService extends BaseService {
 
               val content = entry.getContents.headOption.map(_.getValue)
               val eyeCatchUrl = imageUrl(content)
-              Logger.info(eyeCatchUrl.getOrElse(""))
+              eyeCatchUrl.foreach(Logger.info)
 
               // DB登録
               articleDao.create(
