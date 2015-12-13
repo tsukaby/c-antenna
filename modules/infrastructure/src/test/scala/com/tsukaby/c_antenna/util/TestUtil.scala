@@ -15,11 +15,11 @@ object TestUtil {
   }
 
   def getBaseArticleMapper: ArticleMapper = {
-    ArticleMapper(1, 1, "http://example.com", Some("http://example.com/foo.jpg"), "title", Some("description"), Some("tag"), 1, 1, 1, DateTime.now)
+    ArticleMapper(1, 1, "http://example.com", Some("http://example.com/foo.jpg"), "title", Some("description"), Some("tag"), 1, 1, DateTime.now)
   }
 
   def getBaseSiteMapper: SiteMapper = {
-    SiteMapper(1L, "site_name", "http://", "http://rss", Some("http://example.com/1.jpg"), "css_selector", 1L, 1L, 1L, DateTime.now)
+    SiteMapper(1L, "site_name", "http://", "http://rss", Some("http://example.com/1.jpg"), "css_selector", 1L, 1L, DateTime.now)
   }
 
 }
