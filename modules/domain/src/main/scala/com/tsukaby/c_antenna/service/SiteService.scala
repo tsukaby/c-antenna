@@ -88,10 +88,9 @@ trait SiteService extends BaseService {
               val category = LambdaInvoker().classifyCategory(new ClassificationRequest(tags)).category
               Logger.info(s"category = $category")
 
-              val content = entry.getContents.headOption.map(_.getValue).getOrElse("")
-              val reg = """src=\".*?[jpg|jpeg|png|gif|bmp]\"""".r
-              val rm = reg.findFirstMatchIn(content)
-              val eyeCatchUrl = rm.map(x => x.toString().substring(5, x.toString().length - 1))
+              val content = entry.getContents.headOption.map(_.getValue)
+              val eyeCatchUrl = imageUrl(content)
+              Logger.info(eyeCatchUrl.getOrElse(""))
 
               // DB登録
               articleDao.create(
@@ -108,6 +107,20 @@ trait SiteService extends BaseService {
               )
             }
           }
+      }
+    }
+  }
+
+  private def imageUrl(htmlOpt: Option[String]): Option[String] = {
+    val imageReg = """<img.*?src\s*=\s*[\"|\'](.*?)[\"|\']>""".r
+    val urlReg = """[\"|\'](.*?)[\"|\']""".r
+
+    htmlOpt.flatMap { html =>
+      val imageTagOpt = imageReg.findFirstMatchIn(html).map(_.toString())
+      imageTagOpt.flatMap { imageTag =>
+        urlReg.findFirstMatchIn(imageTag)
+          .map(_.toString())
+          .map(x => x.substring(1, x.length - 1))
       }
     }
   }
