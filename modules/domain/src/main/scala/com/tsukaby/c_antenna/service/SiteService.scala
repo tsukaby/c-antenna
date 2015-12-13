@@ -113,16 +113,16 @@ trait SiteService extends BaseService {
 
   private def imageUrl(htmlOpt: Option[String]): Option[String] = {
     val imageReg = """<img.*?src\s*=\s*[\"|\'](.*?)[\"|\']>""".r
+    val srcReg = """src\s*=\s*[\"|\'](.*?)[\"|\']""".r
     val urlReg = """[\"|\'](.*?)[\"|\']""".r
 
-    htmlOpt.flatMap { html =>
-      val imageTagOpt = imageReg.findFirstMatchIn(html).map(_.toString())
-      imageTagOpt.flatMap { imageTag =>
-        urlReg.findFirstMatchIn(imageTag)
-          .map(_.toString())
-          .map(x => x.substring(1, x.length - 1))
-      }
-    }
+    for {
+      html <- htmlOpt
+      imageTag <- imageReg.findFirstMatchIn(html).map(_.toString())
+      srcAttribute <- srcReg.findFirstMatchIn(imageTag).map(_.toString())
+      urlWithQuote <- urlReg.findFirstMatchIn(srcAttribute).map(_.toString())
+      url = urlWithQuote.substring(1, urlWithQuote.length - 1)
+    } yield url
   }
 
   /**
