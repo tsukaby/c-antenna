@@ -10,6 +10,5 @@ case class Site(
   thumbnailUrl: Option[String],
   clickCount: Long,
   hatebuCount: Long,
-  tweetCount: Long,
   recentArticles: Seq[Article]
 )

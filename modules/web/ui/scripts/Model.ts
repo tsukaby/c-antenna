@@ -14,7 +14,6 @@ module Model {
     thumbnail:string;
     clickCount:number;
     hatebuCount:number;
-    tweetCount:number;
   }
 
   /**
@@ -31,7 +30,6 @@ module Model {
     siteName:string;
     clickCount:number;
     hatebuCount:number;
-    tweetCount:number;
     publishedAt:Date;
   }
 

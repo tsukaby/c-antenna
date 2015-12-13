@@ -1,6 +1,6 @@
 package com.tsukaby.c_antenna.service
 
-import com.tsukaby.c_antenna.client.{HatenaClient, TwitterClient}
+import com.tsukaby.c_antenna.client.HatenaClient
 import com.tsukaby.c_antenna.dao.ArticleDao
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.ArticleMapper
@@ -19,7 +19,6 @@ trait ArticleService extends BaseService {
 
   val articleDao: ArticleDao = ArticleDao
   val hatenaClient: HatenaClient = HatenaClient
-  val twitterClient: TwitterClient = TwitterClient
 
   /**
    * 検索条件にマッチする記事を取得します。
@@ -57,14 +56,12 @@ trait ArticleService extends BaseService {
 
   private def refreshArticleRank(article: ArticleMapper) = {
     val f1 = hatenaClient.getHatebuCounts(article.url :: Nil).map(_.head)
-    val f2 = twitterClient.getTweetCount(article.url)
 
     for {
       hatebuCount <- f1
-      tweetCount <- f2
     } {
-      Logger.info(f"hatebuCount = ${hatebuCount.count}, tweetCount = ${tweetCount.count}, url = ${article.url}")
-      articleDao.update(article.copy(hatebuCount = hatebuCount.count, tweetCount = tweetCount.count))
+      Logger.info(f"hatebuCount = ${hatebuCount.count}, url = ${article.url}")
+      articleDao.update(article.copy(hatebuCount = hatebuCount.count))
     }
   }
 }

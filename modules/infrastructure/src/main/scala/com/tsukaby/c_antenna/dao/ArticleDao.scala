@@ -25,7 +25,6 @@ trait ArticleDao {
    * @param tags タグ
    * @param clickCount クリック数
    * @param hatebuCount はてぶ数
-   * @param tweetCount Tweet数
    * @param publishedAt 記事作成日時
    * @return 作成された記事
    */
@@ -38,7 +37,6 @@ trait ArticleDao {
     tags: Option[String],
     clickCount: Long,
     hatebuCount: Long,
-    tweetCount: Long,
     publishedAt: DateTime): ArticleMapper = {
     val createdArticle = ArticleMapper.create(
       siteId,
@@ -49,7 +47,6 @@ trait ArticleDao {
       tags,
       clickCount,
       hatebuCount,
-      tweetCount,
       publishedAt)
 
     refreshCache(createdArticle)

@@ -102,7 +102,6 @@ trait SiteService extends BaseService {
                 tags = None,
                 clickCount = 0,
                 hatebuCount = 0,
-                tweetCount = 0,
                 publishedAt = new DateTime(entry.getPublishedDate)
               )
             }

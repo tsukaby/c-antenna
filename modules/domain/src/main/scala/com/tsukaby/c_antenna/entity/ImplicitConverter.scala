@@ -16,7 +16,6 @@ object ImplicitConverter {
       thumbnailUrl = siteMapper.thumbnailUrl,
       clickCount = siteMapper.clickCount,
       hatebuCount = siteMapper.hatebuCount,
-      tweetCount = siteMapper.tweetCount,
       recentArticles = dbArticlesToArticles(articleMappers))
   }
 
@@ -32,7 +31,6 @@ object ImplicitConverter {
       thumbnailUrl = siteMapper.thumbnailUrl,
       clickCount = siteMapper.clickCount,
       hatebuCount = siteMapper.hatebuCount,
-      tweetCount = siteMapper.tweetCount,
       recentArticles = Seq()))
   }
 
@@ -53,7 +51,6 @@ object ImplicitConverter {
       siteName = siteName,
       clickCount = articleMapper.clickCount,
       hatebuCount = articleMapper.hatebuCount,
-      tweetCount = articleMapper.tweetCount,
       publishedAt = articleMapper.publishedAt
     )
   }
