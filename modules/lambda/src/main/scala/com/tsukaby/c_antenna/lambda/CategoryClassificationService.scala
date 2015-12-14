@@ -1,5 +1,8 @@
 package com.tsukaby.c_antenna.lambda
 
+import java.io.{BufferedReader, InputStreamReader}
+
+import com.github.tototoshi.csv.CSVReader
 import com.tsukaby.bayes.classifier.{BayesClassifier, Classification}
 
 /**
@@ -7,15 +10,21 @@ import com.tsukaby.bayes.classifier.{BayesClassifier, Classification}
  */
 trait CategoryClassificationService {
 
+  val is = this.getClass.getClassLoader.getResourceAsStream("categories_training_data.csv")
+  val br = new BufferedReader(new InputStreamReader(is, "UTF-8"))
+  val reader = CSVReader.open(br)
+
   val bayes = new BayesClassifier[String, String]()
 
   // Learning
   learn()
 
   private def learn() =  {
-    bayes.learn("technology", "github" :: "git" :: "tech" :: "technology" :: Nil)
-    bayes.learn("weather", "sun" :: "rain" :: "cloud" :: "weather" :: "snow" :: Nil)
-    bayes.learn("government", "ballot" :: "winner" :: "party" :: "money" :: "candidate" :: Nil)
+    reader.all().map { line =>
+      (line.head, line(1))
+    } groupBy (_._1) foreach { case (category, learningData) =>
+      bayes.learn(category, learningData.map(_._2))
+    }
   }
 
 
