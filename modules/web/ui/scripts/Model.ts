@@ -41,6 +41,7 @@ module Model {
     count:number;
     maxId:number;
 
+    categoryId:number;
     hasEyeCatch:boolean;
 
     // 期間範囲指定

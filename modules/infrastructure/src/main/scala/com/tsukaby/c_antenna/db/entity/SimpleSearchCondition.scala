@@ -10,6 +10,7 @@ case class SimpleSearchCondition(
   count: Option[Int], // 取得する件数
   maxId: Option[Long], // 取得するデータ群の最大ID 相対位置のズレ防止
 
+  categoryId: Option[Long],
   hasEyeCatch: Boolean,
 
   startDateTime: Option[DateTime],

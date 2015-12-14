@@ -39,6 +39,7 @@ trait ArticleService extends BaseService {
       page = None,
       count = None,
       maxId = None,
+      categoryId = None,
       hasEyeCatch = false,
       startDateTime = Some(now.minusWeeks(1)),
       endDateTime = Some(now),

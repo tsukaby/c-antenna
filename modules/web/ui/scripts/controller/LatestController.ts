@@ -41,6 +41,7 @@ module LatestControllerModule {
       $scope.totalItems = 0;
 
       $scope.condition = new Model.SimpleSearchCondition();
+      $scope.condition.categoryId = $stateParams["categoryId"] ? $stateParams["categoryId"] : null;
       $scope.condition.page = $stateParams["page"] ? $stateParams["page"] : 1;
       $scope.condition.count = 20;
       $scope.condition.hasEyeCatch = true;
@@ -78,7 +79,7 @@ module LatestControllerModule {
           params.maxId = $scope.maxId;
         }
 
-        $state.go("latest", params, {inherit: false});
+        $state.go("latest", params, {inherit: true});
       };
 
       // 初期データロード

@@ -182,6 +182,10 @@ trait ArticleDao {
       case Some(x) => sql.and.lt(am.publishedAt, x)
       case None => sql
     }
+    sql = condition.categoryId match {
+      case Some(x) => sql.and.eq(am.categoryId, x)
+      case None => sql
+    }
     sql = condition.hasEyeCatch match {
       case true => sql.and.isNotNull(am.eyeCatchUrl)
       case false => sql

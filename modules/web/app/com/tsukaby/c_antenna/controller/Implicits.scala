@@ -34,6 +34,11 @@ object Implicits {
         case Some(x) => Some(x.toLong)
       }
 
+      val categoryId = params.get("categoryId").flatMap(_.headOption) match {
+        case Some("") | None => None
+        case Some(x) => Some(x.toLong)
+      }
+
       val hasEyeCatch = params.get("hasEyeCatch") match {
         case Some(x) => x.headOption match {
           case Some("true") => true
@@ -78,6 +83,7 @@ object Implicits {
         page = page,
         count = count,
         maxId = maxId,
+        categoryId = categoryId,
         hasEyeCatch = hasEyeCatch,
         startDateTime = startDateTime,
         endDateTime = endDateTime,
@@ -85,7 +91,7 @@ object Implicits {
     }
 
     override def unbind(key: String, value: SimpleSearchCondition): String = {
-      URLEncoder.encode(key, "utf-8") + "=" + "page=" + URLEncoder.encode(value.page.toString, "utf-8") + "&" + "count=" + URLEncoder.encode(value.page.toString, "utf-8") + s"&eyeCatchOnly=${value.hasEyeCatch}"
+      URLEncoder.encode(key, "utf-8") + "=" + "page=" + URLEncoder.encode(value.page.toString, "utf-8") + "&" + "count=" + URLEncoder.encode(value.page.toString, "utf-8") + s"&categoryId=${value.categoryId}" + s"&eyeCatchOnly=${value.hasEyeCatch}"
     }
   }
 

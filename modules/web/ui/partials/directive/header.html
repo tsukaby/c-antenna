@@ -19,8 +19,16 @@
   <div class="container">
     <ul class="nav navbar-nav">
       <li ui-sref-active="active"><a ui-sref="/" analytics-on>TOP</a></li>
-      <li ui-sref-active="active"><a ui-sref="latest" analytics-on>最新記事</a></li>
-      <li ui-sref-active="active"><a ui-sref="article_ranking" analytics-on>記事アクセスランキング</a></li>
+      <li ui-sref-active="active"><a ui-sref="latest({categoryId: null})" ui-sref-opts="{inherit: false}" analytics-on>全カテゴリ</a></li>
+      <li ui-sref-active="active"><a ui-sref="article_ranking" analytics-on>ランキング</a></li>
+      <li ui-sref-active="active"><a ui-sref="latest({categoryId: '1'})" ui-sref-opts="{inherit: false}" analytics-on>おもしろ</a></li>
+      <li ui-sref-active="active"><a ui-sref="latest({categoryId: '2'})" ui-sref-opts="{inherit: false}" analytics-on>グルメ</a></li>
+      <li ui-sref-active="active"><a ui-sref="latest({categoryId: '3'})" ui-sref-opts="{inherit: false}" analytics-on>スポーツ</a></li>
+      <li ui-sref-active="active"><a ui-sref="latest({categoryId: '4'})" ui-sref-opts="{inherit: false}" analytics-on>エンタメ</a></li>
+      <li ui-sref-active="active"><a ui-sref="latest({categoryId: '5'})" ui-sref-opts="{inherit: false}" analytics-on>政治・経済</a></li>
+      <li ui-sref-active="active"><a ui-sref="latest({categoryId: '6'})" ui-sref-opts="{inherit: false}" analytics-on>テクノロジー</a></li>
+      <li ui-sref-active="active"><a ui-sref="latest({categoryId: '7'})" ui-sref-opts="{inherit: false}" analytics-on>アニメ・ゲーム</a></li>
+      <li ui-sref-active="active"><a ui-sref="latest({categoryId: '8'})" ui-sref-opts="{inherit: false}" analytics-on>R18</a></li>
     </ul>
   </div>
 </div>

@@ -11,7 +11,7 @@ import org.joda.time.DateTime
 object TestUtil {
 
   def getBaseCondition: SimpleSearchCondition = {
-    SimpleSearchCondition(Some(1), Some(10), None, false, None, None, None)
+    SimpleSearchCondition(Some(1), Some(10), None, None, false, None, None, None)
   }
 
   def getBaseArticleMapper: ArticleMapper = {
