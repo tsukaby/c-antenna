@@ -10,6 +10,7 @@ case class ArticleMapper(
   eyeCatchUrl: Option[String] = None,
   title: String,
   description: Option[String] = None,
+  categoryId: Option[Long] = None,
   tag: Option[String] = None,
   clickCount: Long,
   hatebuCount: Long,
@@ -26,7 +27,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
 
   override val tableName = "article"
 
-  override val columns = Seq("id", "site_id", "url", "eye_catch_url", "title", "description", "tag", "click_count", "hatebu_count", "published_at")
+  override val columns = Seq("id", "site_id", "url", "eye_catch_url", "title", "description", "category_id", "tag", "click_count", "hatebu_count", "published_at")
 
   def apply(am: SyntaxProvider[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = apply(am.resultName)(rs)
   def apply(am: ResultName[ArticleMapper])(rs: WrappedResultSet): ArticleMapper = new ArticleMapper(
@@ -36,6 +37,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     eyeCatchUrl = rs.get(am.eyeCatchUrl),
     title = rs.get(am.title),
     description = rs.get(am.description),
+    categoryId = rs.get(am.categoryId),
     tag = rs.get(am.tag),
     clickCount = rs.get(am.clickCount),
     hatebuCount = rs.get(am.hatebuCount),
@@ -84,6 +86,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
     eyeCatchUrl: Option[String] = None,
     title: String,
     description: Option[String] = None,
+    categoryId: Option[Long] = None,
     tag: Option[String] = None,
     clickCount: Long,
     hatebuCount: Long,
@@ -95,6 +98,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.eyeCatchUrl,
         column.title,
         column.description,
+        column.categoryId,
         column.tag,
         column.clickCount,
         column.hatebuCount,
@@ -105,6 +109,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         eyeCatchUrl,
         title,
         description,
+        categoryId,
         tag,
         clickCount,
         hatebuCount,
@@ -119,6 +124,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
       eyeCatchUrl = eyeCatchUrl,
       title = title,
       description = description,
+      categoryId = categoryId,
       tag = tag,
       clickCount = clickCount,
       hatebuCount = hatebuCount,
@@ -134,6 +140,7 @@ object ArticleMapper extends SQLSyntaxSupport[ArticleMapper] {
         column.eyeCatchUrl -> entity.eyeCatchUrl,
         column.title -> entity.title,
         column.description -> entity.description,
+        column.categoryId -> entity.categoryId,
         column.tag -> entity.tag,
         column.clickCount -> entity.clickCount,
         column.hatebuCount -> entity.hatebuCount,

@@ -4,7 +4,7 @@ import java.io.FileOutputStream
 import java.net.URL
 
 import com.rometools.rome.feed.synd.SyndEntry
-import com.tsukaby.c_antenna.dao.{ArticleDao, RssDao, SiteDao}
+import com.tsukaby.c_antenna.dao.{CategoryDao, ArticleDao, RssDao, SiteDao}
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
@@ -24,6 +24,7 @@ trait SiteService extends BaseService {
   val siteDao: SiteDao = SiteDao
   val rssDao: RssDao = RssDao
   val articleDao: ArticleDao = ArticleDao
+  val categoryDao: CategoryDao = CategoryDao
 
   /**
    * 引数で指定した検索条件に従ってサイトを取得します。
@@ -84,9 +85,8 @@ trait SiteService extends BaseService {
               // まだ記事が無い場合
               // 記事を解析してタグを取得
               val tags = LambdaInvoker().analyzeMorphological(new AnalyzeRequest(entry.getDescription.getValue)).tags
-              Logger.info(s"tags = ${tags.mkString(",")}")
-              val category = LambdaInvoker().classifyCategory(new ClassificationRequest(tags)).category
-              Logger.info(s"category = $category")
+              val categoryName = LambdaInvoker().classifyCategory(new ClassificationRequest(tags)).category
+              val category = categoryDao.getByName(categoryName)
 
               val content = entry.getContents.headOption.map(_.getValue)
               val eyeCatchUrl = imageUrl(content)
@@ -99,7 +99,8 @@ trait SiteService extends BaseService {
                 eyeCatchUrl = eyeCatchUrl,
                 title = entry.getTitle,
                 description = Some(entry.getDescription.getValue),
-                tags = None,
+                categoryId = category.map(_.id),
+                tags = if(tags.nonEmpty) Some(tags.mkString(",")) else None,
                 clickCount = 0,
                 hatebuCount = 0,
                 publishedAt = new DateTime(entry.getPublishedDate)
