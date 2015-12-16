@@ -104,6 +104,7 @@ trait SiteService extends BaseService {
                 hatebuCount = 0,
                 publishedAt = new DateTime(entry.getPublishedDate)
               )
+              Logger.info(s"Inserted an article. title = ${entry.getTitle}")
             }
           }
       }
