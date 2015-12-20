@@ -32,6 +32,9 @@ trait MorphologicalService {
       val second = if (token.getAllFeaturesArray.length < 2) "" else token.getAllFeaturesArray.array(1)
       // 辞書登録されている用語または、未知語でなく名詞だけに絞る
       token.isUser || (first == "名詞" && second != "サ変接続" && second != "数" && second != "接尾" && second != "代名詞" && second != "非自立")
+    } filterNot { token =>
+      // アルファベット１文字は弾く
+      token.getSurfaceForm.matches("""[a-zA-Z]""")
     }
 
     // 名称だけのリストに変換
