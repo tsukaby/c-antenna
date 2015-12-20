@@ -35,7 +35,7 @@ class Rss {
     val urlReg = """[\"|\'](.*?)[\"|\']""".r
 
     val request = url(pageUrl)
-    val pageF: Future[String] = Http(request OK as.String)
+    val pageF: Future[String] = Http.configure(_.setFollowRedirect(true))(request OK as.String)
     val html = Await.result(pageF, 30 seconds)
 
     for {
