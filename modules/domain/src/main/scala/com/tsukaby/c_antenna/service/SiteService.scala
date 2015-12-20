@@ -4,20 +4,20 @@ import java.io.FileOutputStream
 import java.net.URL
 
 import com.rometools.rome.feed.synd.SyndEntry
-import com.tsukaby.c_antenna.dao.{CategoryDao, ArticleDao, RssDao, SiteDao}
+import com.tsukaby.c_antenna.dao.{ArticleDao, CategoryDao, RssDao, SiteDao}
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{Site, SitePage}
-import com.tsukaby.c_antenna.lambda.{AnalyzeRequest, ClassificationRequest, LambdaInvoker}
+import com.tsukaby.c_antenna.lambda.{RssUrlFindRequest, AnalyzeRequest, ClassificationRequest, LambdaInvoker}
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
 import scalikejdbc.{AutoSession, DBSession}
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SiteService extends BaseService {
 
@@ -27,10 +27,10 @@ trait SiteService extends BaseService {
   val categoryDao: CategoryDao = CategoryDao
 
   /**
-   * 引数で指定した検索条件に従ってサイトを取得します。
-   * @param condition 条件
-   * @return サイトの一覧
-   */
+    * 引数で指定した検索条件に従ってサイトを取得します。
+    * @param condition 条件
+    * @return サイトの一覧
+    */
   def getByCondition(condition: SimpleSearchCondition)(implicit session: DBSession = AutoSession): SitePage = {
     val sites = siteDao.getByCondition(condition)
     val count = siteDao.countByCondition(condition)
@@ -39,20 +39,20 @@ trait SiteService extends BaseService {
   }
 
   /**
-   * 全てのサイトの情報を取得します。
-   * RSS記事情報は最新の5件のみ取得します。
-   *
-   * @return
-   */
+    * 全てのサイトの情報を取得します。
+    * RSS記事情報は最新の5件のみ取得します。
+    *
+    * @return
+    */
   def getAll(implicit session: DBSession = AutoSession): Seq[Site] = {
     siteDao.getAll map (x => dbSitesToSites(x, articleDao.getLatelyBySiteId(x.id)))
   }
 
   /**
-   * 引数で指定したサイトを取得します。
-   * @param id サイトID
-   * @return サイト
-   */
+    * 引数で指定したサイトを取得します。
+    * @param id サイトID
+    * @return サイト
+    */
   def getById(id: Long)(implicit session: DBSession = AutoSession): Option[Site] = {
     siteDao.getById(id) match {
       case Some(x) => x
@@ -61,11 +61,45 @@ trait SiteService extends BaseService {
   }
 
   /**
-   * 引数で指定したWebサイトをクロールし、最新RSSから記事の情報を集めます。
-   * 集めた記事情報はデータストアに保存します。
-   * @param site クロール対象サイト
-   * @param session DBセッション
-   */
+    * Hatenaのエントリーリストをクロールし、新しくクロールするサイトを集めます。
+    * 集めたサイトはDBに保存します。
+    * @param session DBセッション
+    */
+  def crawlNewSite(implicit session: DBSession = AutoSession): Future[Unit] = {
+
+    Logger.info(s"新しいサイトを収集します。")
+
+    rssDao.getByUrl("http://b.hatena.ne.jp/entrylist.rss")
+      .map(_.getEntries.asScala)
+      .map { entries =>
+        entries.foreach { entry =>
+          if (siteDao.getByUrl(entry.getUri).isEmpty) {
+            val rssUrl: Option[String] = Option(LambdaInvoker().findRssUrl(new RssUrlFindRequest(entry.getLink)).getRssUrl)
+            rssUrl.foreach { url =>
+              rssDao.getByUrl(url).foreach { feed2 =>
+                siteDao.create(
+                  name = feed2.getTitle,
+                  url = feed2.getLink,
+                  rssUrl = url,
+                  scrapingCssSelector = "",
+                  clickCount = 0,
+                  hatebuCount = 0,
+                  crawledAt = DateTime.now
+                )
+                Logger.info(s"Inserted a site. title = ${feed2.getTitle}")
+              }
+            }
+          }
+        }
+      }
+  }
+
+  /**
+    * 引数で指定したWebサイトをクロールし、最新RSSから記事の情報を集めます。
+    * 集めた記事情報はデータストアに保存します。
+    * @param site クロール対象サイト
+    * @param session DBセッション
+    */
   def crawl(site: SiteMapper)(implicit session: DBSession = AutoSession): Future[Unit] = {
 
     Logger.info(s"サイト情報を更新します。${site.name}")
@@ -99,7 +133,7 @@ trait SiteService extends BaseService {
                 title = entry.getTitle,
                 description = Some(entry.getDescription.getValue),
                 categoryId = category.map(_.id),
-                tags = if(tags.nonEmpty) Some(tags.mkString(",")) else None,
+                tags = if (tags.nonEmpty) Some(tags.mkString(",")) else None,
                 clickCount = 0,
                 hatebuCount = 0,
                 publishedAt = new DateTime(entry.getPublishedDate)
@@ -126,10 +160,10 @@ trait SiteService extends BaseService {
   }
 
   /**
-   * サイトのRSSを取得し、サイト名を最新の状態にします。
-   *
-   * @param site サイト名更新対象サイト
-   */
+    * サイトのRSSを取得し、サイト名を最新の状態にします。
+    *
+    * @param site サイト名更新対象サイト
+    */
   def refreshSiteName(site: SiteMapper)(implicit session: DBSession = AutoSession): Future[Unit] = {
     rssDao.getByUrl(site.rssUrl).map { feed =>
       site.copy(name = feed.getTitle).save()
@@ -137,8 +171,8 @@ trait SiteService extends BaseService {
   }
 
   /**
-   * サイトのランクを更新します。
-   */
+    * サイトのランクを更新します。
+    */
   def refreshSiteRank(implicit session: DBSession = AutoSession): Unit = {
     siteDao.getAll foreach { x =>
       // クライアント設定作成
@@ -157,8 +191,8 @@ trait SiteService extends BaseService {
   }
 
   /**
-   * サイトのサムネイルを更新します。
-   */
+    * サイトのサムネイルを更新します。
+    */
   def refreshSiteThumbnail(implicit session: DBSession = AutoSession): Unit = {
     siteDao.getAll foreach { x =>
       val image: Array[Byte] = WebScrapingService.getImage(x.url)

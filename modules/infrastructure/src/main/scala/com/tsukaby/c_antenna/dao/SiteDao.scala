@@ -3,6 +3,7 @@ package com.tsukaby.c_antenna.dao
 import com.tsukaby.c_antenna.cache.VolatilityCache
 import com.tsukaby.c_antenna.db.entity.{SortOrder, SimpleSearchCondition}
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
+import org.joda.time.DateTime
 import scalikejdbc._
 
 /**
@@ -14,6 +15,31 @@ trait SiteDao {
 
   private val expireSeconds = 60 * 60 * 3
 
+  def create(
+    name: String,
+    url: String,
+    rssUrl: String,
+    thumbnailUrl: Option[String] = None,
+    scrapingCssSelector: String,
+    clickCount: Long,
+    hatebuCount: Long,
+    crawledAt: DateTime): SiteMapper = {
+    val createdSite = SiteMapper.create(
+      name,
+      url,
+      rssUrl,
+      thumbnailUrl,
+      scrapingCssSelector,
+      clickCount,
+      hatebuCount,
+      crawledAt: DateTime
+    )
+
+    refreshCache(createdSite)
+
+    createdSite
+  }
+
   /**
    * サイトを取得します。
    *
@@ -22,6 +48,17 @@ trait SiteDao {
   def getById(id: Long): Option[SiteMapper] = {
     VolatilityCache.getOrElse[Option[SiteMapper]](s"site:$id", expireSeconds) {
       SiteMapper.find(id)
+    }
+  }
+
+  /**
+    * サイトを取得します。
+    *
+    * @param url 取得するサイトのURL
+    */
+  def getByUrl(url: String): Option[SiteMapper] = {
+    VolatilityCache.getOrElse[Option[SiteMapper]](s"site:$url", expireSeconds) {
+      SiteMapper.findAllBy(sqls.eq(sm.url, url)).headOption
     }
   }
 

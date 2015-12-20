@@ -12,6 +12,7 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
 
 /**
  * サイトのRSSクロールを行います。
@@ -46,6 +47,29 @@ object RssCrawlActor {
   object Protocol {
     case class FutureAwait[T](f: Future[T], site: SiteMapper)
     case class CrawlAll()
+  }
+}
+
+/**
+  * サイトのクロールを行います。
+  */
+case class SiteCrawlActor() extends BaseActor {
+
+  context.setReceiveTimeout(5 minute)
+
+  def receive: Actor.Receive = {
+    case x: SiteCrawlActor.Protocol.CrawlHatena =>
+      val f = SiteService.crawlNewSite()
+      f.onComplete {
+        case Success(_) => log.info("Crawl(New sites) completed!")
+        case Failure(e) => throw e
+      }
+  }
+}
+
+object SiteCrawlActor {
+  object Protocol {
+    case class CrawlHatena()
   }
 }
 

@@ -1,7 +1,7 @@
 package com.tsukaby.c_antenna
 
 import akka.actor.{ActorSystem, Props}
-import com.tsukaby.c_antenna.batch.{RssCrawlActor, HatebuActor, RankingActor, SiteNameActor}
+import com.tsukaby.c_antenna.batch._
 import kamon.Kamon
 import scalikejdbc.config.DBs
 import us.theatr.akka.quartz.{AddCronSchedule, QuartzActor}
@@ -24,6 +24,9 @@ object Main {
 
     // クリックのランキングを保存するバッチ実行登録
     quartzActor ! AddCronSchedule(system.actorOf(Props[RankingActor]), "0 */5 * * * ?", RankingActor.Protocol.RefreshAll())
+
+    // サイトを収集するバッチ実行登録
+    quartzActor ! AddCronSchedule(system.actorOf(Props[SiteCrawlActor]), "0 */10 * * * ?", SiteCrawlActor.Protocol.CrawlHatena())
 
     // RSSを収集するバッチ実行登録
     quartzActor ! AddCronSchedule(system.actorOf(Props[RssCrawlActor]), "0 */3 * * * ?", RssCrawlActor.Protocol.CrawlAll())
