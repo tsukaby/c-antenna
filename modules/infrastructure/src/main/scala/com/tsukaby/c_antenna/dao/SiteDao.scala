@@ -127,6 +127,7 @@ trait SiteDao {
    */
   def refreshCache(site: SiteMapper): Unit = {
     VolatilityCache.set(s"site:${site.id}", Some(site), expireSeconds)
+    VolatilityCache.set(s"site:${site.url}", Some(site), expireSeconds)
     VolatilityCache.remove(s"siteAll")
     VolatilityCache.remove(s"siteAllCount")
   }
