@@ -94,23 +94,23 @@ trait SiteService extends BaseService {
     Future.sequence(hatenaRssUrls.map(rssDao.getByUrl)).map(x => x.flatMap(_.getEntries.asScala))
       .map { entries =>
         entries.foreach { entry =>
-          if (siteDao.getByUrl(entry.getUri).isEmpty) {
             val rssUrl: Option[String] = Option(LambdaInvoker().findRssUrl(new RssUrlFindRequest(entry.getLink)).getRssUrl)
             rssUrl.foreach { url =>
               rssDao.getByUrl(url).foreach { feed2 =>
-                siteDao.create(
-                  name = feed2.getTitle,
-                  url = feed2.getLink,
-                  rssUrl = url,
-                  scrapingCssSelector = "",
-                  clickCount = 0,
-                  hatebuCount = 0,
-                  crawledAt = DateTime.now
-                )
-                Logger.info(s"Inserted a site. title = ${feed2.getTitle}")
+                if (siteDao.getByUrl(feed2.getLink).isEmpty) {
+                  siteDao.create(
+                    name = feed2.getTitle,
+                    url = feed2.getLink,
+                    rssUrl = url,
+                    scrapingCssSelector = "",
+                    clickCount = 0,
+                    hatebuCount = 0,
+                    crawledAt = DateTime.now
+                  )
+                  Logger.info(s"Inserted a site. title = ${feed2.getTitle}")
+                }
               }
             }
-          }
         }
       }
   }
