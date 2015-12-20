@@ -9,15 +9,15 @@ import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{Site, SitePage}
-import com.tsukaby.c_antenna.lambda.{RssUrlFindRequest, AnalyzeRequest, ClassificationRequest, LambdaInvoker}
+import com.tsukaby.c_antenna.lambda.{AnalyzeRequest, ClassificationRequest, LambdaInvoker, RssUrlFindRequest}
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
 import scalikejdbc.{AutoSession, DBSession}
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait SiteService extends BaseService {
 
@@ -60,6 +60,28 @@ trait SiteService extends BaseService {
     }
   }
 
+  val hatenaRssUrls: List[String] = List(
+    "http://feeds.feedburner.com/hatena/b/hotentry",
+    "http://b.hatena.ne.jp/entrylist.rss",
+    "http://b.hatena.ne.jp/hotentry/social.rss",
+    "http://b.hatena.ne.jp/entrylist/social.rss",
+    "http://b.hatena.ne.jp/hotentry/economics.rss",
+    "http://b.hatena.ne.jp/entrylist/economics.rss",
+    "http://b.hatena.ne.jp/hotentry/life.rss",
+    "http://b.hatena.ne.jp/entrylist/life.rss",
+    "http://b.hatena.ne.jp/hotentry/knowledge.rss",
+    "http://b.hatena.ne.jp/entrylist/knowledge.rss",
+    "http://b.hatena.ne.jp/hotentry/it.rss",
+    "http://b.hatena.ne.jp/entrylist/it.rss",
+    "http://b.hatena.ne.jp/hotentry/entertainment.rss",
+    "http://b.hatena.ne.jp/entrylist/entertainment.rss",
+    "http://b.hatena.ne.jp/hotentry/game.rss",
+    "http://b.hatena.ne.jp/entrylist/game.rss",
+    "http://b.hatena.ne.jp/hotentry/fun.rss",
+    "http://b.hatena.ne.jp/entrylist/fun.rss",
+    "http://feeds.feedburner.com/hatena/b/video"
+  )
+
   /**
     * Hatenaのエントリーリストをクロールし、新しくクロールするサイトを集めます。
     * 集めたサイトはDBに保存します。
@@ -69,8 +91,7 @@ trait SiteService extends BaseService {
 
     Logger.info(s"新しいサイトを収集します。")
 
-    rssDao.getByUrl("http://b.hatena.ne.jp/entrylist.rss")
-      .map(_.getEntries.asScala)
+    Future.sequence(hatenaRssUrls.map(rssDao.getByUrl)).map(x => x.flatMap(_.getEntries.asScala))
       .map { entries =>
         entries.foreach { entry =>
           if (siteDao.getByUrl(entry.getUri).isEmpty) {
