@@ -22,14 +22,14 @@ class Rss {
 
   def findRssUrl(input: InputStream, output: OutputStream): Unit = {
     val req = parse(Source.fromInputStream(input)(Codec.UTF8).mkString).extract[RssUrlFindRequest]
-    val response = RssUrlFindResponse(findRssUrl(req.pageUrl).orNull)
+    val response = RssUrlFindResponse(rssUrl(req.pageUrl).orNull)
     val responseStr = Serialization.write(response)
 
     val result = responseStr.getBytes("UTF-8")
     output.write(result)
   }
 
-  private def findRssUrl(pageUrl: String): Option[String] = {
+  private def rssUrl(pageUrl: String): Option[String] = {
     val rssLinkReg = """<link.*?application/(rss|atom)\+xml.*?>""".r
     val hrefReg = """href\s*=\s*[\"|\'](.*?)[\"|\']""".r
     val urlReg = """[\"|\'](.*?)[\"|\']""".r
