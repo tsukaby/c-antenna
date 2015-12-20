@@ -154,7 +154,7 @@ trait SiteService extends BaseService {
                 title = entry.getTitle,
                 description = Some(entry.getDescription.getValue),
                 categoryId = category.map(_.id),
-                tags = if (tags.nonEmpty) Some(tags.mkString(",")) else None,
+                tags = if (tags.nonEmpty) Some(tags.mkString(",").take(1024)) else None,
                 clickCount = 0,
                 hatebuCount = 0,
                 publishedAt = new DateTime(entry.getPublishedDate)
