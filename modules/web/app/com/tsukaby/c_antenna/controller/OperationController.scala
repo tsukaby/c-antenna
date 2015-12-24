@@ -33,7 +33,7 @@ trait OperationController extends BaseController with Json4s {
   }
 
   def refreshSiteThumbnailAll = Action {
-    siteService.refreshSiteThumbnail
+    siteService.createSiteThumbnails
     Ok("")
   }
 

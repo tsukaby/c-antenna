@@ -1,8 +1,11 @@
 package com.tsukaby.c_antenna.service
 
-import java.io.FileOutputStream
+import java.io.ByteArrayInputStream
 import java.net.URL
 
+import com.amazonaws.services.s3.model.ObjectMetadata
+import com.amazonaws.services.s3.transfer.{TransferManager, TransferManagerConfiguration}
+import com.amazonaws.services.s3.{AmazonS3, AmazonS3Client}
 import com.rometools.rome.feed.synd.SyndEntry
 import com.tsukaby.c_antenna.dao.{ArticleDao, CategoryDao, RssDao, SiteDao}
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
@@ -10,9 +13,10 @@ import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{Site, SitePage}
 import com.tsukaby.c_antenna.lambda.{AnalyzeRequest, ClassificationRequest, LambdaInvoker, RssUrlFindRequest}
+import com.typesafe.config.ConfigFactory
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
-import scalikejdbc.{AutoSession, DBSession}
+import scalikejdbc._
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
@@ -21,10 +25,27 @@ import scala.concurrent.Future
 
 trait SiteService extends BaseService {
 
+  val config = ConfigFactory.load()
+  val imageBucket = config.getString("c-antenna.s3.image-bucket")
+
   val siteDao: SiteDao = SiteDao
   val rssDao: RssDao = RssDao
   val articleDao: ArticleDao = ArticleDao
   val categoryDao: CategoryDao = CategoryDao
+
+  val s3client: AmazonS3 = {
+    val tmp = new AmazonS3Client()
+    tmp.setEndpoint(config.getString("c-antenna.s3.end-point"))
+    tmp
+  }
+
+  val manager: TransferManager = {
+    val tmp = new TransferManager(s3client)
+    val conf = new TransferManagerConfiguration()
+    conf.setMinimumUploadPartSize(10 * 1024 * 1024)
+    tmp.setConfiguration(conf)
+    tmp
+  }
 
   /**
     * 引数で指定した検索条件に従ってサイトを取得します。
@@ -214,15 +235,23 @@ trait SiteService extends BaseService {
   /**
     * サイトのサムネイルを更新します。
     */
-  def refreshSiteThumbnail(implicit session: DBSession = AutoSession): Unit = {
-    siteDao.getAll foreach { x =>
+  def createSiteThumbnails(implicit session: DBSession = AutoSession): Unit = {
+    SiteMapper.findAllBy(sqls.isNull(SiteMapper.sm.thumbnailUrl)) foreach { x =>
       val image: Array[Byte] = WebScrapingService.getImage(x.url)
-      val out = new FileOutputStream(s"${x.id}.jpg")
-      try {
-        out.write(image)
-      } finally {
-        out.close()
-      }
+      val bais = new ByteArrayInputStream(image)
+      val putMetaData = new ObjectMetadata()
+      putMetaData.setContentLength(image.length)
+
+      val fileName = s"${x.id}.jpg"
+      val key = s"image/site_thumbs/$fileName"
+
+      val upload = manager.upload(imageBucket, key, bais, putMetaData)
+      upload.waitForCompletion()
+
+      bais.close()
+      Logger.info(s"Thumbnail image uploaded. url = ${x.url}")
+
+      siteDao.update(x.copy(thumbnailUrl = Some(s"http://$imageBucket/$key")))
     }
   }
 }

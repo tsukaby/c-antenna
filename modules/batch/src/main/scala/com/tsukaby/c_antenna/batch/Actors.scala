@@ -75,15 +75,15 @@ object SiteCrawlActor {
 
 case class SiteThumbnailActor() extends BaseActor {
   def receive: Actor.Receive = {
-    case all: SiteThumbnailActor.Protocol.RefreshAll =>
-      val result = TimeUtil.time(SiteService.refreshSiteThumbnail())
+    case all: SiteThumbnailActor.Protocol.Generate =>
+      val result = TimeUtil.time(SiteService.createSiteThumbnails())
       log.info(s"サイトのサムネイルを最新状態にしました。 (${result._2.toSeconds} sec)")
   }
 }
 
 object SiteThumbnailActor {
   object Protocol {
-    case class RefreshAll()
+    case class Generate()
   }
 }
 

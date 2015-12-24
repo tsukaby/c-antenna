@@ -6,7 +6,7 @@ import com.sksamuel.scrimage.nio.JpegWriter
 import com.sksamuel.scrimage.{Image, Position}
 import org.openqa.selenium.phantomjs.{PhantomJSDriver, PhantomJSDriverService}
 import org.openqa.selenium.remote.DesiredCapabilities
-import org.openqa.selenium.{By, Dimension, OutputType}
+import org.openqa.selenium.{Dimension, OutputType}
 
 import scala.collection.JavaConverters._
 
@@ -80,39 +80,6 @@ trait WebScrapingService extends BaseService {
     img.read(array)
 
     array
-  }
-
-  /**
-   * 引数で指定したサイトのRSS URLを取得します。
-   * @param url RSS URLを取得するサイトのトップページURL
-   * @return RSS URL
-   */
-  def getRssUrl(url: String): Option[String] = {
-
-    // URLに特定の文字列が入っている場合はRSS URLが分かる為、HTTPリクエスト無しで返す。
-    // その他のURLの場合はHTMLをパースして返す
-
-    if (url.contains("yahoo.co.jp")) {
-      Some(url + "rss.xml")
-    } else if (url.contains("seesaa.net")) {
-      Some(url + "index20.rdf")
-    } else if (url.contains("ameba.jp")) {
-      Some(url + "rss.html")
-    } else if (url.contains("fc2.")) {
-      Some(url + "?xml")
-    } else if (url.contains("blogspot.com")) {
-      Some(url + "feeds/posts/default?alt=rss")
-    } else if (url.contains("livedoor") || url.contains("ldblog") || url.contains("doorblog")) {
-      Some(url + "index.rdf")
-    } else {
-      driver.get(url)
-
-      // head内のlinkにapplication/rss+xmlがあれば、それがRSS URLなのでそれを返す
-      driver.findElementByTagName("head").findElements(By.tagName("link")).asScala.find(_.getAttribute("type") == "application/rss+xml") match {
-        case Some(x) => Some(x.getAttribute("href"))
-        case None => None
-      }
-    }
   }
 }
 
