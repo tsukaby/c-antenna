@@ -32,8 +32,9 @@ object Main {
     quartzActor ! AddCronSchedule(system.actorOf(Props[SiteThumbnailActor]), "0 */10 * * * ?", SiteThumbnailActor.Protocol.Generate())
 
     // RSSを収集するバッチ実行登録
-    quartzActor ! AddCronSchedule(system.actorOf(Props[RssCrawlActor]), "0 */3 * * * ?", RssCrawlActor.Protocol.CrawlOnlyImportantSites())
-    quartzActor ! AddCronSchedule(system.actorOf(Props[RssCrawlActor]), "0 */20 * * * ?", RssCrawlActor.Protocol.CrawlOnlyUnimportantSites())
+    val rssCrawlActor = system.actorOf(Props[RssCrawlActor])
+    quartzActor ! AddCronSchedule(rssCrawlActor, "0 */3 * * * ?", RssCrawlActor.Protocol.CrawlOnlyImportantSites())
+    quartzActor ! AddCronSchedule(rssCrawlActor, "0 */20 * * * ?", RssCrawlActor.Protocol.CrawlOnlyUnimportantSites())
 
     // サイト名を最新に保つバッチ実行登録
     quartzActor ! AddCronSchedule(system.actorOf(Props[SiteNameActor]), "0 0 3 * * ?", SiteNameActor.Protocol.RefreshAll())
