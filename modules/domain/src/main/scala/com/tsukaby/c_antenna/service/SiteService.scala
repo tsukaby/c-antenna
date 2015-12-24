@@ -50,7 +50,7 @@ trait SiteService extends BaseService {
     tmp
   }
 
-  private val counters = new {
+  private lazy val counters = new {
     val addedNewSite = Kamon.metrics.counter("add-new-site")
     val addedNewArticle = Kamon.metrics.counter("add-new-article")
   }
