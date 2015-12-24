@@ -256,6 +256,8 @@ trait SiteService extends BaseService {
   def createSiteThumbnails(implicit session: DBSession = AutoSession): Unit = {
     SiteMapper.findAllBy(sqls.isNull(SiteMapper.sm.thumbnailUrl)) foreach { x =>
       val image: Array[Byte] = WebScrapingService.getImage(x.url)
+      Logger.info(s"Site thumbnail created by web scraping. url = ${x.url}")
+
       val bais = new ByteArrayInputStream(image)
       val putMetaData = new ObjectMetadata()
       putMetaData.setContentLength(image.length)
@@ -266,7 +268,7 @@ trait SiteService extends BaseService {
       try {
         val upload = manager.upload(imageBucket, key, bais, putMetaData)
         upload.waitForCompletion()
-        Logger.info(s"Thumbnail image uploaded. url = ${x.url}")
+        Logger.info(s"Thumbnail image uploaded. id = ${x.id}, url = ${x.url}")
         siteDao.update(x.copy(thumbnailUrl = Some(s"http://$imageBucket/$key")))
       } catch {
         case e: Throwable => Logger.error("Error s3 uploading.", e)
