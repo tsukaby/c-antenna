@@ -29,7 +29,7 @@ object Main {
     quartzActor ! AddCronSchedule(system.actorOf(Props[SiteCrawlActor]), "0 */10 * * * ?", SiteCrawlActor.Protocol.CrawlHatena())
 
     // サイトのサムネイル画像を生成するバッチ実行登録
-    quartzActor ! AddCronSchedule(system.actorOf(Props[SiteThumbnailActor]), "0 */20 * * * ?", SiteThumbnailActor.Protocol.Generate())
+    quartzActor ! AddCronSchedule(system.actorOf(Props[SiteThumbnailActor]), "0 */10 * * * ?", SiteThumbnailActor.Protocol.Generate())
 
     // RSSを収集するバッチ実行登録
     quartzActor ! AddCronSchedule(system.actorOf(Props[RssCrawlActor]), "0 */3 * * * ?", RssCrawlActor.Protocol.CrawlAll())
