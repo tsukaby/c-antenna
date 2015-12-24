@@ -25,8 +25,12 @@ case class RssCrawlActor() extends BaseActor {
     case ReceiveTimeout =>
       log.info("timeout")
       context.stop(self)
-    case all: RssCrawlActor.Protocol.CrawlAll =>
-      SiteDao.getAll.foreach { x =>
+    case all: RssCrawlActor.Protocol.CrawlOnlyImportantSites =>
+      SiteMapper.findAllBy(sqls.ge(SiteMapper.sm.hatebuCount, 10000)).foreach { x =>
+        self ! x
+      }
+    case all: RssCrawlActor.Protocol.CrawlOnlyUnimportantSites =>
+      SiteMapper.findAllBy(sqls.lt(SiteMapper.sm.hatebuCount, 10000)).foreach { x =>
         self ! x
       }
     case site: SiteMapper =>
@@ -46,7 +50,8 @@ case class RssCrawlActor() extends BaseActor {
 object RssCrawlActor {
   object Protocol {
     case class FutureAwait[T](f: Future[T], site: SiteMapper)
-    case class CrawlAll()
+    case class CrawlOnlyImportantSites()
+    case class CrawlOnlyUnimportantSites()
   }
 }
 
