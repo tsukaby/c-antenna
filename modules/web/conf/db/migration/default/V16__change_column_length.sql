@@ -1,0 +1,1 @@
+ALTER TABLE site MODIFY thumbnail_url TEXT;
