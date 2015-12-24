@@ -25,6 +25,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 import scala.language.reflectiveCalls
+import scala.util.{Success, Failure}
 
 trait SiteService extends BaseService {
 
@@ -120,7 +121,7 @@ trait SiteService extends BaseService {
 
     Logger.info(s"新しいサイトを収集します。")
 
-    Future.sequence(hatenaRssUrls.map(rssDao.getByUrl)).map(x => x.flatMap(_.getEntries.asScala))
+    val f = Future.sequence(hatenaRssUrls.map(rssDao.getByUrl)).map(x => x.flatMap(_.getEntries.asScala))
       .map { entries =>
         entries.foreach { entry =>
             val rssUrl: Option[String] = Option(LambdaInvoker().findRssUrl(new RssUrlFindRequest(entry.getLink)).getRssUrl)
@@ -143,6 +144,13 @@ trait SiteService extends BaseService {
             }
         }
       }
+
+    f.onComplete {
+      case Success(x) => Logger.info(s"新しいサイトを収集が完了しました。")
+      case Failure(e) => Logger.info(s"新しいサイトの収集中にエラーが発生しました。", e)
+    }
+
+    f
   }
 
   /**
@@ -153,7 +161,7 @@ trait SiteService extends BaseService {
     */
   def crawl(site: SiteMapper)(implicit session: DBSession = AutoSession): Future[Unit] = {
 
-    Logger.info(s"サイト情報を更新します。${site.name}")
+    Logger.debug(s"サイト情報を更新します。${site.name}")
 
     rssDao.getByUrl(site.rssUrl).map { feed =>
       // サイト情報更新
@@ -255,13 +263,17 @@ trait SiteService extends BaseService {
       val fileName = s"${x.id}.jpg"
       val key = s"image/site_thumbs/$fileName"
 
-      val upload = manager.upload(imageBucket, key, bais, putMetaData)
-      upload.waitForCompletion()
+      try {
+        val upload = manager.upload(imageBucket, key, bais, putMetaData)
+        upload.waitForCompletion()
+        Logger.info(s"Thumbnail image uploaded. url = ${x.url}")
+        siteDao.update(x.copy(thumbnailUrl = Some(s"http://$imageBucket/$key")))
+      } catch {
+        case e: Throwable => Logger.error("Error s3 uploading.", e)
+      }
 
       bais.close()
-      Logger.info(s"Thumbnail image uploaded. url = ${x.url}")
 
-      siteDao.update(x.copy(thumbnailUrl = Some(s"http://$imageBucket/$key")))
     }
   }
 }
