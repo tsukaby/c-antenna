@@ -24,6 +24,8 @@ import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+import scala.language.reflectiveCalls
+
 trait SiteService extends BaseService {
 
   val config = ConfigFactory.load()
@@ -48,8 +50,9 @@ trait SiteService extends BaseService {
     tmp
   }
 
-  val counters = new {
+  private val counters = new {
     val addedNewSite = Kamon.metrics.counter("add-new-site")
+    val addedNewArticle = Kamon.metrics.counter("add-new-article")
   }
 
   /**
