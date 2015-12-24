@@ -14,6 +14,7 @@ import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import com.tsukaby.c_antenna.entity.{Site, SitePage}
 import com.tsukaby.c_antenna.lambda.{AnalyzeRequest, ClassificationRequest, LambdaInvoker, RssUrlFindRequest}
 import com.typesafe.config.ConfigFactory
+import kamon.Kamon
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
 import scalikejdbc._
@@ -45,6 +46,10 @@ trait SiteService extends BaseService {
     conf.setMinimumUploadPartSize(10 * 1024 * 1024)
     tmp.setConfiguration(conf)
     tmp
+  }
+
+  val counters = new {
+    val addedNewSite = Kamon.metrics.counter("add-new-site")
   }
 
   /**
@@ -129,6 +134,7 @@ trait SiteService extends BaseService {
                     crawledAt = DateTime.now
                   )
                   Logger.info(s"Inserted a site. title = ${feed2.getTitle}")
+                  counters.addedNewSite.increment()
                 }
               }
             }
@@ -181,6 +187,7 @@ trait SiteService extends BaseService {
                 publishedAt = new DateTime(entry.getPublishedDate)
               )
               Logger.info(s"Inserted an article. title = ${entry.getTitle}")
+              counters.addedNewArticle.increment()
             }
           }
       }
