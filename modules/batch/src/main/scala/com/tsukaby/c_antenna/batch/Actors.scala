@@ -41,7 +41,7 @@ case class RssCrawlActor() extends BaseActor {
       if (!wrapper.f.isCompleted) {
         context.system.scheduler.scheduleOnce(10 seconds, self, wrapper)
       } else {
-        log.info(s"Crawl completed! site = ${wrapper.site.name}")
+        log.debug(s"Crawl completed! site = ${wrapper.site.name}")
       }
   }
 
