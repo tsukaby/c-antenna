@@ -68,13 +68,13 @@ class RssSpec extends Specification {
         }
       }
 
-      "when gave invalidated url (Page doesn't exists)" >> {
+      "when gave invalidated url (404)" >> {
         "it returns a null" in {
           val target = new Rss()
           val request =
             """
               |{
-              |  "pageUrl": "http://example.com"
+              |  "pageUrl": "http://fwe89fk2fasf28fas.com"
               |}
             """.stripMargin
           val in = new ByteArrayInputStream(request.getBytes("UTF-8"))

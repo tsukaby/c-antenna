@@ -22,7 +22,7 @@ class Rss {
 
   def findRssUrl(input: InputStream, output: OutputStream): Unit = {
     val req = parse(Source.fromInputStream(input)(Codec.UTF8).mkString).extract[RssUrlFindRequest]
-    val response = RssUrlFindResponse(rssUrl(req.pageUrl).orNull)
+    val response: RssUrlFindResponse = RssUrlFindResponse(rssUrl(req.pageUrl).orNull)
     val responseStr = Serialization.write(response)
 
     val result = responseStr.getBytes("UTF-8")
@@ -39,7 +39,6 @@ class Rss {
     val html: String = Await.result(pageF, 30 seconds) match {
       case Left(a) =>
         println("Error")
-        a.printStackTrace()
         ""
       case Right(b) => b
     }
