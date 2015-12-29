@@ -8,49 +8,10 @@ import org.openqa.selenium.phantomjs.{PhantomJSDriver, PhantomJSDriverService}
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.{Dimension, OutputType}
 
-import scala.collection.JavaConverters._
-
 /**
  * Webスクレイピング処理を行うクラスです。
  */
 trait WebScrapingService extends BaseService {
-
-  private val driver: PhantomJSDriver = new PhantomJSDriver({
-    val dcap = new DesiredCapabilities()
-    // PhantomJSのログ出力を停止。細かいエラーが沢山出るため。
-    dcap.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, Array("--webdriver-loglevel=NONE"))
-    dcap.setCapability("phantomjs.binary.path", "/usr/local/bin/phantomjs")
-    dcap
-  })
-
-  /**
-   * 引数で指定したページのテキストを取得します。
-   * テキストはHTMLタグを除いたテキストです。
-   *
-   * @param articleUrl テキストを取得するページのURL
-   * @param cssSelector 対象のページのテキストを取得する領域を示すCSSセレクタ
-   * @return HTMLタグを除いたテキスト
-   */
-  def getText(articleUrl: String, cssSelector: String): Option[String] = synchronized {
-
-    driver.get(articleUrl)
-
-    val elements = driver.findElementsByCssSelector(cssSelector).asScala
-
-    val str = if (elements.length == 0) {
-      ""
-    } else {
-      elements map (x => x.getText) reduceLeft (_ + "\n" + _)
-    }
-
-    //driver.quit()
-
-    if (str == null || str.isEmpty) {
-      None
-    } else {
-      Option(str)
-    }
-  }
 
   /**
    * 引数で指定したWebページのサムネイル画像を取得します。
@@ -60,6 +21,7 @@ trait WebScrapingService extends BaseService {
   def getImage(url: String): Array[Byte] = {
     val dcap = DesiredCapabilities.phantomjs()
     dcap.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, Array("--webdriver-loglevel=NONE"))
+    dcap.setCapability("phantomjs.binary.path", "/usr/local/bin/phantomjs")
     implicit val driverTmp = new PhantomJSDriver(dcap)
     driverTmp.get(url)
     driverTmp.manage().window().setSize(new Dimension(1024, 768))
