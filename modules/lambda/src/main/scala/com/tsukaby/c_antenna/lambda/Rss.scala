@@ -39,6 +39,7 @@ class Rss {
     val html: String = Await.result(pageF, 30 seconds) match {
       case Left(a) =>
         println("Error")
+        a.printStackTrace()
         ""
       case Right(b) => b
     }
