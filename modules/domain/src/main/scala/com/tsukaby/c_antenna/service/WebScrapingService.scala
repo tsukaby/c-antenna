@@ -33,8 +33,6 @@ trait WebScrapingService extends BaseService {
     driver.manage().window().setSize(new Dimension(1024, 768))
     Logger.info("PhantomJsDriver take a screenshot.")
     val bytes = driver.getScreenshotAs(OutputType.BYTES)
-    Logger.info("Quit driver.")
-    driver.quit()
 
     Logger.info("Create stream.")
     val in = new ByteArrayInputStream(bytes)
