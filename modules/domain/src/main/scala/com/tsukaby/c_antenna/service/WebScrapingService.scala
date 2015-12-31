@@ -1,9 +1,9 @@
 package com.tsukaby.c_antenna.service
 
-import java.io.FileInputStream
+import java.io.ByteArrayInputStream
 
+import com.sksamuel.scrimage.{Position, Image}
 import com.sksamuel.scrimage.nio.JpegWriter
-import com.sksamuel.scrimage.{Image, Position}
 import org.openqa.selenium.phantomjs.{PhantomJSDriver, PhantomJSDriverService}
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.{Dimension, OutputType}
@@ -12,6 +12,15 @@ import org.openqa.selenium.{Dimension, OutputType}
  * Webスクレイピング処理を行うクラスです。
  */
 trait WebScrapingService extends BaseService {
+  
+  val driver: PhantomJSDriver = {
+    Logger.info("Initialize phantomjs driver.")
+    val dcap = DesiredCapabilities.phantomjs()
+    dcap.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, Array("--webdriver-loglevel=NONE"))
+    dcap.setCapability("phantomjs.binary.path", "/usr/local/bin/phantomjs")
+    Logger.info("Create PhantomJsDriver.")
+    new PhantomJSDriver(dcap)
+  }
 
   /**
    * 引数で指定したWebページのサムネイル画像を取得します。
@@ -19,37 +28,22 @@ trait WebScrapingService extends BaseService {
    * @return サムネイル画像のバイナリ
    */
   def getImage(url: String): Array[Byte] = {
-    Logger.info("Initialize phantomjs driver.")
-    val dcap = DesiredCapabilities.phantomjs()
-    dcap.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, Array("--webdriver-loglevel=NONE"))
-    dcap.setCapability("phantomjs.binary.path", "/usr/local/bin/phantomjs")
-    Logger.info("Create PhantomJsDriver.")
-    implicit val driverTmp = new PhantomJSDriver(dcap)
     Logger.info("PhantomJsDriver setup.")
-    driverTmp.get(url)
-    driverTmp.manage().window().setSize(new Dimension(1024, 768))
+    driver.get(url)
+    driver.manage().window().setSize(new Dimension(1024, 768))
     Logger.info("PhantomJsDriver take a screenshot.")
-    val file = driverTmp.getScreenshotAs(OutputType.FILE)
+    val bytes = driver.getScreenshotAs(OutputType.BYTES)
+    Logger.info("Quit driver.")
+    driver.quit()
 
     Logger.info("Create stream.")
-    val fis = new FileInputStream(file)
-    // 横幅を400に変更 GhostDriver側ではあくまでウィンドウのサイズを設定できるだけで、キャプチャは意図通りのサイズにならない
-    // そのため、ここで400に変更
-    // 縦を100にして保存
-    //val img = Image(fis).scaleToWidth(400).resizeTo(400, 100, Position.TopLeft)
+    val in = new ByteArrayInputStream(bytes)
+    // 横幅を変更 GhostDriver側ではあくまでウィンドウのサイズを設定できるだけで、キャプチャは意図通りのサイズにならない
     Logger.info("Compression and resize.")
     implicit val writer = JpegWriter.apply(compression = 80, progressive = true)
-    val img = Image(fis).scaleToWidth(600).resizeTo(600, 150, Position.TopLeft).stream
-
+    val array = Image.fromStream(in).scaleToWidth(600).resizeTo(600, 150, Position.TopLeft).bytes
     Logger.info("Close stream.")
-    fis.close()
-    Logger.info("Quit driver.")
-    driverTmp.quit()
-
-    Logger.info("Create array.")
-    val array = new Array[Byte](img.available())
-    img.read(array)
-
+    in.close()
     Logger.info("Complete.")
 
     array
