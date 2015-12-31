@@ -1,0 +1,1 @@
+ALTER TABLE article MODIFY eye_catch_url TEXT;
