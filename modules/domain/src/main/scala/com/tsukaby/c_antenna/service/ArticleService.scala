@@ -28,7 +28,7 @@ trait ArticleService extends BaseService {
   def getByCondition(condition: SimpleSearchCondition)(implicit session: DBSession = AutoSession): ArticlePage = {
 
     val articles = articleDao.getByCondition(condition)
-    val count = articleDao.countByCondition(condition)
+    val count = 1000
 
     ArticlePage(articles, count)
   }

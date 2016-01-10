@@ -63,7 +63,7 @@ trait SiteService extends BaseService {
     */
   def getByCondition(condition: SimpleSearchCondition)(implicit session: DBSession = AutoSession): SitePage = {
     val sites = siteDao.getByCondition(condition)
-    val count = siteDao.countByCondition(condition)
+    val count = 1000
 
     SitePage(sites, count)
   }
