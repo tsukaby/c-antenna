@@ -6,12 +6,52 @@
     <changefreq>hourly</changefreq>
   </url>
   <url>
-    <loc>http://c-antenna.tsukaby.com/latest</loc>
+    <loc>http://c-antenna.tsukaby.com/articles</loc>
     <priority>1.0</priority>
     <changefreq>hourly</changefreq>
   </url>
   <url>
     <loc>http://c-antenna.tsukaby.com/article_ranking</loc>
+    <priority>1.0</priority>
+    <changefreq>hourly</changefreq>
+  </url>
+  <url>
+    <loc>http://c-antenna.tsukaby.com/categories/funny/</loc>
+    <priority>1.0</priority>
+    <changefreq>hourly</changefreq>
+  </url>
+  <url>
+    <loc>http://c-antenna.tsukaby.com/categories/foodie/</loc>
+    <priority>1.0</priority>
+    <changefreq>hourly</changefreq>
+  </url>
+  <url>
+    <loc>http://c-antenna.tsukaby.com/categories/sport/</loc>
+    <priority>1.0</priority>
+    <changefreq>hourly</changefreq>
+  </url>
+  <url>
+    <loc>http://c-antenna.tsukaby.com/categories/entertainment/</loc>
+    <priority>1.0</priority>
+    <changefreq>hourly</changefreq>
+  </url>
+  <url>
+    <loc>http://c-antenna.tsukaby.com/categories/government/</loc>
+    <priority>1.0</priority>
+    <changefreq>hourly</changefreq>
+  </url>
+  <url>
+    <loc>http://c-antenna.tsukaby.com/categories/technology/</loc>
+    <priority>1.0</priority>
+    <changefreq>hourly</changefreq>
+  </url>
+  <url>
+    <loc>http://c-antenna.tsukaby.com/categories/anime/</loc>
+    <priority>1.0</priority>
+    <changefreq>hourly</changefreq>
+  </url>
+  <url>
+    <loc>http://c-antenna.tsukaby.com/categories/r18/</loc>
     <priority>1.0</priority>
     <changefreq>hourly</changefreq>
   </url>

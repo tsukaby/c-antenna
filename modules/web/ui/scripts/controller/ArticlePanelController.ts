@@ -4,7 +4,7 @@
 ///<reference path='../Model.ts' />
 ///<reference path='../Service.ts' />
 
-module LatestControllerModule {
+module ArticlePanelControllerModule {
   "use strict";
 
   export interface IScope extends ng.IScope {
@@ -27,7 +27,18 @@ module LatestControllerModule {
     loadData: () => void;
   }
 
-  export class LatestController {
+  export class ArticlePanelController {
+
+    private categoryMap:any = {
+      funny: 1,
+      foodie: 2,
+      sport: 3,
+      entertainment:4,
+      government:5,
+      technology: 6,
+      anime: 7,
+      r18:8
+    };
 
     constructor(public $scope:IScope,
                 private $http:ng.IHttpService,
@@ -41,7 +52,8 @@ module LatestControllerModule {
       $scope.totalItems = 0;
 
       $scope.condition = new Model.SimpleSearchCondition();
-      $scope.condition.categoryId = $stateParams["categoryId"] ? $stateParams["categoryId"] : null;
+      var categoryId:any = this.categoryMap[$stateParams["type"]];
+      $scope.condition.categoryId = categoryId ? categoryId : null;
       $scope.condition.page = $stateParams["page"] ? $stateParams["page"] : 1;
       $scope.condition.count = 20;
       $scope.condition.hasEyeCatch = true;
@@ -54,7 +66,7 @@ module LatestControllerModule {
 
       // State check
       if ($scope.condition.page !== 1 && !$scope.condition.maxId) {
-        $state.go("latest", {}, {inherit: false});
+        $state.go("articles", {}, {inherit: false});
         return;
       }
 
@@ -73,13 +85,19 @@ module LatestControllerModule {
 
       $scope.pageChanged = function () {
         var params:any = {
-          page: $scope.currentPage
+          page: $scope.currentPage,
+          type: $stateParams["type"]
         };
         if (params.page !== 1) {
           params.maxId = $scope.maxId;
         }
 
-        $state.go("latest", params, {inherit: true});
+        if (!!$scope.condition.categoryId) {
+          $state.go("categories", params, {inherit: true});
+        } else {
+          $state.go("articles", params, {inherit: true});
+        }
+
       };
 
       // 初期データロード

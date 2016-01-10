@@ -37,10 +37,15 @@ module App {
           templateUrl: "partials/top.html",
           controller: "TopController"
         })
-        .state('latest', {
-          url: "/latest?categoryId&page&maxId",
-          templateUrl: "partials/latest.html",
-          controller: "LatestController"
+        .state('articles', {
+          url: "/articles?page&maxId",
+          templateUrl: "partials/article_panel.html",
+          controller: "ArticlePanelController"
+        })
+        .state('categories', {
+          url: "/categories/{type}/?page&maxId",
+          templateUrl: "partials/article_panel.html",
+          controller: "ArticlePanelController"
         })
         .state('article_ranking', {
           url: "/article_ranking",
@@ -83,7 +88,7 @@ module App {
     }
   ).controller("ArticleRankingController", ArticleRankingControllerModule.ArticleRankingController)
     .controller("TopController", TopControllerModule.TopController)
-    .controller("LatestController", LatestControllerModule.LatestController)
+    .controller("ArticlePanelController", ArticlePanelControllerModule.ArticlePanelController)
   ;
 
   // モジュールの定義。directiveに関するモジュール。
