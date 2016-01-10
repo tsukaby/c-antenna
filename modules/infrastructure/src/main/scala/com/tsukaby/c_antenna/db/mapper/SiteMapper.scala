@@ -12,7 +12,8 @@ case class SiteMapper(
   scrapingCssSelector: String,
   clickCount: Long,
   hatebuCount: Long,
-  crawledAt: DateTime) {
+  crawledAt: DateTime,
+  disabled: Boolean) {
 
   def save()(implicit session: DBSession = SiteMapper.autoSession): SiteMapper = SiteMapper.save(this)(session)
 
@@ -25,7 +26,7 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
 
   override val tableName = "site"
 
-  override val columns = Seq("id", "name", "url", "rss_url", "thumbnail_url", "scraping_css_selector", "click_count", "hatebu_count", "crawled_at")
+  override val columns = Seq("id", "name", "url", "rss_url", "thumbnail_url", "scraping_css_selector", "click_count", "hatebu_count", "crawled_at", "disabled")
 
   def apply(sm: SyntaxProvider[SiteMapper])(rs: WrappedResultSet): SiteMapper = apply(sm.resultName)(rs)
   def apply(sm: ResultName[SiteMapper])(rs: WrappedResultSet): SiteMapper = new SiteMapper(
@@ -37,7 +38,8 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     scrapingCssSelector = rs.get(sm.scrapingCssSelector),
     clickCount = rs.get(sm.clickCount),
     hatebuCount = rs.get(sm.hatebuCount),
-    crawledAt = rs.get(sm.crawledAt)
+    crawledAt = rs.get(sm.crawledAt),
+    disabled = rs.get(sm.disabled)
   )
 
   val sm = SiteMapper.syntax("sm")
@@ -84,7 +86,8 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
     scrapingCssSelector: String,
     clickCount: Long,
     hatebuCount: Long,
-    crawledAt: DateTime)(implicit session: DBSession = autoSession): SiteMapper = {
+    crawledAt: DateTime,
+    disabled: Boolean)(implicit session: DBSession = autoSession): SiteMapper = {
     val generatedKey = withSQL {
       insert.into(SiteMapper).columns(
         column.name,
@@ -94,7 +97,8 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         column.scrapingCssSelector,
         column.clickCount,
         column.hatebuCount,
-        column.crawledAt
+        column.crawledAt,
+        column.disabled
       ).values(
         name,
         url,
@@ -103,7 +107,8 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         scrapingCssSelector,
         clickCount,
         hatebuCount,
-        crawledAt
+        crawledAt,
+        disabled
       )
     }.updateAndReturnGeneratedKey.apply()
 
@@ -116,7 +121,8 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
       scrapingCssSelector = scrapingCssSelector,
       clickCount = clickCount,
       hatebuCount = hatebuCount,
-      crawledAt = crawledAt)
+      crawledAt = crawledAt,
+      disabled = disabled)
   }
 
   def save(entity: SiteMapper)(implicit session: DBSession = autoSession): SiteMapper = {
@@ -130,7 +136,8 @@ object SiteMapper extends SQLSyntaxSupport[SiteMapper] {
         column.scrapingCssSelector -> entity.scrapingCssSelector,
         column.clickCount -> entity.clickCount,
         column.hatebuCount -> entity.hatebuCount,
-        column.crawledAt -> entity.crawledAt
+        column.crawledAt -> entity.crawledAt,
+        column.disabled -> entity.disabled
       ).where.eq(column.id, entity.id)
     }.update.apply()
     entity

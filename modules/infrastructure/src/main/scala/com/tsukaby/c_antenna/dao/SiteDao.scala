@@ -23,7 +23,8 @@ trait SiteDao {
     scrapingCssSelector: String,
     clickCount: Long,
     hatebuCount: Long,
-    crawledAt: DateTime): SiteMapper = {
+    crawledAt: DateTime,
+    disabled: Boolean = false): SiteMapper = {
     val createdSite = SiteMapper.create(
       name,
       url,
@@ -32,7 +33,8 @@ trait SiteDao {
       scrapingCssSelector,
       clickCount,
       hatebuCount,
-      crawledAt: DateTime
+      crawledAt,
+      disabled
     )
 
     refreshCache(createdSite)
@@ -142,6 +144,8 @@ trait SiteDao {
 
     // where
     var sql = sqls.eq(sqls"1", 1)
+
+    sql = sql.and.eq(sm.disabled, false)
 
     // order by
     sql = condition.sort match {

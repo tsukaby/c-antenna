@@ -26,11 +26,11 @@ case class RssCrawlActor() extends BaseActor {
       log.info("timeout")
       context.stop(self)
     case all: RssCrawlActor.Protocol.CrawlOnlyImportantSites =>
-      SiteMapper.findAllBy(sqls.ge(SiteMapper.sm.hatebuCount, 10000)).foreach { x =>
+      SiteMapper.findAllBy(sqls.eq(SiteMapper.sm.disabled, false).and.ge(SiteMapper.sm.hatebuCount, 10000)).foreach { x =>
         self ! x
       }
     case all: RssCrawlActor.Protocol.CrawlOnlyUnimportantSites =>
-      SiteMapper.findAllBy(sqls.lt(SiteMapper.sm.hatebuCount, 10000)).foreach { x =>
+      SiteMapper.findAllBy(sqls.eq(SiteMapper.sm.disabled, false).and.lt(SiteMapper.sm.hatebuCount, 10000)).foreach { x =>
         self ! x
       }
     case site: SiteMapper =>
