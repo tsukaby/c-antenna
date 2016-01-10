@@ -20,9 +20,7 @@
            title="{{article.title}}"
            ng-mousedown="clickLogService.postClickLogArticle(article)"
            style="width: 100%; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                <span>
-                  {{article.title}}<span class="badge" ng-repeat="tag in article.tags">{{tag}}</span>
-                </span>
+          <span>{{article.title}}</span>
         </a>
       </li>
     </ul>
