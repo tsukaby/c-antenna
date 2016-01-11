@@ -35,6 +35,9 @@ trait PhantomJSDriverAlt {
         |    phantom.exit(1);
         |} else {
         |    address = system.args[1];
+        |    // Suppress messages on console.
+        |    page.onError = function(msg, trace) {
+        |    };
         |    page.viewportSize = { width: 600, height: 600 };
         |    page.settings.resourceTimeout = 5000; // 5 seconds
         |    if (system.args.length > 2 && system.args[2].substr(-2) === "px") {
