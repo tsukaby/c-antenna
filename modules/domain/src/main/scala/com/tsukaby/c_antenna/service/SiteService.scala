@@ -177,7 +177,10 @@ trait SiteService extends BaseService {
             if (entry.getLink != null && articleDao.countByUrl(entry.getLink) == 0) {
               // まだ記事が無い場合
               // 記事を解析してタグを取得
-              val tags = LambdaInvoker().analyzeMorphological(new AnalyzeRequest(entry.getDescription.getValue)).tags
+              val text = Option(entry.getDescription)
+                .map(_.getValue)
+                .getOrElse(entry.getContents.headOption.map(_.getValue.replaceAll("<.+?>", "")).getOrElse(""))
+              val tags = LambdaInvoker().analyzeMorphological(new AnalyzeRequest(text)).tags
               val categoryName = LambdaInvoker().classifyCategory(new ClassificationRequest(tags)).category
               val category = categoryDao.getByName(categoryName)
 
@@ -190,7 +193,7 @@ trait SiteService extends BaseService {
                 url = entry.getLink,
                 eyeCatchUrl = eyeCatchUrl,
                 title = entry.getTitle,
-                description = Some(entry.getDescription.getValue),
+                description = Some(text),
                 categoryId = category.map(_.id),
                 tags = if (tags.nonEmpty) Some(tags.mkString(",").take(1024)) else None,
                 clickCount = 0,
