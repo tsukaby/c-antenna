@@ -19,6 +19,14 @@ GET         /management/crawl_rss/:siteId               com.tsukaby.c_antenna.co
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /                                           controllers.Assets.versioned(path="/public", file="index.html")
-GET         /latest                                     controllers.Assets.versioned(path="/public", file="index.html")
+GET         /articles                                   controllers.Assets.versioned(path="/public", file="index.html")
+GET         /categories/funny/                          controllers.Assets.versioned(path="/public", file="index.html")
+GET         /categories/foodie/                         controllers.Assets.versioned(path="/public", file="index.html")
+GET         /categories/sport/                          controllers.Assets.versioned(path="/public", file="index.html")
+GET         /categories/entertainment/                  controllers.Assets.versioned(path="/public", file="index.html")
+GET         /categories/government/                     controllers.Assets.versioned(path="/public", file="index.html")
+GET         /categories/technology/                     controllers.Assets.versioned(path="/public", file="index.html")
+GET         /categories/anime/                          controllers.Assets.versioned(path="/public", file="index.html")
+GET         /categories/r18/                            controllers.Assets.versioned(path="/public", file="index.html")
 GET         /article_ranking                            controllers.Assets.versioned(path="/public", file="index.html")
 GET         /*file                                      controllers.Assets.versioned(path="/public", file)
