@@ -23,9 +23,8 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
 import scala.language.reflectiveCalls
-import scala.util.{Success, Failure}
+import scala.util.{Failure, Success}
 
 trait SiteService extends BaseService {
 
@@ -124,24 +123,24 @@ trait SiteService extends BaseService {
     val f = Future.sequence(hatenaRssUrls.map(rssDao.getByUrl)).map(x => x.flatMap(_.getEntries.asScala))
       .map { entries =>
         entries.foreach { entry =>
-            val rssUrl: Option[String] = Option(LambdaInvoker().findRssUrl(new RssUrlFindRequest(entry.getLink)).getRssUrl)
-            rssUrl.foreach { url =>
-              rssDao.getByUrl(url).foreach { feed2 =>
-                if (siteDao.getByUrl(feed2.getLink).isEmpty) {
-                  siteDao.create(
-                    name = feed2.getTitle,
-                    url = feed2.getLink,
-                    rssUrl = url,
-                    scrapingCssSelector = "",
-                    clickCount = 0,
-                    hatebuCount = 0,
-                    crawledAt = DateTime.now
-                  )
-                  Logger.info(s"Inserted a site. title = ${feed2.getTitle}")
-                  counters.addedNewSite.increment()
-                }
+          val rssUrl: Option[String] = Option(LambdaInvoker().findRssUrl(new RssUrlFindRequest(entry.getLink)).getRssUrl)
+          rssUrl.foreach { url =>
+            rssDao.getByUrl(url).foreach { feed2 =>
+              if (siteDao.getByUrl(feed2.getLink).isEmpty) {
+                siteDao.create(
+                  name = feed2.getTitle,
+                  url = feed2.getLink,
+                  rssUrl = url,
+                  scrapingCssSelector = "",
+                  clickCount = 0,
+                  hatebuCount = 0,
+                  crawledAt = DateTime.now
+                )
+                Logger.info(s"Inserted a site. title = ${feed2.getTitle}")
+                counters.addedNewSite.increment()
               }
             }
+          }
         }
       }
 
