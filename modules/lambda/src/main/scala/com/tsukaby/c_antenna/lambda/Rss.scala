@@ -34,11 +34,12 @@ class Rss {
     val hrefReg = """href\s*=\s*[\"|\'](.*?)[\"|\']""".r
     val urlReg = """[\"|\'](.*?)[\"|\']""".r
 
+    println(s"targetUrl = $pageUrl")
     val request = url(pageUrl)
     val f = Http.configure(_.setFollowRedirect(true))(request).either
     val html:String = Await.result(f, 30 seconds) match {
       case Left(a) =>
-        println("Error")
+        println(s"Error. targetUrl = $pageUrl")
         a.printStackTrace()
         ""
       case Right(b) =>
