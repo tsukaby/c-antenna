@@ -24,7 +24,7 @@ import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.reflectiveCalls
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 trait SiteService extends BaseService {
 
@@ -123,7 +123,16 @@ trait SiteService extends BaseService {
     val f = Future.sequence(hatenaRssUrls.map(rssDao.getByUrl)).map(x => x.flatMap(_.getEntries.asScala))
       .map { entries =>
         entries.foreach { entry =>
-          val rssUrl: Option[String] = Option(LambdaInvoker().findRssUrl(new RssUrlFindRequest(entry.getLink)).getRssUrl)
+          val rssUrl: Option[String] = Try(LambdaInvoker().findRssUrl(new RssUrlFindRequest(entry.getLink))) match {
+            case Failure(exception) =>
+              Logger.warn("Failure lambda invoke.", exception)
+              None
+            case Success(null) =>
+              Logger.warn("Lambda succeeded but return is null")
+              None
+            case Success(value) =>
+              Some(value.getRssUrl)
+          }
           rssUrl.foreach { url =>
             rssDao.getByUrl(url).foreach { feed2 =>
               if (siteDao.getByUrl(feed2.getLink).isEmpty) {
