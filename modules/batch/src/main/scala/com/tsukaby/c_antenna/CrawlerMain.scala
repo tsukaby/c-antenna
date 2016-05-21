@@ -1,6 +1,5 @@
 package com.tsukaby.c_antenna
 
-import com.amazonaws.services.cloudfront.model.InvalidArgumentException
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.service.SiteService
 import kamon.Kamon
@@ -30,7 +29,7 @@ object CrawlerMain {
           val f = SiteService.crawlNewSite()
           Await.result(f, 5 minutes)
         case x =>
-          throw new InvalidArgumentException(s"args = $x")
+          throw new IllegalArgumentException(s"args = $x")
       }
     } finally {
       Kamon.shutdown()

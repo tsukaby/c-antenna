@@ -12,9 +12,16 @@ object RankingMain {
     DBs.setupAll()
 
     try {
-      SiteService.refreshSiteRank()
-      ArticleService.refreshArticleRank()
-      ArticleService.refreshRecentArticleRank()
+      args.toList match {
+        case "site_rank" :: Nil =>
+          SiteService.refreshSiteRank()
+        case "article_rank" :: Nil =>
+          ArticleService.refreshArticleRank()
+        case "recent_article_rank" :: Nil =>
+          ArticleService.refreshRecentArticleRank()
+        case x =>
+          throw new IllegalArgumentException(s"args = $x")
+      }
     } finally {
       Kamon.shutdown()
     }
