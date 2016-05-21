@@ -23,6 +23,8 @@ trait RssDao extends BaseDao {
     Future {
       val tmp = new URL(rssUrl)
       val conn = tmp.openConnection()
+      // PC Chrome
+      conn.setRequestProperty("User-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36")
       val reader: Reader = new BufferedReader(new InputStreamReader(conn.getInputStream))
 
       val in = new SyndFeedInput()
