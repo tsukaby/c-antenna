@@ -3,6 +3,7 @@ package com.tsukaby.c_antenna.cache
 import java.io._
 
 import biz.source_code.base64Coder.Base64Coder
+import com.typesafe.config.ConfigFactory
 import redis.clients.jedis.{Jedis, JedisPool}
 
 import scala.collection.JavaConverters._
@@ -12,24 +13,30 @@ import scala.collection.JavaConverters._
  */
 trait Redis {
   val jedisPool: JedisPool
+  val conf = ConfigFactory.load.getConfig("com.tsukaby.c-antenna.cache")
+  val enabled: Boolean = conf.getBoolean("enabled")
 
   def set(key: String, value: Any, expire: Int): Unit = {
-
-    using[Unit] { jedis =>
-      val obj = new String(Base64Coder.encode(serialize(value)))
-      jedis.setex(key, expire, obj)
+    if (enabled) {
+      using[Unit] { jedis =>
+        val obj = new String(Base64Coder.encode(serialize(value)))
+        jedis.setex(key, expire, obj)
+      }
     }
   }
 
   def get[T](key: String): Option[T] = {
-
-    using[Option[T]] { jedis =>
-      val obj = jedis.get(key)
-      if (obj == null) {
-        None
-      } else {
-        Option(deserialize[T](Base64Coder.decode(obj)))
+    if (enabled) {
+      using[Option[T]] { jedis =>
+        val obj = jedis.get(key)
+        if (obj == null) {
+          None
+        } else {
+          Option(deserialize[T](Base64Coder.decode(obj)))
+        }
       }
+    } else {
+      None
     }
   }
 
@@ -42,38 +49,62 @@ trait Redis {
   }
 
   def remove(key: String) = {
-    using { jedis =>
-      jedis.del(key)
+    if (enabled) {
+      using { jedis =>
+        jedis.del(key)
+      }
+    } else {
+      0L
     }
   }
 
   def exists(key: String): Boolean = {
-    using { jedis =>
-      jedis.exists(key)
+    if (enabled) {
+      using { jedis =>
+        jedis.exists(key)
+      }
+    } else {
+      false
     }
   }
 
   def zincrby(key: String, score: Double, member: String): Double = {
-    using { jedis =>
-      jedis.zincrby(key, score, member)
+    if (enabled) {
+      using { jedis =>
+        jedis.zincrby(key, score, member)
+      }
+    } else {
+      0
     }
   }
 
   def zrevrange(key: String, start: Long, end: Long): Set[String] = {
-    using { jedis =>
-      jedis.zrevrange(key, start, end).asScala.toSet
+    if (enabled) {
+      using { jedis =>
+        jedis.zrevrange(key, start, end).asScala.toSet
+      }
+    } else {
+      Set.empty
     }
   }
 
   def zscore(key: String, element: String): Double = {
-    using { jedis =>
-      jedis.zscore(key, element)
+    if (enabled) {
+      using { jedis =>
+        jedis.zscore(key, element)
+      }
+    } else {
+      0
     }
   }
 
   def zcard(key: String): Long = {
-    using { jedis =>
-      jedis.zcard(key)
+    if (enabled) {
+      using { jedis =>
+        jedis.zcard(key)
+      }
+    } else {
+      0L
     }
   }
 
@@ -81,14 +112,18 @@ trait Redis {
    * Redis上のデータを削除します。
    */
   def flushAll(): Unit = {
-    using { jedis =>
-      jedis.flushAll()
+    if (enabled) {
+      using { jedis =>
+        jedis.flushAll()
+      }
     }
   }
 
   def flushDB(): Unit = {
-    using { jedis =>
-      jedis.flushDB()
+    if (enabled) {
+      using { jedis =>
+        jedis.flushDB()
+      }
     }
   }
 
