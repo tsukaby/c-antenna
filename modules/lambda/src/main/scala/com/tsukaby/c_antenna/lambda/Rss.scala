@@ -35,13 +35,14 @@ class Rss {
     val urlReg = """[\"|\'](.*?)[\"|\']""".r
 
     val request = url(pageUrl)
-    val pageF: Future[Either[Throwable, String]] = Http.configure(_.setFollowRedirect(true))(request OK as.String).either
-    val html: String = Await.result(pageF, 30 seconds) match {
+    val f = Http.configure(_.setFollowRedirect(true))(request).either
+    val html:String = Await.result(f, 30 seconds) match {
       case Left(a) =>
         println("Error")
         a.printStackTrace()
         ""
-      case Right(b) => b
+      case Right(b) =>
+        b.getResponseBody
     }
 
     for {
