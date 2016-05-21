@@ -9,7 +9,7 @@ import scalikejdbc._
 /**
  * 記事に関する操作を行います。
  */
-trait ArticleDao {
+trait ArticleDao extends BaseDao {
 
   private val am = ArticleMapper.am
 

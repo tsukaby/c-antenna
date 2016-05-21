@@ -7,7 +7,7 @@ import scalikejdbc._
 /**
  * カテゴリに関する操作を行います。
  */
-trait CategoryDao {
+trait CategoryDao extends BaseDao {
 
   private val cm = CategoriesMapper.cm
 

@@ -57,6 +57,7 @@ trait SiteService extends BaseService {
 
   /**
     * 引数で指定した検索条件に従ってサイトを取得します。
+    *
     * @param condition 条件
     * @return サイトの一覧
     */
@@ -79,6 +80,7 @@ trait SiteService extends BaseService {
 
   /**
     * 引数で指定したサイトを取得します。
+    *
     * @param id サイトID
     * @return サイト
     */
@@ -114,13 +116,14 @@ trait SiteService extends BaseService {
   /**
     * Hatenaのエントリーリストをクロールし、新しくクロールするサイトを集めます。
     * 集めたサイトはDBに保存します。
+    *
     * @param session DBセッション
     */
   def crawlNewSite(implicit session: DBSession = AutoSession): Future[Unit] = {
 
     Logger.info(s"新しいサイトを収集します。")
 
-    val f = Future.sequence(hatenaRssUrls.map(rssDao.getByUrl)).map(x => x.flatMap(_.getEntries.asScala))
+    val f = Future.sequence(hatenaRssUrls.map(rssDao.getByUrl)).map(x => x.flatten.flatMap(_.getEntries.asScala))
       .map { entries =>
         entries.foreach { entry =>
           val rssUrl: Option[String] = Try(LambdaInvoker().findRssUrl(new RssUrlFindRequest(entry.getLink))) match {
@@ -134,19 +137,21 @@ trait SiteService extends BaseService {
               Some(value.getRssUrl)
           }
           rssUrl.foreach { url =>
-            rssDao.getByUrl(url).foreach { feed2 =>
-              if (siteDao.getByUrl(feed2.getLink).isEmpty) {
-                siteDao.create(
-                  name = feed2.getTitle,
-                  url = feed2.getLink,
-                  rssUrl = url,
-                  scrapingCssSelector = "",
-                  clickCount = 0,
-                  hatebuCount = 0,
-                  crawledAt = DateTime.now
-                )
-                Logger.info(s"Inserted a site. title = ${feed2.getTitle}")
-                counters.addedNewSite.increment()
+            rssDao.getByUrl(url).foreach { feed2Opt =>
+              feed2Opt.foreach { feed2 =>
+                if (siteDao.getByUrl(feed2.getLink).isEmpty) {
+                  siteDao.create(
+                    name = feed2.getTitle,
+                    url = feed2.getLink,
+                    rssUrl = url,
+                    scrapingCssSelector = "",
+                    clickCount = 0,
+                    hatebuCount = 0,
+                    crawledAt = DateTime.now
+                  )
+                  Logger.info(s"Inserted a site. title = ${feed2.getTitle}")
+                  counters.addedNewSite.increment()
+                }
               }
             }
           }
@@ -164,6 +169,7 @@ trait SiteService extends BaseService {
   /**
     * 引数で指定したWebサイトをクロールし、最新RSSから記事の情報を集めます。
     * 集めた記事情報はデータストアに保存します。
+    *
     * @param site クロール対象サイト
     * @param session DBセッション
     */
@@ -171,46 +177,48 @@ trait SiteService extends BaseService {
 
     Logger.debug(s"サイト情報を更新します。${site.name}")
 
-    rssDao.getByUrl(site.rssUrl).map { feed =>
-      // サイト情報更新
-      feed.getEntries.asScala.par foreach {
-        // RSS記事URL更新
-        case (entry: SyndEntry) =>
+    rssDao.getByUrl(site.rssUrl).map { feedOpt =>
+      feedOpt.foreach { feed =>
+        // サイト情報更新
+        feed.getEntries.asScala.par foreach {
+          // RSS記事URL更新
+          case (entry: SyndEntry) =>
 
-          if (new DateTime(entry.getPublishedDate).isBefore(new DateTime().plusHours(1))) {
-            // RSS記事の日付が現在日時+1時間より前に作成されたものであればDB格納
-            // +1は多少未来の投稿時間でも許容する為。
-            // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
+            if (new DateTime(entry.getPublishedDate).isBefore(new DateTime().plusHours(1))) {
+              // RSS記事の日付が現在日時+1時間より前に作成されたものであればDB格納
+              // +1は多少未来の投稿時間でも許容する為。
+              // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
 
-            if (entry.getLink != null && articleDao.countByUrl(entry.getLink) == 0) {
-              // まだ記事が無い場合
-              // 記事を解析してタグを取得
-              val text: Option[String] = entry.getContents.headOption.map(_.getValue.replaceAll("<.+?>", ""))
-                .orElse(Option(entry.getDescription).map(_.getValue))
-              val tags = LambdaInvoker().analyzeMorphological(new AnalyzeRequest(text.getOrElse(""))).tags
-              val categoryName = LambdaInvoker().classifyCategory(new ClassificationRequest(tags)).category
-              val category = categoryDao.getByName(categoryName)
+              if (entry.getLink != null && articleDao.countByUrl(entry.getLink) == 0) {
+                // まだ記事が無い場合
+                // 記事を解析してタグを取得
+                val text: Option[String] = entry.getContents.headOption.map(_.getValue.replaceAll("<.+?>", ""))
+                  .orElse(Option(entry.getDescription).map(_.getValue))
+                val tags = LambdaInvoker().analyzeMorphological(new AnalyzeRequest(text.getOrElse(""))).tags
+                val categoryName = LambdaInvoker().classifyCategory(new ClassificationRequest(tags)).category
+                val category = categoryDao.getByName(categoryName)
 
-              val content = entry.getContents.headOption.map(_.getValue)
-              val eyeCatchUrl = imageUrl(content)
+                val content = entry.getContents.headOption.map(_.getValue)
+                val eyeCatchUrl = imageUrl(content)
 
-              // DB登録
-              articleDao.create(
-                siteId = site.id,
-                url = entry.getLink,
-                eyeCatchUrl = eyeCatchUrl,
-                title = entry.getTitle,
-                description = text,
-                categoryId = category.map(_.id),
-                tags = if (tags.nonEmpty) Some(tags.mkString(",").take(1024)) else None,
-                clickCount = 0,
-                hatebuCount = 0,
-                publishedAt = new DateTime(entry.getPublishedDate)
-              )
-              Logger.info(s"Inserted an article. title = ${entry.getTitle}")
-              counters.addedNewArticle.increment()
+                // DB登録
+                articleDao.create(
+                  siteId = site.id,
+                  url = entry.getLink,
+                  eyeCatchUrl = eyeCatchUrl,
+                  title = entry.getTitle,
+                  description = text,
+                  categoryId = category.map(_.id),
+                  tags = if (tags.nonEmpty) Some(tags.mkString(",").take(1024)) else None,
+                  clickCount = 0,
+                  hatebuCount = 0,
+                  publishedAt = new DateTime(entry.getPublishedDate)
+                )
+                Logger.info(s"Inserted an article. title = ${entry.getTitle}")
+                counters.addedNewArticle.increment()
+              }
             }
-          }
+        }
       }
     }
   }
@@ -235,8 +243,10 @@ trait SiteService extends BaseService {
     * @param site サイト名更新対象サイト
     */
   def refreshSiteName(site: SiteMapper)(implicit session: DBSession = AutoSession): Future[Unit] = {
-    rssDao.getByUrl(site.rssUrl).map { feed =>
-      site.copy(name = feed.getTitle).save()
+    rssDao.getByUrl(site.rssUrl).map { feedOpt =>
+      feedOpt.map { feed =>
+        site.copy(name = feed.getTitle).save()
+      }
     }
   }
 
