@@ -1,13 +1,13 @@
 package com.tsukaby.c_antenna.dao
 
-import java.io.{BufferedReader, IOException, InputStreamReader, Reader}
+import java.io.{BufferedReader, InputStreamReader, Reader}
 import java.net.URL
 
-import com.rometools.rome.io.SyndFeedInput
 import com.rometools.rome.feed.synd.SyndFeed
+import com.rometools.rome.io.SyndFeedInput
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 /**
  * informaライブラリを利用してRSSを取得するクラスです。
@@ -32,8 +32,8 @@ trait RssDao extends BaseDao {
 
       Some(feed)
     } recover {
-      case e: IOException =>
-        Logger.warn("Can't read contents.", e)
+      case e: Exception =>
+        Logger.warn("Can't read feeds.", e)
         None
     }
   }
