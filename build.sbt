@@ -37,7 +37,8 @@ lazy val commonDependencies = Seq(
     "ATILIKA dependencies" at "http://www.atilika.org/nexus/content/repositories/atilika",
     "Sedis Repo" at "http://pk11-scratch.googlecode.com/svn/trunk",
     "Akka-Quartz Repo" at "http://repo.theatr.us",
-    "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
+    "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",
+    Resolver.jcenterRepo
   ),
   libraryDependencies ++= Seq(
     "io.kamon" %% "kamon-core" % kamonVersion,
@@ -49,6 +50,7 @@ lazy val commonDependencies = Seq(
     "io.kamon" % "sigar-loader" % "1.6.6-rev002",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-ext" % json4sVersion,
+    "com.iheart" %% "ficus" % "1.2.3",
     specs2 % Test
   )
 )

@@ -2,6 +2,7 @@ package com.tsukaby.c_antenna
 
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.service.SiteService
+import com.typesafe.config.ConfigFactory
 import kamon.Kamon
 import scalikejdbc._
 import scalikejdbc.config.DBs
@@ -11,26 +12,32 @@ import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 
-object CrawlerMain {
+import net.ceedubs.ficus.Ficus._
+
+object CrawlerMain extends BatchSupport {
+
+  override def run(args: Array[String]):Unit = {
+    args.toList match {
+      case "rss" :: "important" :: Nil =>
+        crawlImportantSites()
+      case "rss" :: "unimportant" :: Nil =>
+        crawlUnimportantSites()
+      case "site_thumbs" :: Nil =>
+        SiteService.createSiteThumbnails()
+      case "new_site" :: Nil =>
+        val f = SiteService.crawlNewSite()
+        Await.result(f, timeout)
+      case x =>
+        throw new IllegalArgumentException(s"args = $x")
+    }
+  }
 
   def main(args: Array[String]): Unit = {
     Kamon.start()
     DBs.setupAll()
 
     try {
-      args.toList match {
-        case "rss" :: "important" :: Nil =>
-          crawlImportantSites()
-        case "rss" :: "unimportant" :: Nil =>
-          crawlUnimportantSites()
-        case "site_thumbs" :: Nil =>
-          SiteService.createSiteThumbnails()
-        case "new_site" :: Nil =>
-          val f = SiteService.crawlNewSite()
-          Await.result(f, 5 minutes)
-        case x =>
-          throw new IllegalArgumentException(s"args = $x")
-      }
+      run(args)
     } finally {
       Kamon.shutdown()
     }
@@ -41,7 +48,7 @@ object CrawlerMain {
       SiteService.crawl(x)
     }
 
-    Await.result(Future.sequence(fList), 30 seconds)
+    Await.result(Future.sequence(fList), timeout)
   }
 
   private def crawlUnimportantSites(): Unit = {
@@ -49,6 +56,6 @@ object CrawlerMain {
       SiteService.crawl(x)
     }
 
-    Await.result(Future.sequence(fList), 30 seconds)
+    Await.result(Future.sequence(fList), timeout)
   }
 }
