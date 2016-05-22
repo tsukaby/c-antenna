@@ -130,11 +130,11 @@ trait SiteService extends BaseService {
             case Failure(exception) =>
               Logger.warn("Failure lambda invoke.", exception)
               None
-            case Success(null) =>
-              Logger.warn("Lambda succeeded but return is null")
-              None
             case Success(value) =>
-              Some(value.getRssUrl)
+              if (value.getRssUrl == null) {
+                Logger.warn("Lambda succeeded but return is null")
+              }
+              Option(value.getRssUrl)
           }
           rssUrl.foreach { url =>
             rssDao.getByUrl(url).foreach { feed2Opt =>

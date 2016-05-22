@@ -20,7 +20,6 @@ trait RssDao extends BaseDao {
    * @param rssUrl 取得するRSS URL
    */
   def getByUrl(rssUrl: String): Future[Option[SyndFeed]] = {
-
     Future {
       val tmp = new URL(rssUrl)
       val conn = tmp.openConnection()
