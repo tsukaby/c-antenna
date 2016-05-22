@@ -2,17 +2,13 @@ package com.tsukaby.c_antenna
 
 import com.tsukaby.c_antenna.db.mapper.SiteMapper
 import com.tsukaby.c_antenna.service.SiteService
-import com.typesafe.config.ConfigFactory
 import kamon.Kamon
 import scalikejdbc._
 import scalikejdbc.config.DBs
 
 import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
-
-import net.ceedubs.ficus.Ficus._
 
 object CrawlerMain extends BatchSupport {
 
