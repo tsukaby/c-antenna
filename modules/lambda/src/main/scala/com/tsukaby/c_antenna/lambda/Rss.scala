@@ -51,6 +51,12 @@ class Rss {
       hrefAttribute <- hrefReg.findFirstMatchIn(linkTag).map(_.toString())
       urlWithQuote <- urlReg.findFirstMatchIn(hrefAttribute).map(_.toString())
       url = urlWithQuote.substring(1, urlWithQuote.length - 1)
-    } yield url
+    } yield {
+      if (url.startsWith("//")) {
+        "http:" + url
+      } else {
+        url
+      }
+    }
   }
 }
