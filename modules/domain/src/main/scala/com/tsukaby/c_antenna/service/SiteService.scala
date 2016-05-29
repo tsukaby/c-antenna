@@ -194,6 +194,7 @@ trait SiteService extends BaseService {
                 // 記事を解析してタグを取得
                 val text: Option[String] = entry.getContents.headOption.map(_.getValue.replaceAll("<.+?>", ""))
                   .orElse(Option(entry.getDescription).map(_.getValue))
+                  .map(_.take(16384))
                 val tags = LambdaInvoker().analyzeMorphological(new AnalyzeRequest(text.getOrElse(""))).tags
                 val categoryName = LambdaInvoker().classifyCategory(new ClassificationRequest(tags)).category
                 val category = categoryDao.getByName(categoryName)
