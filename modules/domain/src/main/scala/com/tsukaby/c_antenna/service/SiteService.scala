@@ -202,19 +202,24 @@ trait SiteService extends BaseService {
                 val eyeCatchUrl = imageUrl(content)
 
                 // DB登録
-                articleDao.create(
-                  siteId = site.id,
-                  url = entry.getLink,
-                  eyeCatchUrl = eyeCatchUrl,
-                  title = entry.getTitle,
-                  description = text,
-                  categoryId = category.map(_.id),
-                  tags = if (tags.nonEmpty) Some(tags.mkString(",").take(1024)) else None,
-                  clickCount = 0,
-                  hatebuCount = 0,
-                  publishedAt = new DateTime(entry.getPublishedDate)
-                )
-                Logger.info(s"Inserted an article. title = ${entry.getTitle}")
+                try {
+                  articleDao.create(
+                    siteId = site.id,
+                    url = entry.getLink,
+                    eyeCatchUrl = eyeCatchUrl,
+                    title = entry.getTitle,
+                    description = text,
+                    categoryId = category.map(_.id),
+                    tags = if (tags.nonEmpty) Some(tags.mkString(",").take(1024)) else None,
+                    clickCount = 0,
+                    hatebuCount = 0,
+                    publishedAt = new DateTime(entry.getPublishedDate)
+                  )
+                  Logger.info(s"Inserted an article. title = ${entry.getTitle}")
+                } catch {
+                  case e : Exception =>
+                    Logger.warn("Error article can't inserted.", e)
+                }
                 counters.addedNewArticle.increment()
               }
             }
@@ -255,18 +260,23 @@ trait SiteService extends BaseService {
     */
   def refreshSiteRank(implicit session: DBSession = AutoSession): Unit = {
     siteDao.getAll foreach { x =>
-      // クライアント設定作成
-      val conf = new XmlRpcClientConfigImpl()
-      conf.setServerURL(new URL("http://b.hatena.ne.jp/xmlrpc"))
-      // XML-RPCクライアント生成
-      val client = new XmlRpcClient()
-      // クライアント設定をセット
-      client.setConfig(conf)
-      // パラメータ作成
-      // 実行
-      val ret = client.execute("bookmark.getTotalCount", List(x.url))
+      try {
+        // クライアント設定作成
+        val conf = new XmlRpcClientConfigImpl()
+        conf.setServerURL(new URL("http://b.hatena.ne.jp/xmlrpc"))
+        // XML-RPCクライアント生成
+        val client = new XmlRpcClient()
+        // クライアント設定をセット
+        client.setConfig(conf)
+        // パラメータ作成
+        // 実行
+        val ret = client.execute("bookmark.getTotalCount", List(x.url))
 
-      siteDao.update(x.copy(hatebuCount = ret.toString.toLong))
+        siteDao.update(x.copy(hatebuCount = ret.toString.toLong))
+      } catch {
+        case e: Exception =>
+          Logger.warn(s"Error can't update ranking of site. siteId = ${x.id}", e)
+      }
     }
   }
 
