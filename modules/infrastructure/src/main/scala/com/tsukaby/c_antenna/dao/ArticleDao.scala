@@ -160,6 +160,18 @@ trait ArticleDao extends BaseDao {
   }
 
   /**
+    * 記事を削除します。
+    * @param condition 削除条件
+    */
+  def deleteBy(condition: ArticleDeleteCondition)(implicit session: DBSession = AutoSession): Unit = {
+    withSQL {
+      delete
+        .from(ArticleMapper)
+        .where(condition.toWhere)
+    }.update().apply()
+  }
+
+  /**
    * 引数の条件に従ってSQLを作成します。
    * @param condition 検索条件・ソート条件・ページング条件
    * @param withPaging ページングの有無
@@ -215,3 +227,11 @@ trait ArticleDao extends BaseDao {
 }
 
 object ArticleDao extends ArticleDao
+
+case class ArticleDeleteCondition(
+  publishedAtLessThan: Option[DateTime] = None
+) {
+  def toWhere: SQLSyntax = {
+    sqls.lt(ArticleMapper.column.publishedAt, publishedAtLessThan)
+  }
+}

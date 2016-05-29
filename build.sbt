@@ -18,7 +18,7 @@ lazy val kamonVersion = "0.5.1"
 lazy val commonSettings = Seq(
   version := "0.0.4",
   organization := "com.tsukaby",
-  scalaVersion in ThisBuild := "2.11.7",
+  scalaVersion in ThisBuild := "2.11.8",
   scalacOptions += "-feature",
   javaOptions in Test += "-Dconfig.file=conf/test.conf",
   test in assembly := {},

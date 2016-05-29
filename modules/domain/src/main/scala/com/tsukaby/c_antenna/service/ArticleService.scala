@@ -1,13 +1,14 @@
 package com.tsukaby.c_antenna.service
 
 import com.tsukaby.c_antenna.client.HatenaClient
-import com.tsukaby.c_antenna.dao.ArticleDao
+import com.tsukaby.c_antenna.dao.{ArticleDao, ArticleDeleteCondition}
 import com.tsukaby.c_antenna.db.entity.SimpleSearchCondition
 import com.tsukaby.c_antenna.db.mapper.ArticleMapper
 import com.tsukaby.c_antenna.entity.ArticlePage
 import com.tsukaby.c_antenna.entity.ImplicitConverter._
 import org.joda.time.DateTime
 import scalikejdbc.{AutoSession, DBSession}
+import com.github.nscala_time.time.Imports._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
@@ -22,7 +23,8 @@ trait ArticleService extends BaseService {
 
   /**
    * 検索条件にマッチする記事を取得します。
-   * @param condition 検索条件
+    *
+    * @param condition 検索条件
    * @return 記事一覧
    */
   def getByCondition(condition: SimpleSearchCondition)(implicit session: DBSession = AutoSession): ArticlePage = {
@@ -41,7 +43,7 @@ trait ArticleService extends BaseService {
       maxId = None,
       categoryId = None,
       hasEyeCatch = false,
-      startDateTime = Some(now.minusWeeks(1)),
+      startDateTime = Some(now - 1.week),
       endDateTime = Some(now),
       sort = None)
     articleDao.getByCondition(condition) foreach { article =>
@@ -53,6 +55,12 @@ trait ArticleService extends BaseService {
     articleDao.getAll foreach { article =>
       refreshArticleRank(article)
     }
+  }
+
+  def deleteOldArticles(implicit session: DBSession = AutoSession): Unit = {
+    articleDao.deleteBy(condition = ArticleDeleteCondition(
+      publishedAtLessThan = Some(DateTime.now - 1.month)
+    ))
   }
 
   private def refreshArticleRank(article: ArticleMapper) = {
