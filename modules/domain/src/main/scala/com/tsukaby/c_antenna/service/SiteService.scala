@@ -208,7 +208,7 @@ trait SiteService extends BaseService {
                     siteId = site.id,
                     url = entry.getLink,
                     eyeCatchUrl = eyeCatchUrl,
-                    title = entry.getTitle,
+                    title = entry.getTitle.replaceAll("\r\n", "").replaceAll("\n", ""),
                     description = text,
                     categoryId = category.map(_.id),
                     tags = if (tags.nonEmpty) Some(tags.mkString(",").take(1024)) else None,
