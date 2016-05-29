@@ -18,6 +18,7 @@ import kamon.Kamon
 import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
 import scalikejdbc._
+import com.github.nscala_time.time.Imports._
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
@@ -184,10 +185,13 @@ trait SiteService extends BaseService {
           // RSS記事URL更新
           case (entry: SyndEntry) =>
 
-            if (new DateTime(entry.getPublishedDate).isBefore(new DateTime().plusHours(1))) {
-              // RSS記事の日付が現在日時+1時間より前に作成されたものであればDB格納
-              // +1は多少未来の投稿時間でも許容する為。
-              // この処理は投稿日を未来設定して広告として利用している記事を排除する為の処理
+            val publishedDate = new DateTime(entry.getPublishedDate)
+            val now = DateTime.now
+            val pastOneMonth = DateTime.now - 1.month
+
+            if (publishedDate < now && publishedDate > pastOneMonth) {
+              // 投稿日が現在日時よりも前かつ1ヶ月以内
+              // 広告や固定投稿はかなり先の未来に設定されているため、１つめの条件で除外
 
               if (entry.getLink != null && articleDao.countByUrl(entry.getLink) == 0) {
                 // まだ記事が無い場合

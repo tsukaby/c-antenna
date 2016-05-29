@@ -80,7 +80,7 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "io.spray" %% "spray-client" % "1.3.3", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
       "net.databinder.dispatch" %% "dispatch-core" % "0.11.3", // HTTPクライアント
       "us.theatr" %% "akka-quartz" % "0.3.0", // cron形式でジョブ登録・実行するためのもの
-      "com.github.nscala-time" %% "nscala-time" % "2.0.0", // 日付用
+      "com.github.nscala-time" %% "nscala-time" % "2.12.0", // 日付用
       "org.apache.xmlrpc" % "xmlrpc-common" % "3.1.3", //XML RPC
       "org.apache.xmlrpc" % "xmlrpc-client" % "3.1.3", //XML RPC
       "xml-apis" % "xml-apis" % "2.0.2", //XML RPC
