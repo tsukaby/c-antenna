@@ -19,11 +19,13 @@ import org.apache.xmlrpc.client.{XmlRpcClient, XmlRpcClientConfigImpl}
 import org.joda.time.DateTime
 import scalikejdbc._
 import com.github.nscala_time.time.Imports._
+import de.l3s.boilerpipe.extractors.DefaultExtractor
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.io.Source
 import scala.language.reflectiveCalls
 import scala.util.{Failure, Success, Try}
 
@@ -196,10 +198,8 @@ trait SiteService extends BaseService {
               if (entry.getLink != null && articleDao.countByUrl(entry.getLink) == 0) {
                 // まだ記事が無い場合
                 // 記事を解析してタグを取得
-                val text: Option[String] = entry.getContents.headOption.map(_.getValue.replaceAll("<.+?>", ""))
-                  .orElse(Option(entry.getDescription).map(_.getValue))
-                  .map(_.take(16384))
-                val tags = LambdaInvoker().analyzeMorphological(new AnalyzeRequest(text.getOrElse(""))).tags
+                val text: String = fetchContentTextOfWebPage(site.rssUrl).take(16384)
+                val tags = LambdaInvoker().analyzeMorphological(new AnalyzeRequest(text)).tags
                 val categoryName = LambdaInvoker().classifyCategory(new ClassificationRequest(tags)).category
                 val category = categoryDao.getByName(categoryName)
 
@@ -213,7 +213,7 @@ trait SiteService extends BaseService {
                     url = entry.getLink,
                     eyeCatchUrl = eyeCatchUrl,
                     title = entry.getTitle.replaceAll("\r\n", "").replaceAll("\n", ""),
-                    description = text,
+                    description = Some(text),
                     categoryId = category.map(_.id),
                     tags = if (tags.nonEmpty) Some(tags.mkString(",").take(1024)) else None,
                     clickCount = 0,
@@ -231,6 +231,16 @@ trait SiteService extends BaseService {
         }
       }
     }
+  }
+
+  private def fetchContentTextOfWebPage(targetUrl: String): String = {
+    val url = new URL(targetUrl)
+    val conn = url.openConnection()
+    // Avoid http response 403
+    // UA as PC Chrome
+    conn.setRequestProperty("User-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36")
+    val plainContent: String = Source.fromInputStream(conn.getInputStream).mkString
+    DefaultExtractor.getInstance().getText(plainContent)
   }
 
   private def imageUrl(htmlOpt: Option[String]): Option[String] = {
