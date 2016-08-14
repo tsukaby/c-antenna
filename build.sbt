@@ -154,7 +154,7 @@ lazy val lambda = (project in file("modules/lambda"))
     libraryDependencies ++= Seq(
       "org.json4s" %% "json4s-native" % json4sVersion,
       "org.json4s" %% "json4s-ext" % json4sVersion,
-      "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
+      "org.atilika.kuromoji" % "kuromoji" % "0.9.0", // 形態素解析用
       "com.tsukaby" %% "naive-bayes-classifier-scala" % "0.1.0",
       "com.github.tototoshi" %% "scala-csv" % "1.2.2",
       "net.databinder.dispatch" %% "dispatch-core" % "0.11.3", // HTTPクライアント
