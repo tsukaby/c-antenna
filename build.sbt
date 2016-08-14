@@ -74,7 +74,7 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       "redis.clients" % "jedis" % "2.6.2", //Redis
       "biz.source_code" % "base64coder" % "2010-12-19", //Redisへオブジェクト格納用
       "com.github.detro" % "phantomjsdriver" % "1.2.0" exclude("org.seleniumhq.selenium", "jetty-repacked"), // 画面キャプチャ用
-      "org.atilika.kuromoji" % "kuromoji" % "0.7.7", // 形態素解析用
+      "org.atilika.kuromoji" % "kuromoji" % "0.9.0", // 形態素解析用
       "com.typesafe.akka" %% "akka-actor" % akkaVersion, // batch用
       "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
       "io.spray" %% "spray-client" % "1.3.3", // 軽量HTTPクライアント 他のライブラリを使うまでもない部分で使う
